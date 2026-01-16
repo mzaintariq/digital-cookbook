@@ -1,5 +1,5 @@
-import prisma from '../../utils/prisma'
-import { getAdminSession } from '../../utils/auth'
+import prisma from '../../../utils/prisma'
+import { getAdminSession } from '../../../utils/auth'
 
 export default defineEventHandler(async (event) => {
   try {
@@ -12,15 +12,15 @@ export default defineEventHandler(async (event) => {
       })
     }
 
-    const body = await readBody(event)
-    
-    // Validate required fields
-    if (!body.title || !body.slug) {
+    const id = getRouterParam(event, 'id')
+    if (!id) {
       throw createError({
         statusCode: 400,
-        statusMessage: 'Title and slug are required',
+        statusMessage: 'Recipe ID is required',
       })
     }
+
+    const body = await readBody(event)
 
     // Convert ingredients and steps from newline-separated strings to arrays
     const ingredients = Array.isArray(body.ingredients)
@@ -42,7 +42,8 @@ export default defineEventHandler(async (event) => {
         ? body.tags.split(',').map((tag: string) => tag.trim()).filter((tag: string) => tag)
         : []
 
-    const recipe = await prisma.recipe.create({
+    const recipe = await prisma.recipe.update({
+      where: { id },
       data: {
         title: body.title,
         slug: body.slug,
@@ -63,7 +64,12 @@ export default defineEventHandler(async (event) => {
     if (error.statusCode) {
       throw error
     }
-    // Handle unique constraint violation (duplicate slug)
+    if (error.code === 'P2025') {
+      throw createError({
+        statusCode: 404,
+        statusMessage: 'Recipe not found',
+      })
+    }
     if (error.code === 'P2002') {
       throw createError({
         statusCode: 400,
@@ -72,7 +78,7 @@ export default defineEventHandler(async (event) => {
     }
     throw createError({
       statusCode: 500,
-      statusMessage: 'Failed to create recipe',
+      statusMessage: 'Failed to update recipe',
     })
   }
 })

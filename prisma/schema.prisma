@@ -10,16 +10,20 @@ datasource db {
 }
 
 model Recipe {
-  id          String   @id @default(uuid())
-  title       String
-  description String?
-  ingredients Json     // Array of ingredient objects
-  instructions Json    // Array of instruction steps
-  prepTime    Int?     // Minutes
-  cookTime    Int?     // Minutes
-  servings    Int?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id              String   @id @default(uuid())
+  title           String
+  slug            String   @unique
+  ingredients     String[]
+  steps           String[]
+  cookTimeMinutes Int
+  spiceLevel      Int      // 1-5
+  tags            String[]
+  notes           String?
+  rating          Int      // 1-5
+  approvedBy      String
+  status          String   @default("draft") // "draft" | "publish"
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 
   @@map("recipes")
 }

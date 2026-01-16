@@ -2,7 +2,11 @@ import prisma from '../../utils/prisma'
 
 export default defineEventHandler(async (event) => {
   try {
+    // Public endpoint - only return published recipes
     const recipes = await prisma.recipe.findMany({
+      where: {
+        status: 'publish',
+      },
       orderBy: {
         createdAt: 'desc',
       },
