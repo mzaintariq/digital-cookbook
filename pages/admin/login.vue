@@ -2,43 +2,30 @@
   <div class="min-h-screen bg-gray-50 flex items-center justify-center">
     <div class="max-w-md w-full bg-white rounded-lg shadow-md p-8">
       <h1 class="text-3xl font-bold text-gray-900 mb-6 text-center">Admin Login</h1>
-      
+
       <form @submit.prevent="handleLogin" class="space-y-4">
         <div>
           <label for="email" class="block text-sm font-medium text-gray-700 mb-1">
             Email
           </label>
-          <input
-            id="email"
-            v-model="form.email"
-            type="email"
-            required
+          <input id="email" v-model="form.email" type="email" required
             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brand-primary"
-            placeholder="admin@example.com"
-          />
+            placeholder="admin@example.com" />
         </div>
 
         <div>
           <label for="password" class="block text-sm font-medium text-gray-700 mb-1">
             Password
           </label>
-          <input
-            id="password"
-            v-model="form.password"
-            type="password"
-            required
+          <input id="password" v-model="form.password" type="password" required
             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brand-primary"
-            placeholder="Enter password"
-          />
+            placeholder="Enter password" />
         </div>
 
         <div v-if="error" class="text-red-600 text-sm">{{ error }}</div>
 
-        <button
-          type="submit"
-          :disabled="loading"
-          class="w-full bg-brand-primary-600 text-white py-2 px-4 rounded-md hover:bg-brand-primary-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
-        >
+        <button type="submit" :disabled="loading"
+          class="w-full bg-brand-primary-600 text-white py-2 px-4 rounded-md hover:bg-brand-primary-700 disabled:bg-gray-400 disabled:cursor-not-allowed">
           {{ loading ? 'Logging in...' : 'Login' }}
         </button>
       </form>
@@ -72,7 +59,7 @@ async function handleLogin() {
   try {
     loading.value = true
     error.value = null
-    
+
     await $fetch('/api/admin/login', {
       method: 'POST',
       body: form,
@@ -86,4 +73,3 @@ async function handleLogin() {
   }
 }
 </script>
-

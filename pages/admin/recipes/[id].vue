@@ -20,9 +20,13 @@
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-2">Upload Photo</label>
               <div class="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center bg-gray-50">
-                <svg class="mx-auto h-12 w-12 text-brand-primary mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path>
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                <svg class="mx-auto h-12 w-12 text-brand-primary mb-2" fill="none" stroke="currentColor"
+                  viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z">
+                  </path>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path>
                 </svg>
                 <p class="text-brand-primary font-medium mb-1">Upload Photo</p>
                 <p class="text-sm text-gray-500">PNG or JPEG (max. 10MB)</p>
@@ -35,14 +39,8 @@
               <label for="title" class="block text-sm font-medium text-gray-700 mb-1">
                 Recipe name *
               </label>
-              <input
-                id="title"
-                v-model="form.title"
-                type="text"
-                required
-                placeholder="eg: Savory Stuffed Bell Peppers"
-                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brand-primary"
-              />
+              <input id="title" v-model="form.title" type="text" required placeholder="eg: Savory Stuffed Bell Peppers"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brand-primary" />
             </div>
 
             <!-- Description -->
@@ -50,13 +48,9 @@
               <label for="description" class="block text-sm font-medium text-gray-700 mb-1">
                 Description
               </label>
-              <textarea
-                id="description"
-                v-model="form.description"
-                rows="3"
+              <textarea id="description" v-model="form.description" rows="3"
                 placeholder="Brief description of the recipe..."
-                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brand-primary"
-              />
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brand-primary" />
             </div>
 
             <!-- Slug -->
@@ -64,14 +58,8 @@
               <label for="slug" class="block text-sm font-medium text-gray-700 mb-1">
                 Slug * (unique, lowercase, hyphens)
               </label>
-              <input
-                id="slug"
-                v-model="form.slug"
-                type="text"
-                required
-                @input="slugManuallyChanged = true"
-                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brand-primary"
-              />
+              <input id="slug" v-model="form.slug" type="text" required @input="slugManuallyChanged = true"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brand-primary" />
             </div>
 
             <!-- Set Recipe As (Publish/Draft) -->
@@ -79,22 +67,17 @@
               <label class="block text-sm font-medium text-gray-700 mb-2">Status</label>
               <div class="flex items-center gap-3">
                 <span class="text-sm text-gray-600">Published</span>
-                <button
-                  type="button"
-                  @click="form.published = !form.published"
-                  :class="[
-                    'relative inline-flex h-4 w-7 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-brand-primary focus:ring-offset-2',
-                    form.published ? 'bg-brand-primary' : 'bg-gray-300'
-                  ]"
-                >
-                  <span
-                    :class="[
-                      'inline-block h-3 w-3 transform rounded-full bg-white transition-transform',
-                      form.published ? 'translate-x-3.5' : 'translate-x-0.5'
-                    ]"
-                  />
+                <button type="button" @click="form.published = !form.published" :class="[
+                  'relative inline-flex h-4 w-7 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-brand-primary focus:ring-offset-2',
+                  form.published ? 'bg-brand-primary' : 'bg-gray-300'
+                ]">
+                  <span :class="[
+                    'inline-block h-3 w-3 transform rounded-full bg-white transition-transform',
+                    form.published ? 'translate-x-3.5' : 'translate-x-0.5'
+                  ]" />
                 </button>
-                <span class="text-xs text-gray-500">{{ form.published ? 'Visible to everyone' : 'Saved as draft' }}</span>
+                <span class="text-xs text-gray-500">{{ form.published ? 'Visible to everyone' : 'Saved as draft'
+                  }}</span>
               </div>
             </div>
 
@@ -104,14 +87,8 @@
                 Number of serving
               </label>
               <div class="relative">
-                <input
-                  id="servings"
-                  v-model.number="form.servings"
-                  type="number"
-                  min="1"
-                  placeholder="eg: 4 or 3-5"
-                  class="w-full px-3 py-2 pr-20 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brand-primary"
-                />
+                <input id="servings" v-model.number="form.servings" type="number" min="1" placeholder="eg: 4 or 3-5"
+                  class="w-full px-3 py-2 pr-20 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brand-primary" />
                 <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
                   <span class="text-gray-700 text-sm">person</span>
                 </div>
@@ -124,14 +101,8 @@
                 Cook duration *
               </label>
               <div class="relative">
-                <input
-                  id="cookTimeMinutes"
-                  v-model.number="form.cookTimeMinutes"
-                  type="number"
-                  required
-                  min="0"
-                  class="w-full px-3 py-2 pr-20 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brand-primary"
-                />
+                <input id="cookTimeMinutes" v-model.number="form.cookTimeMinutes" type="number" required min="0"
+                  class="w-full px-3 py-2 pr-20 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brand-primary" />
                 <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
                   <span class="text-gray-700 text-sm">minute</span>
                 </div>
@@ -144,13 +115,8 @@
                 Prep time
               </label>
               <div class="relative">
-                <input
-                  id="prepTimeMinutes"
-                  v-model.number="form.prepTimeMinutes"
-                  type="number"
-                  min="0"
-                  class="w-full px-3 py-2 pr-20 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brand-primary"
-                />
+                <input id="prepTimeMinutes" v-model.number="form.prepTimeMinutes" type="number" min="0"
+                  class="w-full px-3 py-2 pr-20 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brand-primary" />
                 <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
                   <span class="text-gray-700 text-sm">minute</span>
                 </div>
@@ -162,13 +128,8 @@
               <label for="tags" class="block text-sm font-medium text-gray-700 mb-1">
                 Tags (comma-separated)
               </label>
-              <input
-                id="tags"
-                v-model="form.tags"
-                type="text"
-                placeholder="pakistani, curry, spicy"
-                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brand-primary"
-              />
+              <input id="tags" v-model="form.tags" type="text" placeholder="pakistani, curry, spicy"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brand-primary" />
             </div>
 
             <!-- Credit -->
@@ -176,13 +137,8 @@
               <label for="credit" class="block text-sm font-medium text-gray-700 mb-1">
                 Credit
               </label>
-              <input
-                id="credit"
-                v-model="form.credit"
-                type="text"
-                placeholder="eg: Recipe by Chef John"
-                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brand-primary"
-              />
+              <input id="credit" v-model="form.credit" type="text" placeholder="eg: Recipe by Chef John"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brand-primary" />
             </div>
 
             <!-- Video URL -->
@@ -190,13 +146,9 @@
               <label for="videoUrl" class="block text-sm font-medium text-gray-700 mb-1">
                 Video URL
               </label>
-              <input
-                id="videoUrl"
-                v-model="form.videoUrl"
-                type="url"
+              <input id="videoUrl" v-model="form.videoUrl" type="url"
                 placeholder="eg: https://www.youtube.com/watch?v=..."
-                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brand-primary"
-              />
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brand-primary" />
             </div>
           </div>
 
@@ -207,50 +159,37 @@
             <!-- Ingredients Section -->
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-3">Ingredients</label>
-              <draggable
-                v-model="form.ingredients"
-                item-key="id"
-                handle=".drag-handle"
-                :animation="200"
-                :force-fallback="true"
-                ghost-class="sortable-ghost"
-                chosen-class="sortable-chosen"
-                drag-class="sortable-drag"
-                class="space-y-3"
-              >
+              <draggable v-model="form.ingredients" item-key="id" handle=".drag-handle" :animation="200"
+                :force-fallback="true" ghost-class="sortable-ghost" chosen-class="sortable-chosen"
+                drag-class="sortable-drag" class="space-y-3">
                 <template #item="{ element: ingredient, index }">
                   <div class="flex items-start gap-2 p-3 border border-gray-200 rounded-lg bg-gray-50">
                     <div class="drag-handle cursor-move pt-2 text-gray-400 hover:text-gray-600 flex-shrink-0">
                       <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                        <circle cx="9" cy="5" r="1.5"/>
-                        <circle cx="16" cy="5" r="1.5"/>
-                        <circle cx="9" cy="12" r="1.5"/>
-                        <circle cx="16" cy="12" r="1.5"/>
-                        <circle cx="9" cy="19" r="1.5"/>
-                        <circle cx="16" cy="19" r="1.5"/>
+                        <circle cx="9" cy="5" r="1.5" />
+                        <circle cx="16" cy="5" r="1.5" />
+                        <circle cx="9" cy="12" r="1.5" />
+                        <circle cx="16" cy="12" r="1.5" />
+                        <circle cx="9" cy="19" r="1.5" />
+                        <circle cx="16" cy="19" r="1.5" />
                       </svg>
                     </div>
                     <div class="flex-1 grid grid-cols-1 md:grid-cols-12 gap-2">
                       <!-- Quantity with unit inside -->
                       <div v-if="!ingredient.toTaste" class="md:col-span-2 relative">
-                        <input
-                          v-model.number="ingredient.quantity"
-                          type="number"
-                          min="0"
-                          step="any"
-                          placeholder="4"
-                          class="w-full px-2 py-1.5 pr-20 md:pr-24 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-brand-primary"
-                        />
-                        <div class="absolute inset-y-0 right-0 w-16 md:w-20 flex items-center justify-end border-l border-gray-300 pl-2 pr-2 pointer-events-none bg-gray-50 rounded-r border-r border-t border-b border-gray-300">
+                        <input v-model.number="ingredient.quantity" type="number" min="0" step="any" placeholder="4"
+                          class="w-full px-2 py-1.5 pr-20 md:pr-24 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-brand-primary" />
+                        <div
+                          class="absolute inset-y-0 right-0 w-16 md:w-20 flex items-center justify-end border-l border-gray-300 pl-2 pr-2 pointer-events-none bg-gray-50 rounded-r border-r border-t border-b border-gray-300">
                           <span class="text-xs md:text-sm text-gray-700 mr-1">{{ ingredient.unit }}</span>
-                          <svg class="w-3 h-3 md:w-4 md:h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                          <svg class="w-3 h-3 md:w-4 md:h-4 text-gray-400" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7">
+                            </path>
                           </svg>
                         </div>
-                        <select
-                          v-model="ingredient.unit"
-                          class="absolute inset-y-0 right-0 w-16 md:w-20 opacity-0 cursor-pointer"
-                        >
+                        <select v-model="ingredient.unit"
+                          class="absolute inset-y-0 right-0 w-16 md:w-20 opacity-0 cursor-pointer">
                           <option value="pcs">pcs</option>
                           <option value="cup">cup</option>
                           <option value="tbsp">tbsp</option>
@@ -271,24 +210,20 @@
                       </div>
                       <!-- Alternate size with unit inside -->
                       <div v-if="ingredient.detailedSize && !ingredient.toTaste" class="md:col-span-2 relative">
-                        <input
-                          v-model.number="ingredient.detailedSize.amount"
-                          type="number"
-                          min="0"
-                          step="any"
+                        <input v-model.number="ingredient.detailedSize.amount" type="number" min="0" step="any"
                           placeholder="15"
-                          class="w-full px-2 py-1.5 pr-20 md:pr-24 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-brand-primary"
-                        />
-                        <div class="absolute inset-y-0 right-0 w-16 md:w-20 flex items-center justify-end border-l border-gray-300 pl-2 pr-2 pointer-events-none bg-gray-50 rounded-r border-r border-t border-b border-gray-300">
+                          class="w-full px-2 py-1.5 pr-20 md:pr-24 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-brand-primary" />
+                        <div
+                          class="absolute inset-y-0 right-0 w-16 md:w-20 flex items-center justify-end border-l border-gray-300 pl-2 pr-2 pointer-events-none bg-gray-50 rounded-r border-r border-t border-b border-gray-300">
                           <span class="text-xs md:text-sm text-gray-700 mr-1">{{ ingredient.detailedSize.unit }}</span>
-                          <svg class="w-3 h-3 md:w-4 md:h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                          <svg class="w-3 h-3 md:w-4 md:h-4 text-gray-400" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7">
+                            </path>
                           </svg>
                         </div>
-                        <select
-                          v-model="ingredient.detailedSize.unit"
-                          class="absolute inset-y-0 right-0 w-16 md:w-20 opacity-0 cursor-pointer"
-                        >
+                        <select v-model="ingredient.detailedSize.unit"
+                          class="absolute inset-y-0 right-0 w-16 md:w-20 opacity-0 cursor-pointer">
                           <option value="g">g</option>
                           <option value="kg">kg</option>
                           <option value="ml">ml</option>
@@ -296,100 +231,79 @@
                           <option value="oz">oz</option>
                         </select>
                       </div>
-                      <input
-                        v-model="ingredient.name"
-                        type="text"
-                        placeholder="eg: Large bell peppers (any color)"
+                      <input v-model="ingredient.name" type="text" placeholder="eg: Large bell peppers (any color)"
                         :class="[
                           'px-2 py-1.5 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-brand-primary',
-                          ingredient.detailedSize 
-                            ? (ingredient.toTaste ? 'md:col-span-11' : 'md:col-span-8') 
+                          ingredient.detailedSize
+                            ? (ingredient.toTaste ? 'md:col-span-11' : 'md:col-span-8')
                             : (ingredient.toTaste ? 'md:col-span-11' : 'md:col-span-10')
-                        ]"
-                      />
+                        ]" />
                       <div class="md:col-span-12 flex flex-wrap items-center gap-3 md:gap-4 mt-1">
                         <label class="flex items-center text-xs text-gray-600 cursor-pointer">
                           <span class="mr-2">To taste</span>
-                          <button
-                            type="button"
-                            @click="ingredient.toTaste = !ingredient.toTaste; handleToTasteChange(ingredient)"
-                            :class="[
+                          <button type="button"
+                            @click="ingredient.toTaste = !ingredient.toTaste; handleToTasteChange(ingredient)" :class="[
                               'relative inline-flex h-4 w-7 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-brand-primary focus:ring-offset-2',
                               ingredient.toTaste ? 'bg-brand-primary' : 'bg-gray-300'
-                            ]"
-                          >
-                            <span
-                              :class="[
-                                'inline-block h-3 w-3 transform rounded-full bg-white transition-transform',
-                                ingredient.toTaste ? 'translate-x-3.5' : 'translate-x-0.5'
-                              ]"
-                            />
+                            ]">
+                            <span :class="[
+                              'inline-block h-3 w-3 transform rounded-full bg-white transition-transform',
+                              ingredient.toTaste ? 'translate-x-3.5' : 'translate-x-0.5'
+                            ]" />
                           </button>
                         </label>
-                        <label v-if="!ingredient.toTaste" class="flex items-center text-xs text-gray-600 cursor-pointer">
+                        <label v-if="!ingredient.toTaste"
+                          class="flex items-center text-xs text-gray-600 cursor-pointer">
                           <span class="mr-2">Alternate size</span>
-                          <button
-                            type="button"
+                          <button type="button"
                             @click="ingredient.detailedSize = ingredient.detailedSize ? null : { amount: 0, unit: 'oz' }"
                             :class="[
                               'relative inline-flex h-4 w-7 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-brand-primary focus:ring-offset-2',
                               ingredient.detailedSize ? 'bg-brand-primary' : 'bg-gray-300'
-                            ]"
-                          >
-                            <span
-                              :class="[
-                                'inline-block h-3 w-3 transform rounded-full bg-white transition-transform',
-                                ingredient.detailedSize ? 'translate-x-3.5' : 'translate-x-0.5'
-                              ]"
-                            />
+                            ]">
+                            <span :class="[
+                              'inline-block h-3 w-3 transform rounded-full bg-white transition-transform',
+                              ingredient.detailedSize ? 'translate-x-3.5' : 'translate-x-0.5'
+                            ]" />
                           </button>
                         </label>
                         <label class="flex items-center text-xs text-gray-600 cursor-pointer">
                           <span class="mr-2">Alternate ingredient</span>
-                          <button
-                            type="button"
+                          <button type="button"
                             @click="ingredient.alternateIngredient = (ingredient.alternateIngredient !== null && ingredient.alternateIngredient !== undefined) ? null : ''"
                             :class="[
                               'relative inline-flex h-4 w-7 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-brand-primary focus:ring-offset-2',
                               (ingredient.alternateIngredient !== null && ingredient.alternateIngredient !== undefined) ? 'bg-brand-primary' : 'bg-gray-300'
-                            ]"
-                          >
-                            <span
-                              :class="[
-                                'inline-block h-3 w-3 transform rounded-full bg-white transition-transform',
-                                (ingredient.alternateIngredient !== null && ingredient.alternateIngredient !== undefined) ? 'translate-x-3.5' : 'translate-x-0.5'
-                              ]"
-                            />
+                            ]">
+                            <span :class="[
+                              'inline-block h-3 w-3 transform rounded-full bg-white transition-transform',
+                              (ingredient.alternateIngredient !== null && ingredient.alternateIngredient !== undefined) ? 'translate-x-3.5' : 'translate-x-0.5'
+                            ]" />
                           </button>
                         </label>
                       </div>
                       <!-- Alternate Ingredient Text Field -->
-                      <div v-if="ingredient.alternateIngredient !== null && ingredient.alternateIngredient !== undefined" class="md:col-span-12 mt-2">
-                        <input
-                          v-model="ingredient.alternateIngredient"
-                          type="text"
+                      <div
+                        v-if="ingredient.alternateIngredient !== null && ingredient.alternateIngredient !== undefined"
+                        class="md:col-span-12 mt-2">
+                        <input v-model="ingredient.alternateIngredient" type="text"
                           placeholder="eg: or use butter instead"
-                          class="w-full px-2 py-1.5 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-brand-primary"
-                        />
+                          class="w-full px-2 py-1.5 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-brand-primary" />
                       </div>
                     </div>
-                    <button
-                      type="button"
-                      @click="removeIngredient(index)"
-                      class="pt-2 text-red-500 hover:text-red-700 flex-shrink-0"
-                    >
+                    <button type="button" @click="removeIngredient(index)"
+                      class="pt-2 text-red-500 hover:text-red-700 flex-shrink-0">
                       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
+                        </path>
                       </svg>
                     </button>
                   </div>
                 </template>
               </draggable>
-              <button
-                type="button"
-                @click="addIngredient"
-                class="mt-3 flex w-full justify-center items-center gap-2 px-4 py-2 border-2 border-brand-primary text-brand-primary rounded-md hover:bg-brand-primary-600 hover:text-white transition-colors"
-              >
+              <button type="button" @click="addIngredient"
+                class="mt-3 flex w-full justify-center items-center gap-2 px-4 py-2 border-2 border-brand-primary text-brand-primary rounded-md hover:bg-brand-primary-600 hover:text-white transition-colors">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                 </svg>
@@ -400,57 +314,43 @@
             <!-- Directions Section -->
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-3">Directions</label>
-              <draggable
-                v-model="form.steps"
-                item-key="id"
-                handle=".drag-handle"
-                :animation="200"
-                :force-fallback="true"
-                ghost-class="sortable-ghost"
-                chosen-class="sortable-chosen"
-                drag-class="sortable-drag"
-                class="space-y-3"
-              >
+              <draggable v-model="form.steps" item-key="id" handle=".drag-handle" :animation="200"
+                :force-fallback="true" ghost-class="sortable-ghost" chosen-class="sortable-chosen"
+                drag-class="sortable-drag" class="space-y-3">
                 <template #item="{ element: step, index }">
                   <div class="flex items-start gap-2 p-3 border border-gray-200 rounded-lg bg-gray-50">
                     <div class="drag-handle cursor-move pt-2 text-gray-400 hover:text-gray-600 flex-shrink-0">
                       <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                        <circle cx="9" cy="5" r="1.5"/>
-                        <circle cx="16" cy="5" r="1.5"/>
-                        <circle cx="9" cy="12" r="1.5"/>
-                        <circle cx="16" cy="12" r="1.5"/>
-                        <circle cx="9" cy="19" r="1.5"/>
-                        <circle cx="16" cy="19" r="1.5"/>
+                        <circle cx="9" cy="5" r="1.5" />
+                        <circle cx="16" cy="5" r="1.5" />
+                        <circle cx="9" cy="12" r="1.5" />
+                        <circle cx="16" cy="12" r="1.5" />
+                        <circle cx="9" cy="19" r="1.5" />
+                        <circle cx="16" cy="19" r="1.5" />
                       </svg>
                     </div>
                     <div class="flex-1 flex flex-col md:flex-row gap-2">
                       <div class="flex items-start gap-2 md:mb-0">
-                        <span class="text-sm font-medium text-gray-700 pt-2 md:pt-0">{{ String(index + 1).padStart(2, '0') }}</span>
+                        <span class="text-sm font-medium text-gray-700 pt-2 md:pt-0">{{ String(index + 1).padStart(2,
+                          '0') }}</span>
                       </div>
-                      <textarea
-                        v-model="step.description"
-                        rows="2"
+                      <textarea v-model="step.description" rows="2"
                         placeholder="eg: Preheat your oven to 375°F (190°C)..."
-                        class="flex-1 px-3 py-2 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-brand-primary"
-                      />
+                        class="flex-1 px-3 py-2 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-brand-primary" />
                     </div>
-                    <button
-                      type="button"
-                      @click="removeStep(index)"
-                      class="pt-2 text-red-500 hover:text-red-700 flex-shrink-0"
-                    >
+                    <button type="button" @click="removeStep(index)"
+                      class="pt-2 text-red-500 hover:text-red-700 flex-shrink-0">
                       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
+                        </path>
                       </svg>
                     </button>
                   </div>
                 </template>
               </draggable>
-              <button
-                type="button"
-                @click="addStep"
-                class="mt-3 flex w-full justify-center items-center gap-2 px-4 py-2 border-2 border-brand-primary text-brand-primary rounded-md hover:bg-brand-primary-600 hover:text-white transition-colors"
-              >
+              <button type="button" @click="addStep"
+                class="mt-3 flex w-full justify-center items-center gap-2 px-4 py-2 border-2 border-brand-primary text-brand-primary rounded-md hover:bg-brand-primary-600 hover:text-white transition-colors">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                 </svg>
@@ -463,13 +363,8 @@
               <label for="notes" class="block text-sm font-medium text-gray-700 mb-2">
                 Notes
               </label>
-              <textarea
-                id="notes"
-                v-model="form.notes"
-                rows="4"
-                placeholder="Additional notes, tips, or variations..."
-                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brand-primary"
-              />
+              <textarea id="notes" v-model="form.notes" rows="4" placeholder="Additional notes, tips, or variations..."
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brand-primary" />
             </div>
           </div>
         </div>
@@ -549,11 +444,11 @@ function generateSlug(title: string): string {
 watch(() => form.title, (newTitle) => {
   // Only send title update to header if in edit mode
   if (process.client && isEditMode) {
-    window.dispatchEvent(new CustomEvent('recipe-title-update', { 
-      detail: { title: newTitle || null } 
+    window.dispatchEvent(new CustomEvent('recipe-title-update', {
+      detail: { title: newTitle || null }
     }))
   }
-  
+
   // Auto-generate slug from title if slug hasn't been manually changed
   if (!slugManuallyChanged.value && newTitle) {
     form.slug = generateSlug(newTitle)
@@ -605,16 +500,16 @@ onMounted(async () => {
       recipeFormRef.value.requestSubmit()
     }
   }
-  
+
   window.addEventListener('recipe-form-submit', handleHeaderSave)
-  
+
   // Update saving state for header
   watch(saving, (newValue) => {
     if (process.client) {
       window.dispatchEvent(new CustomEvent('recipe-form-saving', { detail: { saving: newValue } }))
     }
   }, { immediate: true })
-  
+
   // Load recipe if editing, or add defaults for new recipe
   if (isEditMode) {
     await loadRecipe()
@@ -638,11 +533,11 @@ onMounted(async () => {
 
 async function loadRecipe() {
   if (!isEditMode) return
-  
+
   try {
     const recipes = await $fetch('/api/admin/recipes')
     const recipe = recipes.find((r: any) => r.id === recipeId)
-    
+
     if (!recipe) {
       error.value = 'Recipe not found'
       return
@@ -659,7 +554,7 @@ async function loadRecipe() {
     form.tags = recipe.tags.join(', ')
     form.notes = recipe.notes || ''
     form.published = recipe.status === 'publish'
-    
+
     // In edit mode, slug is already set, so mark as manually changed
     slugManuallyChanged.value = true
 
@@ -741,7 +636,7 @@ async function handleSubmit() {
       window.dispatchEvent(new CustomEvent('recipe-saved', {
         detail: { message: isEditMode ? 'Recipe updated successfully!' : 'Recipe created successfully!' }
       }))
-      
+
       // Small delay to show notification before navigation
       await new Promise(resolve => setTimeout(resolve, 500))
     }
@@ -775,4 +670,3 @@ async function handleSubmit() {
   cursor: grabbing;
 }
 </style>
-

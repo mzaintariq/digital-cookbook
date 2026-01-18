@@ -9,10 +9,8 @@
           </div>
         </NuxtLink>
         <div v-else class="flex items-center gap-3">
-          <button
-            @click="handleBack"
-            class="w-8 h-8 rounded-full bg-gray-200 hover:bg-gray-300 flex items-center justify-center transition-colors"
-          >
+          <button @click="handleBack"
+            class="w-8 h-8 rounded-full bg-gray-200 hover:bg-gray-300 flex items-center justify-center transition-colors">
             <svg class="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
             </svg>
@@ -21,93 +19,59 @@
             {{ saveButtonText === 'Save Recipe' ? 'New Recipe' : (recipeTitle || 'Edit Recipe') }}
           </span>
         </div>
-        
+
         <!-- Navigation -->
         <nav class="flex items-center gap-6">
-          <NuxtLink
-            v-if="!isRecipeEditPage"
-            to="/recipes"
-            class="text-gray-700 hover:text-gray-900 font-medium"
-          >
+          <NuxtLink v-if="!isRecipeEditPage" to="/recipes" class="text-gray-700 hover:text-gray-900 font-medium">
             Recipes
           </NuxtLink>
-          
+
           <!-- Recipe Edit Page Actions -->
           <div v-if="isRecipeEditPage" class="flex items-center gap-3">
-            <button
-              @click="handleCancel"
-              class="bg-gray-200 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-300 text-sm"
-            >
+            <button @click="handleCancel"
+              class="bg-gray-200 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-300 text-sm">
               Cancel
             </button>
-            <button
-              @click="handleSave"
-              :disabled="isSaving"
-              class="bg-brand-primary text-white px-4 py-2 rounded-md hover:bg-brand-primary-600 disabled:bg-gray-400 disabled:cursor-not-allowed text-sm"
-            >
+            <button @click="handleSave" :disabled="isSaving"
+              class="bg-brand-primary text-white px-4 py-2 rounded-md hover:bg-brand-primary-600 disabled:bg-gray-400 disabled:cursor-not-allowed text-sm">
               {{ isSaving ? 'Saving...' : saveButtonText }}
             </button>
           </div>
-          
+
           <!-- Admin Menu (only show when not on recipe edit page) -->
           <div v-if="!isRecipeEditPage" class="relative" ref="adminMenuRef">
-            <button
-              v-if="isLoggedIn"
-              @click="showDropdown = !showDropdown"
-              class="text-gray-700 hover:text-gray-900 font-medium flex items-center gap-2"
-            >
+            <button v-if="isLoggedIn" @click="showDropdown = !showDropdown"
+              class="text-gray-700 hover:text-gray-900 font-medium flex items-center gap-2">
               <span>Admin</span>
-              <svg 
-                class="w-4 h-4 transition-transform duration-200 ease-in-out"
-                :class="{ 'rotate-180': showDropdown }"
-                fill="none" 
-                stroke="currentColor" 
-                viewBox="0 0 24 24"
-              >
+              <svg class="w-4 h-4 transition-transform duration-200 ease-in-out" :class="{ 'rotate-180': showDropdown }"
+                fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
               </svg>
             </button>
-            <NuxtLink
-              v-else
-              to="/admin/login"
-              class="text-gray-700 hover:text-gray-900"
-            >
+            <NuxtLink v-else to="/admin/login" class="text-gray-700 hover:text-gray-900">
               <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
               </svg>
             </NuxtLink>
-            
+
             <!-- Dropdown Menu -->
-            <Transition
-              enter-active-class="transition ease-out duration-200"
-              enter-from-class="opacity-0 scale-95 -translate-y-1"
-              enter-to-class="opacity-100 scale-100 translate-y-0"
+            <Transition enter-active-class="transition ease-out duration-200"
+              enter-from-class="opacity-0 scale-95 -translate-y-1" enter-to-class="opacity-100 scale-100 translate-y-0"
               leave-active-class="transition ease-in duration-150"
-              leave-from-class="opacity-100 scale-100 translate-y-0"
-              leave-to-class="opacity-0 scale-95 -translate-y-1"
-            >
-              <div
-                v-if="showDropdown && isLoggedIn"
-                class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg border border-gray-200 py-1 z-50"
-              >
-                <NuxtLink
-                  to="/admin/recipes/new"
-                  class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                  @click="showDropdown = false"
-                >
+              leave-from-class="opacity-100 scale-100 translate-y-0" leave-to-class="opacity-0 scale-95 -translate-y-1">
+              <div v-if="showDropdown && isLoggedIn"
+                class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg border border-gray-200 py-1 z-50">
+                <NuxtLink to="/admin/recipes/new" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  @click="showDropdown = false">
                   + New Recipe
                 </NuxtLink>
-                <NuxtLink
-                  to="/admin/recipes"
-                  class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                  @click="showDropdown = false"
-                >
+                <NuxtLink to="/admin/recipes" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  @click="showDropdown = false">
                   Recipe List
                 </NuxtLink>
-                <button
-                  @click="handleLogout"
-                  class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                >
+                <button @click="handleLogout"
+                  class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                   Logout
                 </button>
               </div>
@@ -165,11 +129,11 @@ function handleBack() {
 onMounted(() => {
   // Reset saving state when component mounts
   isSaving.value = false
-  
+
   window.addEventListener('recipe-form-saving', ((e: CustomEvent) => {
     isSaving.value = e.detail.saving
   }) as EventListener)
-  
+
   window.addEventListener('recipe-title-update', ((e: CustomEvent) => {
     recipeTitle.value = e.detail.title
   }) as EventListener)
@@ -214,7 +178,7 @@ onMounted(() => {
   checkLoginStatus()
   // Refresh login status periodically
   setInterval(checkLoginStatus, 5000)
-  
+
   // Listen for clicks outside
   document.addEventListener('click', handleClickOutside)
 })
@@ -223,4 +187,3 @@ onUnmounted(() => {
   document.removeEventListener('click', handleClickOutside)
 })
 </script>
-

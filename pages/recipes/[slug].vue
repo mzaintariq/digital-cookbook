@@ -19,25 +19,22 @@
           <!-- Category Tag -->
           <div v-if="recipe.tags.length > 0" class="mb-4">
             <span
-              class="inline-block px-4 py-1.5 bg-brand-primary-100 text-brand-primary-800 text-sm font-medium rounded-full"
-            >
-              {{ recipe.tags[0].toUpperCase() }}
+              class="inline-block px-4 py-1.5 bg-brand-primary-100 text-brand-primary-800 text-sm font-medium rounded-full">
+              {{ recipe.tags[0]?.toUpperCase() }}
             </span>
           </div>
 
           <!-- Title and Edit Icon -->
           <div class="flex items-center gap-3 mb-3 flex-wrap">
             <h1 class="text-3xl lg:text-5xl font-bold text-text-dark leading-tight">{{ recipe.title }}</h1>
-            
+
             <!-- Edit Icon (only when logged in) -->
-            <NuxtLink
-              v-if="isLoggedIn"
-              :to="`/admin/recipes/${recipe.id}`"
-              class="p-2 text-text-dark hover:text-brand-primary transition-colors flex-shrink-0"
-              title="Edit Recipe"
-            >
+            <NuxtLink v-if="isLoggedIn" :to="`/admin/recipes/${recipe.id}`"
+              class="p-2 text-text-dark hover:text-brand-primary transition-colors flex-shrink-0" title="Edit Recipe">
               <svg class="w-5 h-5 lg:w-6 lg:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z">
+                </path>
               </svg>
             </NuxtLink>
           </div>
@@ -58,12 +55,13 @@
               <!-- Prep Time -->
               <div class="flex items-center gap-2">
                 <svg class="w-5 h-5 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                 </svg>
                 <div class="flex items-center gap-2">
                   <div class="text-brand-primary text-xs font-medium uppercase tracking-wide">Prep</div>
                   <div class="text-text-dark text-sm">
-                    {{ recipe.prepTimeMinutes ? `${recipe.prepTimeMinutes} min` : 'N/A' }}
+                    {{ recipe.prepTimeMinutes != null ? `${recipe.prepTimeMinutes} min` : 'N/A' }}
                   </div>
                 </div>
               </div>
@@ -71,7 +69,8 @@
               <!-- Cook Time -->
               <div class="flex items-center gap-2">
                 <svg class="w-5 h-5 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                 </svg>
                 <div class="flex items-center gap-2">
                   <div class="text-brand-primary text-xs font-medium uppercase tracking-wide">Cook</div>
@@ -84,7 +83,9 @@
               <!-- Serves -->
               <div class="flex items-center gap-2">
                 <svg class="w-5 h-5 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z">
+                  </path>
                 </svg>
                 <div class="flex items-center gap-2">
                   <div class="text-brand-primary text-xs font-medium uppercase tracking-wide">Serves</div>
@@ -95,7 +96,7 @@
               </div>
             </div>
           </div>
-          
+
         </div>
 
         <!-- Main Content: Ingredients, Directions, Notes -->
@@ -133,12 +134,8 @@
             <!-- Video URL -->
             <div v-if="recipe.videoUrl" class="p-4 bg-gray-50 rounded-lg">
               <h3 class="font-semibold text-gray-900 mb-2">Video</h3>
-              <a
-                :href="recipe.videoUrl"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="text-brand-primary hover:text-brand-primary-800 underline"
-              >
+              <a :href="recipe.videoUrl" target="_blank" rel="noopener noreferrer"
+                class="text-brand-primary hover:text-brand-primary-800 underline">
                 Watch Video
               </a>
             </div>
@@ -180,6 +177,7 @@ interface Recipe {
   ingredients: Ingredient[] | string[]
   steps: string[]
   cookTimeMinutes: number
+  prepTimeMinutes?: number | null
   servings?: number | null
   tags: string[]
   notes: string | null
@@ -236,7 +234,7 @@ function decimalToFraction(decimal: number): string {
   // For numbers like 1.5, 2.5, etc., convert to mixed numbers
   const whole = Math.floor(decimal)
   const fractional = decimal - whole
-  
+
   if (whole > 0 && fractional > 0) {
     // Check if fractional part matches a common fraction
     for (const [key, value] of Object.entries(commonFractions)) {
@@ -253,11 +251,11 @@ function decimalToFraction(decimal: number): string {
 // Function to format quantity with fraction conversion for specific units
 function formatQuantity(quantity: number, unit: string): string {
   const fractionUnits = ['cup', 'cups', 'tbsp', 'tbsp', 'tsp', 'tsp']
-  
+
   if (fractionUnits.includes(unit.toLowerCase())) {
     return decimalToFraction(quantity)
   }
-  
+
   // For other units, return as is (with decimal if needed)
   if (quantity % 1 === 0) {
     return quantity.toString()
@@ -270,7 +268,7 @@ const noSpaceUnits = ['g', 'kg', 'ml', 'l', 'oz']
 
 const formattedIngredients = computed(() => {
   if (!recipe.value) return []
-  
+
   return recipe.value.ingredients.map((ing: any) => {
     // Handle structured ingredients
     if (typeof ing === 'object' && ing.quantity !== undefined) {
@@ -283,21 +281,21 @@ const formattedIngredients = computed(() => {
         }
         return result
       }
-      
+
       const formattedQty = formatQuantity(ing.quantity, ing.unit)
       const unitLower = ing.unit.toLowerCase()
-      
+
       // Format alternate size if present
       let altSize = ''
       if (ing.detailedSize) {
         const altQty = formatQuantity(ing.detailedSize.amount, ing.detailedSize.unit)
         const altUnitLower = ing.detailedSize.unit.toLowerCase()
-        const altUnitFormatted = noSpaceUnits.includes(altUnitLower) 
-          ? altUnitLower 
+        const altUnitFormatted = noSpaceUnits.includes(altUnitLower)
+          ? altUnitLower
           : ` ${altUnitLower}`
         altSize = ` (${altQty}${altUnitFormatted})`
       }
-      
+
       // Format main quantity and unit
       let mainPart = ''
       if (unitLower === 'pcs') {
@@ -310,15 +308,15 @@ const formattedIngredients = computed(() => {
         // Space for other units
         mainPart = `${formattedQty} ${ing.unit}`
       }
-      
+
       // Combine: quantity + unit + (alt size) + name
       let result = `${mainPart}${altSize} ${ing.name}`
-      
+
       // Add alternate ingredient if present
       if (ing.alternateIngredient) {
         result += `\n(or ${ing.alternateIngredient})`
       }
-      
+
       return result
     }
     // Fallback for string ingredients (backward compatibility)
@@ -329,7 +327,7 @@ const formattedIngredients = computed(() => {
 onMounted(async () => {
   // Check login status
   await checkLoginStatus()
-  
+
   // Fetch recipe
   try {
     loading.value = true
@@ -340,9 +338,8 @@ onMounted(async () => {
   } finally {
     loading.value = false
   }
-  
+
   // Refresh login status periodically
   setInterval(checkLoginStatus, 5000)
 })
 </script>
-
