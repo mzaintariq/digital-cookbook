@@ -84,7 +84,7 @@
                 header.id === 'status' ? 'hidden md:table-cell pl-4 pr-2 w-[10rem]' : '',
                 // Title and actions always visible
                 header.id === 'title' ? '' : '',
-                header.id === 'actions-col' ? 'hidden md:table-cell pr-6 w-20' : '',
+                header.id === 'actions-col' ? 'pr-6 w-20' : '',
               ]" @click="
                 header.column.getCanSort()
                   ? header.column.getToggleSortingHandler()?.($event)
@@ -98,11 +98,8 @@
                 </template>
                 <template v-else-if="header.id === 'actions-col'">
                   <div class="relative flex items-center justify-end" data-column-visibility-container>
-                    <button @click.stop="toggleColumnVisibilityDropdown()" class="p-1 hover:bg-gray-100 rounded"
+                    <button @click.stop="toggleColumnVisibilityDropdown()" class="hidden md:table-cell p-1 hover:bg-gray-100 rounded"
                       data-column-visibility-button>
-                      <!-- <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path>
-                        </svg> -->
                       <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"
                         class="shrink-0 transition-all flex items-center justify-center cursor-pointer w-5 h-5"
                         theme="black" type="button" id="radix-722" aria-haspopup="menu" aria-expanded="false"
