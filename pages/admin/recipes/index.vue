@@ -304,18 +304,7 @@ definePageMeta({
   layout: "admin",
 });
 
-interface Recipe {
-  id: string;
-  title: string;
-  slug: string;
-  description?: string | null;
-  cookTimeMinutes: number;
-  status: string;
-  createdAt: string | Date;
-  updatedAt: string | Date;
-  notes?: string | null;
-  ingredients?: any; // JSON array of ingredient objects
-}
+import type { Recipe } from '~/types/recipe'
 
 const recipes = ref<Recipe[]>([]);
 const loading = ref(true);

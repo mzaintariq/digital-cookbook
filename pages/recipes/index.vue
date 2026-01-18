@@ -50,21 +50,7 @@
 </template>
 
 <script setup lang="ts">
-interface Recipe {
-  id: string
-  title: string
-  slug: string
-  ingredients: any[]
-  steps: string[]
-  cookTimeMinutes: number
-  servings?: number | null
-  tags: string[]
-  notes: string | null
-  approvedBy: string
-  status: string
-  createdAt: string
-  updatedAt: string
-}
+import type { Recipe } from '~/types/recipe'
 
 const recipes = ref<Recipe[]>([])
 const loading = ref(true)

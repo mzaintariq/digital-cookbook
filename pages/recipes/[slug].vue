@@ -157,35 +157,7 @@
 </template>
 
 <script setup lang="ts">
-interface Ingredient {
-  quantity: number
-  unit: string
-  name: string
-  detailedSize?: {
-    amount: number
-    unit: string
-  }
-}
-
-interface Recipe {
-  id: string
-  title: string
-  slug: string
-  description?: string | null
-  credit?: string | null
-  videoUrl?: string | null
-  ingredients: Ingredient[] | string[]
-  steps: string[]
-  cookTimeMinutes: number
-  prepTimeMinutes?: number | null
-  servings?: number | null
-  tags: string[]
-  notes: string | null
-  approvedBy: string
-  status: string
-  createdAt: string
-  updatedAt: string
-}
+import type { Recipe } from '~/types/recipe'
 
 const route = useRoute()
 const recipe = ref<Recipe | null>(null)
