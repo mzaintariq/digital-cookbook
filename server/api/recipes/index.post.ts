@@ -22,18 +22,35 @@ export default defineEventHandler(async (event) => {
       })
     }
 
-    // Convert ingredients and steps from newline-separated strings to arrays
-    const ingredients = Array.isArray(body.ingredients)
-      ? body.ingredients
-      : body.ingredients
-        ? body.ingredients.split('\n').filter((line: string) => line.trim())
-        : []
+    // Handle structured ingredients (array of objects)
+    let ingredients: any[] = []
+    if (Array.isArray(body.ingredients)) {
+      // Validate and clean ingredient objects
+      ingredients = body.ingredients.map((ing: any) => ({
+        quantity: parseFloat(ing.quantity) || 1,
+        unit: ing.unit || 'pcs',
+        name: ing.name || '',
+        ...(ing.detailedSize && {
+          detailedSize: {
+            amount: parseFloat(ing.detailedSize.amount) || 0,
+            unit: ing.detailedSize.unit || 'oz'
+          }
+        })
+      })).filter((ing: any) => ing.name.trim())
+    }
     
-    const steps = Array.isArray(body.steps)
-      ? body.steps
-      : body.steps
-        ? body.steps.split('\n').filter((line: string) => line.trim())
-        : []
+    // Handle steps (array of objects or strings)
+    let steps: string[] = []
+    if (Array.isArray(body.steps)) {
+      // If steps are objects with description, extract descriptions
+      if (body.steps.length > 0 && typeof body.steps[0] === 'object' && body.steps[0].description) {
+        steps = body.steps.map((step: any) => step.description || '').filter((s: string) => s.trim())
+      } else if (typeof body.steps[0] === 'string') {
+        steps = body.steps.filter((s: string) => s.trim())
+      }
+    } else if (typeof body.steps === 'string') {
+      steps = body.steps.split('\n').filter((line: string) => line.trim())
+    }
 
     // Convert tags from comma-separated string to array
     const tags = Array.isArray(body.tags)
@@ -46,10 +63,10 @@ export default defineEventHandler(async (event) => {
       data: {
         title: body.title,
         slug: body.slug,
-        ingredients: ingredients,
+        ingredients: ingredients as any, // Store as JSON
         steps: steps,
         cookTimeMinutes: parseInt(body.cookTimeMinutes) || 0,
-        spiceLevel: parseInt(body.spiceLevel) || 1,
+        servings: body.servings ? parseInt(body.servings) : null,
         tags: tags,
         notes: body.notes || null,
         rating: parseInt(body.rating) || 3,

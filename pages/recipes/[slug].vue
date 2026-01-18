@@ -18,7 +18,7 @@
 
         <div class="flex items-center gap-6 text-gray-600 mb-6">
           <span>⏱️ {{ recipe.cookTimeMinutes }} minutes</span>
-          <span>🌶️ {{ '🌶'.repeat(recipe.spiceLevel) }}</span>
+          <span v-if="recipe.servings">👥 {{ recipe.servings }} servings</span>
           <span>⭐ {{ '⭐'.repeat(recipe.rating) }}</span>
         </div>
 
@@ -35,7 +35,7 @@
         <div class="mb-8">
           <h2 class="text-2xl font-semibold text-gray-900 mb-4">Ingredients</h2>
           <ul class="list-disc list-inside space-y-2 text-gray-700">
-            <li v-for="(ingredient, idx) in recipe.ingredients" :key="idx">
+            <li v-for="(ingredient, idx) in formattedIngredients" :key="idx">
               {{ ingredient }}
             </li>
           </ul>
@@ -64,14 +64,24 @@
 </template>
 
 <script setup lang="ts">
+interface Ingredient {
+  quantity: number
+  unit: string
+  name: string
+  detailedSize?: {
+    amount: number
+    unit: string
+  }
+}
+
 interface Recipe {
   id: string
   title: string
   slug: string
-  ingredients: string[]
+  ingredients: Ingredient[] | string[]
   steps: string[]
   cookTimeMinutes: number
-  spiceLevel: number
+  servings?: number | null
   tags: string[]
   notes: string | null
   rating: number
@@ -85,6 +95,23 @@ const route = useRoute()
 const recipe = ref<Recipe | null>(null)
 const loading = ref(true)
 const error = ref<string | null>(null)
+
+const formattedIngredients = computed(() => {
+  if (!recipe.value) return []
+  
+  return recipe.value.ingredients.map((ing: any) => {
+    // Handle structured ingredients
+    if (typeof ing === 'object' && ing.quantity !== undefined) {
+      let formatted = `${ing.quantity} ${ing.unit} ${ing.name}`
+      if (ing.detailedSize) {
+        formatted += ` (${ing.detailedSize.amount} ${ing.detailedSize.unit})`
+      }
+      return formatted
+    }
+    // Fallback for string ingredients (backward compatibility)
+    return ing
+  })
+})
 
 onMounted(async () => {
   try {

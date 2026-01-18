@@ -41,9 +41,6 @@
                 Time
               </th>
               <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Spice
-              </th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Actions
               </th>
             </tr>
@@ -69,12 +66,9 @@
               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                 {{ recipe.cookTimeMinutes }} min
               </td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                {{ '🌶'.repeat(recipe.spiceLevel) }}
-              </td>
               <td class="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
                 <NuxtLink
-                  :to="`/admin/recipes/${recipe.id}/edit`"
+                  :to="`/admin/recipes/${recipe.id}`"
                   class="text-blue-600 hover:text-blue-900"
                 >
                   Edit
@@ -114,7 +108,6 @@ interface Recipe {
   title: string
   slug: string
   cookTimeMinutes: number
-  spiceLevel: number
   status: string
 }
 

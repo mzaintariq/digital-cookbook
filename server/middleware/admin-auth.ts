@@ -8,10 +8,19 @@ export default defineEventHandler(async (event) => {
     const session = await getAdminSession(event)
     
     if (!session) {
-      throw createError({
-        statusCode: 401,
-        statusMessage: 'Unauthorized - Admin access required',
-      })
+      // Check if it's a page request (not an API request)
+      const isApiRequest = url.startsWith('/api/')
+      
+      if (isApiRequest) {
+        // For API requests, return 401 error
+        throw createError({
+          statusCode: 401,
+          statusMessage: 'Unauthorized - Admin access required',
+        })
+      } else {
+        // For page requests, redirect to login
+        return sendRedirect(event, '/admin/login', 302)
+      }
     }
     
     // Attach session to event context for use in API routes

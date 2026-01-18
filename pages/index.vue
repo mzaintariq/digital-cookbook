@@ -26,7 +26,6 @@
           
           <div class="flex items-center gap-4 text-sm text-gray-600 mb-3">
             <span>⏱️ {{ recipe.cookTimeMinutes }} min</span>
-            <span>🌶️ {{ '🌶'.repeat(recipe.spiceLevel) }}</span>
           </div>
 
           <div v-if="recipe.tags.length > 0" class="flex flex-wrap gap-2 mb-3">
@@ -53,10 +52,10 @@ interface Recipe {
   id: string
   title: string
   slug: string
-  ingredients: string[]
+  ingredients: any[]
   steps: string[]
   cookTimeMinutes: number
-  spiceLevel: number
+  servings?: number | null
   tags: string[]
   notes: string | null
   rating: number
