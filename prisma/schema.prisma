@@ -13,13 +13,16 @@ model Recipe {
   id              String   @id @default(uuid())
   title           String
   slug            String   @unique
+  description     String?
   ingredients     Json     // Array of structured ingredient objects
   steps           String[]
   cookTimeMinutes Int
+  prepTimeMinutes Int?
   servings        Int?
   tags            String[]
   notes           String?
-  rating          Int      // 1-5
+  credit          String?
+  videoUrl        String?
   approvedBy      String
   status          String   @default("draft") // "draft" | "publish"
   createdAt       DateTime @default(now())

@@ -24,9 +24,10 @@ export default defineEventHandler(async (event) => {
     if (error.statusCode) {
       throw error
     }
+    console.error('Error fetching recipes:', error)
     throw createError({
       statusCode: 500,
-      statusMessage: 'Failed to fetch recipes',
+      statusMessage: error.message || 'Failed to fetch recipes',
     })
   }
 })

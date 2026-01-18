@@ -41,9 +41,6 @@
               </span>
             </div>
 
-            <div class="text-sm text-gray-500">
-              Rating: {{ '⭐'.repeat(recipe.rating) }}
-            </div>
           </NuxtLink>
           
           <!-- Edit Icon (only when logged in) -->
@@ -51,7 +48,7 @@
             v-if="isLoggedIn"
             :to="`/admin/recipes/${recipe.id}`"
             @click.stop
-            class="absolute top-4 right-4 p-2 text-gray-400 hover:text-blue-600 transition-colors"
+            class="absolute top-4 right-4 p-2 text-gray-400 hover:text-brand-primary transition-colors"
             title="Edit Recipe"
           >
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -75,7 +72,6 @@ interface Recipe {
   servings?: number | null
   tags: string[]
   notes: string | null
-  rating: number
   approvedBy: string
   status: string
   createdAt: string

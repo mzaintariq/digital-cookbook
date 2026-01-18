@@ -18,7 +18,7 @@
             </svg>
           </button>
           <span class="text-gray-900 font-semibold text-lg">
-            {{ recipeTitle || (saveButtonText === 'Save Recipe' ? 'New Recipe' : 'Edit Recipe') }}
+            {{ saveButtonText === 'Save Recipe' ? 'New Recipe' : (recipeTitle || 'Edit Recipe') }}
           </span>
         </div>
         
@@ -43,7 +43,7 @@
             <button
               @click="handleSave"
               :disabled="isSaving"
-              class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 disabled:bg-gray-400 disabled:cursor-not-allowed text-sm"
+              class="bg-brand-primary text-white px-4 py-2 rounded-md hover:bg-brand-primary-600 disabled:bg-gray-400 disabled:cursor-not-allowed text-sm"
             >
               {{ isSaving ? 'Saving...' : saveButtonText }}
             </button>
@@ -57,7 +57,13 @@
               class="text-gray-700 hover:text-gray-900 font-medium flex items-center gap-2"
             >
               <span>Admin</span>
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg 
+                class="w-4 h-4 transition-transform duration-200 ease-in-out"
+                :class="{ 'rotate-180': showDropdown }"
+                fill="none" 
+                stroke="currentColor" 
+                viewBox="0 0 24 24"
+              >
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
               </svg>
             </button>
@@ -72,31 +78,40 @@
             </NuxtLink>
             
             <!-- Dropdown Menu -->
-            <div
-              v-if="showDropdown && isLoggedIn"
-              class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg border border-gray-200 py-1 z-50"
+            <Transition
+              enter-active-class="transition ease-out duration-200"
+              enter-from-class="opacity-0 scale-95 -translate-y-1"
+              enter-to-class="opacity-100 scale-100 translate-y-0"
+              leave-active-class="transition ease-in duration-150"
+              leave-from-class="opacity-100 scale-100 translate-y-0"
+              leave-to-class="opacity-0 scale-95 -translate-y-1"
             >
-              <NuxtLink
-                to="/admin/recipes/new"
-                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                @click="showDropdown = false"
+              <div
+                v-if="showDropdown && isLoggedIn"
+                class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg border border-gray-200 py-1 z-50"
               >
-                + New Recipe
-              </NuxtLink>
-              <NuxtLink
-                to="/admin/recipes"
-                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                @click="showDropdown = false"
-              >
-                Recipe List
-              </NuxtLink>
-              <button
-                @click="handleLogout"
-                class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-              >
-                Logout
-              </button>
-            </div>
+                <NuxtLink
+                  to="/admin/recipes/new"
+                  class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  @click="showDropdown = false"
+                >
+                  + New Recipe
+                </NuxtLink>
+                <NuxtLink
+                  to="/admin/recipes"
+                  class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  @click="showDropdown = false"
+                >
+                  Recipe List
+                </NuxtLink>
+                <button
+                  @click="handleLogout"
+                  class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                >
+                  Logout
+                </button>
+              </div>
+            </Transition>
           </div>
         </nav>
       </div>

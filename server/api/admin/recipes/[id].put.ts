@@ -30,12 +30,14 @@ export default defineEventHandler(async (event) => {
         quantity: parseFloat(ing.quantity) || 1,
         unit: ing.unit || 'pcs',
         name: ing.name || '',
+        toTaste: ing.toTaste || false,
         ...(ing.detailedSize && {
           detailedSize: {
             amount: parseFloat(ing.detailedSize.amount) || 0,
             unit: ing.detailedSize.unit || 'oz'
           }
-        })
+        }),
+        ...(ing.alternateIngredient !== null && ing.alternateIngredient !== undefined && { alternateIngredient: ing.alternateIngredient })
       })).filter((ing: any) => ing.name.trim())
     }
     
@@ -64,13 +66,16 @@ export default defineEventHandler(async (event) => {
       data: {
         title: body.title,
         slug: body.slug,
+        description: body.description || null,
+        credit: body.credit || null,
+        videoUrl: body.videoUrl || null,
         ingredients: ingredients as any, // Store as JSON
         steps: steps,
         cookTimeMinutes: parseInt(body.cookTimeMinutes) || 0,
+        prepTimeMinutes: body.prepTimeMinutes ? parseInt(body.prepTimeMinutes) : null,
         servings: body.servings ? parseInt(body.servings) : null,
         tags: tags,
         notes: body.notes || null,
-        rating: parseInt(body.rating) || 3,
         approvedBy: body.published ? session.email : 'System',
         status: body.published ? 'publish' : 'draft',
       },

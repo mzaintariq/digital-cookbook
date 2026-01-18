@@ -13,7 +13,7 @@
             v-model="form.email"
             type="email"
             required
-            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brand-primary"
             placeholder="admin@example.com"
           />
         </div>
@@ -27,7 +27,7 @@
             v-model="form.password"
             type="password"
             required
-            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brand-primary"
             placeholder="Enter password"
           />
         </div>
@@ -37,7 +37,7 @@
         <button
           type="submit"
           :disabled="loading"
-          class="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
+          class="w-full bg-brand-primary-600 text-white py-2 px-4 rounded-md hover:bg-brand-primary-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
         >
           {{ loading ? 'Logging in...' : 'Login' }}
         </button>
