@@ -2,21 +2,15 @@
   <div class="min-h-screen bg-gray-50">
     <!-- <div class="container mx-auto px-4 py-8 max-w-7xl"> -->
     <div class="container mx-auto px-4 py-8 w-full">
-      <div class="mb-6">
-        <NuxtLink to="/admin/recipes" class="text-blue-600 hover:text-blue-800">
-          ← Back to recipes
-        </NuxtLink>
+      <div v-if="error" class="mb-4 p-3 bg-red-50 border border-red-200 rounded-md">
+        <p class="text-red-600 text-sm">{{ error }}</p>
       </div>
-
-      <h1 class="text-3xl font-bold text-gray-900 mb-6">
-        {{ isEditMode ? 'Edit Recipe' : 'Create New Recipe' }}
-      </h1>
 
       <div v-if="loading" class="text-center py-12">
         <p class="text-gray-600">Loading recipe...</p>
       </div>
 
-      <form v-else @submit.prevent="handleSubmit" class="bg-white rounded-lg shadow-md p-8">
+      <form ref="recipeFormRef" v-else @submit.prevent="handleSubmit" class="bg-white rounded-lg shadow-md p-8">
         <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
           <!-- Left Column: Recipe General Information -->
           <div class="lg:col-span-1 space-y-6">
@@ -380,24 +374,9 @@
           </div>
         </div>
 
-        <!-- Form Actions -->
-        <div class="mt-8 pt-6 border-t border-gray-200 flex gap-4">
-          <div v-if="error" class="text-red-600 text-sm">{{ error }}</div>
-          <div class="flex gap-4 ml-auto">
-            <button
-              type="submit"
-              :disabled="saving"
-              class="bg-blue-500 text-white px-6 py-2 rounded-md hover:bg-blue-600 disabled:bg-gray-400 disabled:cursor-not-allowed"
-            >
-              {{ saving ? 'Saving...' : (isEditMode ? 'Update Recipe' : 'Save Recipe') }}
-            </button>
-            <NuxtLink
-              to="/admin/recipes"
-              class="bg-gray-200 text-gray-700 px-6 py-2 rounded-md hover:bg-gray-300"
-            >
-              Cancel
-            </NuxtLink>
-          </div>
+        <!-- Error Message -->
+        <div v-if="error" class="mt-8 pt-6 border-t border-gray-200">
+          <div class="text-red-600 text-sm">{{ error }}</div>
         </div>
       </form>
     </div>
@@ -405,6 +384,10 @@
 </template>
 
 <script setup lang="ts">
+definePageMeta({
+  layout: 'admin'
+})
+
 import draggable from 'vuedraggable'
 
 interface Ingredient {
@@ -443,6 +426,16 @@ const form = reactive({
 const loading = ref(isEditMode)
 const saving = ref(false)
 const error = ref<string | null>(null)
+const recipeFormRef = ref<HTMLFormElement | null>(null)
+
+// Watch form.title and dispatch event to header
+watch(() => form.title, (newTitle) => {
+  if (process.client) {
+    window.dispatchEvent(new CustomEvent('recipe-title-update', { 
+      detail: { title: newTitle || null } 
+    }))
+  }
+}, { immediate: true })
 
 function generateId() {
   return Math.random().toString(36).substr(2, 9)
@@ -473,59 +466,96 @@ function removeStep(index: number) {
   form.steps.splice(index, 1)
 }
 
+// Listen for save event from header
 onMounted(async () => {
-  if (isEditMode) {
-    try {
-      const recipes = await $fetch('/api/admin/recipes')
-      const recipe = recipes.find((r: any) => r.id === recipeId)
-      
-      if (!recipe) {
-        error.value = 'Recipe not found'
-        return
-      }
-
-      form.title = recipe.title
-      form.slug = recipe.slug
-      form.servings = recipe.servings || null
-      form.cookTimeMinutes = recipe.cookTimeMinutes
-      form.tags = recipe.tags.join(', ')
-      form.notes = recipe.notes || ''
-      form.rating = recipe.rating
-      form.published = recipe.status === 'publish'
-
-      // Convert ingredients from JSON to structured format
-      if (Array.isArray(recipe.ingredients)) {
-        form.ingredients = recipe.ingredients.map((ing: any) => ({
-          id: generateId(),
-          quantity: ing.quantity || 1,
-          unit: ing.unit || 'pcs',
-          name: ing.name || '',
-          detailedSize: ing.detailedSize || null,
-        }))
-      } else {
-        form.ingredients = []
-      }
-
-      // Convert steps from string array to structured format
-      if (Array.isArray(recipe.steps)) {
-        form.steps = recipe.steps.map((step: string) => ({
-          id: generateId(),
-          description: step,
-        }))
-      } else {
-        form.steps = []
-      }
-    } catch (err: any) {
-      if (err.statusCode === 401) {
-        await navigateTo('/admin/login')
-      } else {
-        error.value = 'Failed to load recipe'
-      }
-    } finally {
-      loading.value = false
+  const handleHeaderSave = () => {
+    if (recipeFormRef.value) {
+      recipeFormRef.value.requestSubmit()
     }
   }
+  
+  window.addEventListener('recipe-form-submit', handleHeaderSave)
+  
+  // Update saving state for header
+  watch(saving, (newValue) => {
+    if (process.client) {
+      window.dispatchEvent(new CustomEvent('recipe-form-saving', { detail: { saving: newValue } }))
+    }
+  }, { immediate: true })
+  
+  // Load recipe if editing, or add defaults for new recipe
+  if (isEditMode) {
+    await loadRecipe()
+  } else {
+    // New recipe - add default blank ingredient and step
+    form.ingredients.push({
+      id: generateId(),
+      quantity: 1,
+      unit: 'pcs',
+      name: '',
+      detailedSize: null,
+    })
+    form.steps.push({
+      id: generateId(),
+      description: '',
+    })
+  }
 })
+
+async function loadRecipe() {
+  if (!isEditMode) return
+  
+  try {
+    const recipes = await $fetch('/api/admin/recipes')
+    const recipe = recipes.find((r: any) => r.id === recipeId)
+    
+    if (!recipe) {
+      error.value = 'Recipe not found'
+      return
+    }
+
+    form.title = recipe.title
+    form.slug = recipe.slug
+    form.servings = recipe.servings || null
+    form.cookTimeMinutes = recipe.cookTimeMinutes
+    form.tags = recipe.tags.join(', ')
+    form.notes = recipe.notes || ''
+    form.rating = recipe.rating
+    form.published = recipe.status === 'publish'
+
+    // Convert ingredients from JSON to structured format
+    if (Array.isArray(recipe.ingredients)) {
+      form.ingredients = recipe.ingredients.map((ing: any) => ({
+        id: generateId(),
+        quantity: ing.quantity || 1,
+        unit: ing.unit || 'pcs',
+        name: ing.name || '',
+        detailedSize: ing.detailedSize || null,
+      }))
+    } else {
+      form.ingredients = []
+    }
+
+    // Convert steps from string array to structured format
+    if (Array.isArray(recipe.steps)) {
+      form.steps = recipe.steps.map((step: string) => ({
+        id: generateId(),
+        description: step,
+      }))
+    } else {
+      form.steps = []
+    }
+  } catch (err: any) {
+    if (err.statusCode === 401) {
+      await navigateTo('/admin/login')
+    } else {
+      error.value = 'Failed to load recipe'
+    }
+  } finally {
+    loading.value = false
+  }
+}
+
 
 async function handleSubmit() {
   try {
@@ -563,6 +593,16 @@ async function handleSubmit() {
         method: 'POST',
         body: submitData,
       })
+    }
+
+    // Dispatch success notification
+    if (process.client) {
+      window.dispatchEvent(new CustomEvent('recipe-saved', {
+        detail: { message: isEditMode ? 'Recipe updated successfully!' : 'Recipe created successfully!' }
+      }))
+      
+      // Small delay to show notification before navigation
+      await new Promise(resolve => setTimeout(resolve, 500))
     }
 
     await navigateTo('/admin/recipes')

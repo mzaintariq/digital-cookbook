@@ -10,12 +10,12 @@
           >
             + New Recipe
           </NuxtLink>
-          <button
+          <!-- <button
             @click="handleLogout"
             class="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700"
           >
             Logout
-          </button>
+          </button> -->
         </div>
       </div>
 
@@ -103,6 +103,9 @@
 </template>
 
 <script setup lang="ts">
+definePageMeta({
+  layout: 'admin'
+})
 interface Recipe {
   id: string
   title: string

@@ -1,7 +1,7 @@
 <template>
-  <div class="min-h-screen bg-gray-50">
+  <div>
     <div class="container mx-auto px-4 py-8 max-w-4xl">
-      <NuxtLink to="/" class="text-blue-600 hover:text-blue-800 mb-4 inline-block">
+      <NuxtLink to="/recipes" class="text-blue-600 hover:text-blue-800 mb-4 inline-block">
         ← Back to recipes
       </NuxtLink>
 
@@ -13,8 +13,22 @@
         <p class="text-red-600">{{ error }}</p>
       </div>
 
-      <div v-else-if="recipe" class="bg-white rounded-lg shadow-md p-8">
-        <h1 class="text-4xl font-bold text-gray-900 mb-4">{{ recipe.title }}</h1>
+      <div v-else-if="recipe" class="bg-white rounded-lg shadow-md p-8 relative">
+        <div class="flex items-start justify-between mb-4">
+          <h1 class="text-4xl font-bold text-gray-900">{{ recipe.title }}</h1>
+          
+          <!-- Edit Icon (only when logged in) -->
+          <NuxtLink
+            v-if="isLoggedIn"
+            :to="`/admin/recipes/${recipe.id}`"
+            class="ml-4 p-2 text-gray-400 hover:text-blue-600 transition-colors"
+            title="Edit Recipe"
+          >
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+            </svg>
+          </NuxtLink>
+        </div>
 
         <div class="flex items-center gap-6 text-gray-600 mb-6">
           <span>⏱️ {{ recipe.cookTimeMinutes }} minutes</span>
@@ -95,6 +109,17 @@ const route = useRoute()
 const recipe = ref<Recipe | null>(null)
 const loading = ref(true)
 const error = ref<string | null>(null)
+const isLoggedIn = ref(false)
+
+// Check login status
+async function checkLoginStatus() {
+  try {
+    const session = await $fetch('/api/admin/session')
+    isLoggedIn.value = session.loggedIn
+  } catch {
+    isLoggedIn.value = false
+  }
+}
 
 const formattedIngredients = computed(() => {
   if (!recipe.value) return []
@@ -114,6 +139,10 @@ const formattedIngredients = computed(() => {
 })
 
 onMounted(async () => {
+  // Check login status
+  await checkLoginStatus()
+  
+  // Fetch recipe
   try {
     loading.value = true
     const data = await $fetch<Recipe>(`/api/recipes/${route.params.slug}`)
@@ -123,6 +152,9 @@ onMounted(async () => {
   } finally {
     loading.value = false
   }
+  
+  // Refresh login status periodically
+  setInterval(checkLoginStatus, 5000)
 })
 </script>
 

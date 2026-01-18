@@ -1,6 +1,7 @@
 <template>
-  <div>
+  <NuxtLayout>
     <NuxtPage />
-  </div>
+    <NotificationToast />
+  </NuxtLayout>
 </template>
 
