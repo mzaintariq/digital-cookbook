@@ -1,12 +1,12 @@
 <template>
   <div class="min-h-screen bg-gray-50">
     <div class="container mx-auto px-4 py-8">
-      <div class="flex justify-between items-center mb-6">
-        <h1 class="text-3xl font-bold text-gray-900">Recipe Management</h1>
+      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+        <h1 class="text-2xl sm:text-3xl font-bold text-gray-900">Recipe Management</h1>
         <div class="flex gap-4">
           <NuxtLink
             to="/admin/recipes/new"
-            class="bg-brand-primary-600 text-white px-4 py-2 rounded-md hover:bg-brand-primary-700"
+            class="bg-brand-primary-600 text-white px-3 py-2 sm:px-4 rounded-md hover:bg-brand-primary-700 text-sm sm:text-base whitespace-nowrap"
           >
             + New Recipe
           </NuxtLink>
@@ -101,7 +101,8 @@
         <p class="text-red-600">{{ error }}</p>
       </div>
 
-      <div v-else class="bg-white rounded-lg shadow-md overflow-visible">
+      <div v-else class="bg-white rounded-lg shadow-md relative">
+        <!-- <div class="overflow-x-auto"> -->
         <table class="min-w-full divide-y divide-gray-200">
           <thead class="bg-gray-50">
             <tr
@@ -113,18 +114,22 @@
                 :key="header.id"
                 :class="[
                   'pl-4 pr-2 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider',
-                  index > 0 && headerGroup.headers[index - 1].id !== 'select-col' ? 'border-l border-gray-200' : '',
+                  index > 0 && headerGroup.headers[index - 1]?.id !== 'select-col' ? 'border-l border-gray-200' : '',
                   header.column.getCanSort()
                     ? 'cursor-pointer hover:bg-gray-100 select-none'
                     : '',
-                  header.id === 'select-col' ? 'pl-4 pr-2 w-12' : '',
-                  header.id === 'description' ? 'w-[12rem]' : '',
-                  header.id === 'ingredientsCount' ? 'w-[10rem]' : '',
-                  header.id === 'cookTimeMinutes' ? 'w-[8rem]' : '',
-                  header.id === 'createdAt' ? 'w-[10rem]' : '',
-                  header.id === 'updatedAt' ? 'w-[10rem]' : '',
-                  header.id === 'status' ? 'pl-4 pr-2 w-[10rem]' : '',
-                  header.id === 'actions-col' ? 'pr-6 w-20' : '',
+                  // Mobile: hide select, slug, description, ingredients, time, dates, status
+                  header.id === 'select-col' ? 'hidden md:table-cell pl-4 pr-2 w-12' : '',
+                  header.id === 'slug' ? 'hidden md:table-cell' : '',
+                  header.id === 'description' ? 'hidden md:table-cell w-[12rem]' : '',
+                  header.id === 'ingredientsCount' ? 'hidden md:table-cell w-[10rem]' : '',
+                  header.id === 'cookTimeMinutes' ? 'hidden md:table-cell w-[8rem]' : '',
+                  header.id === 'createdAt' ? 'hidden md:table-cell w-[10rem]' : '',
+                  header.id === 'updatedAt' ? 'hidden md:table-cell w-[10rem]' : '',
+                  header.id === 'status' ? 'hidden md:table-cell pl-4 pr-2 w-[10rem]' : '',
+                  // Title and actions always visible
+                  header.id === 'title' ? '' : '',
+                  header.id === 'actions-col' ? 'hidden md:table-cell pr-6 w-20' : '',
                 ]"
                 @click="
                   header.column.getCanSort()
@@ -316,7 +321,7 @@
               <td
                 v-for="(cell, cellIndex) in row.getVisibleCells()"
                 :key="cell.id"
-                class="px-4 py-4 whitespace-nowrap text-sm"
+                class="px-4 py-4 text-sm"
                 :class="[
                   {
                     'font-medium text-gray-900': cell.column.id === 'title',
@@ -327,6 +332,18 @@
                     'pl-4 pr-2': cell.column.id === 'select-col',
                     'pr-4': cell.column.id === 'actions-col',
                     'cursor-pointer': cell.column.id === 'title',
+                    // Mobile: hide select, slug, description, ingredients, time, dates, status
+                    'hidden md:table-cell': 
+                      cell.column.id === 'select-col' ||
+                      cell.column.id === 'slug' ||
+                      cell.column.id === 'description' ||
+                      cell.column.id === 'ingredientsCount' ||
+                      cell.column.id === 'cookTimeMinutes' ||
+                      cell.column.id === 'createdAt' ||
+                      cell.column.id === 'updatedAt' ||
+                      cell.column.id === 'status',
+                    // Title can wrap on mobile, other cells use nowrap
+                    'whitespace-nowrap': cell.column.id !== 'title',
                   },
                 ]"
               >
@@ -399,7 +416,7 @@
                 <template v-else-if="cell.column.id === 'title'">
                   <NuxtLink
                     :to="`/admin/recipes/${row.original.id}`"
-                    class="block w-full h-full text-brand-primary hover:text-brand-primary-900 hover:underline font-medium"
+                    class="block w-full h-full text-brand-primary hover:text-brand-primary-900 hover:underline font-medium break-words"
                   >
                     {{ row.original.title }}
                   </NuxtLink>
