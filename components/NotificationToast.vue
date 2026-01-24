@@ -6,23 +6,21 @@
       'fixed top-4 right-4 z-50 text-white px-6 py-3 rounded-lg shadow-lg flex items-center gap-3 min-w-[300px]',
       type === 'error' ? 'bg-red-500' : 'bg-green-500'
     ]">
-      <svg v-if="type === 'error'" class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-      </svg>
-      <svg v-else class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-      </svg>
+      <IconClose v-if="type === 'error'" class="w-5 h-5 flex-shrink-0" />
+      <IconCheck v-else class="w-5 h-5 flex-shrink-0" />
       <span class="flex-1">{{ message }}</span>
       <button @click="show = false" class="text-white hover:text-gray-200 flex-shrink-0">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-        </svg>
+        <IconClose class="w-5 h-5" />
       </button>
     </div>
   </Transition>
 </template>
 
 <script setup lang="ts">
+
+import IconClose from '~/components/icons/IconClose.vue'
+import IconCheck from '~/components/icons/IconCheck.vue'
+
 const show = ref(false)
 const message = ref('')
 const type = ref<'success' | 'error'>('success')

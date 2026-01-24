@@ -20,14 +20,6 @@
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-2">Upload Photo</label>
               <div class="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center bg-gray-50">
-                <svg class="mx-auto h-12 w-12 text-brand-primary mb-2" fill="none" stroke="currentColor"
-                  viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z">
-                  </path>
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                </svg>
                 <p class="text-brand-primary font-medium mb-1">Upload Photo</p>
                 <p class="text-sm text-gray-500">PNG or JPEG (max. 10MB)</p>
                 <p class="text-xs text-gray-400 mt-2">Coming soon</p>
@@ -179,14 +171,7 @@
                 <template #item="{ element: ingredient, index }">
                   <div class="flex items-start gap-2 p-3 border border-gray-200 rounded-lg bg-gray-50">
                     <div class="drag-handle cursor-move pt-2 text-gray-400 hover:text-gray-600 flex-shrink-0">
-                      <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                        <circle cx="9" cy="5" r="1.5" />
-                        <circle cx="16" cy="5" r="1.5" />
-                        <circle cx="9" cy="12" r="1.5" />
-                        <circle cx="16" cy="12" r="1.5" />
-                        <circle cx="9" cy="19" r="1.5" />
-                        <circle cx="16" cy="19" r="1.5" />
-                      </svg>
+                      <IconDragHandle class="w-5 h-5" />
                     </div>
                     <div class="flex-1 grid grid-cols-1 md:grid-cols-12 gap-2">
                       <!-- Quantity with unit inside -->
@@ -196,11 +181,7 @@
                         <div
                           class="absolute inset-y-0 right-0 w-16 md:w-16 flex items-center justify-end border-l border-gray-300 pl-2 pr-2 pointer-events-none bg-gray-50 rounded-r border-r border-t border-b border-gray-300">
                           <span class="text-xs md:text-sm text-gray-700 mr-1">{{ ingredient.unit }}</span>
-                          <svg class="w-3 h-3 md:w-4 md:h-4 text-gray-400" fill="none" stroke="currentColor"
-                            viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7">
-                            </path>
-                          </svg>
+                          <IconChevronDown class="w-3 h-3 md:w-4 md:h-4 text-gray-400" />
                         </div>
                         <select v-model="ingredient.unit"
                           class="absolute inset-y-0 right-0 w-12 md:w-16 opacity-0 cursor-pointer">
@@ -230,11 +211,7 @@
                         <div
                           class="absolute inset-y-0 right-0 w-16 md:w-16 flex items-center justify-end border-l border-gray-300 pl-2 pr-2 pointer-events-none bg-gray-50 rounded-r border-r border-t border-b border-gray-300">
                           <span class="text-xs md:text-sm text-gray-700 mr-1">{{ ingredient.detailedSize.unit }}</span>
-                          <svg class="w-3 h-3 md:w-4 md:h-4 text-gray-400" fill="none" stroke="currentColor"
-                            viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7">
-                            </path>
-                          </svg>
+                          <IconChevronDown class="w-3 h-3 md:w-4 md:h-4 text-gray-400" />
                         </div>
                         <select v-model="ingredient.detailedSize.unit"
                           class="absolute inset-y-0 right-0 w-16 md:w-20 opacity-0 cursor-pointer">
@@ -307,20 +284,14 @@
                     </div>
                     <button type="button" @click="removeIngredient(index)"
                       class="pt-2 text-red-500 hover:text-red-700 flex-shrink-0">
-                      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                          d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
-                        </path>
-                      </svg>
+                      <IconTrash class="w-5 h-5" />
                     </button>
                   </div>
                 </template>
               </draggable>
               <button type="button" @click="addIngredient"
                 class="mt-3 flex w-full justify-center items-center gap-2 px-4 py-2 border-2 border-brand-primary text-brand-primary rounded-md hover:bg-brand-primary-600 hover:text-white transition-colors">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-                </svg>
+                <IconPlus class="w-5 h-5" />
                 Add ingredients
               </button>
             </div>
@@ -334,14 +305,7 @@
                 <template #item="{ element: step, index }">
                   <div class="flex items-start gap-2 p-3 border border-gray-200 rounded-lg bg-gray-50">
                     <div class="drag-handle cursor-move pt-2 text-gray-400 hover:text-gray-600 flex-shrink-0">
-                      <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                        <circle cx="9" cy="5" r="1.5" />
-                        <circle cx="16" cy="5" r="1.5" />
-                        <circle cx="9" cy="12" r="1.5" />
-                        <circle cx="16" cy="12" r="1.5" />
-                        <circle cx="9" cy="19" r="1.5" />
-                        <circle cx="16" cy="19" r="1.5" />
-                      </svg>
+                      <IconDragHandle class="w-5 h-5" />
                     </div>
                     <div class="flex-1 flex flex-col md:flex-row gap-2">
                       <div class="flex items-start gap-2 md:mb-0">
@@ -354,20 +318,14 @@
                     </div>
                     <button type="button" @click="removeStep(index)"
                       class="pt-2 text-red-500 hover:text-red-700 flex-shrink-0">
-                      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                          d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
-                        </path>
-                      </svg>
+                      <IconTrash class="w-5 h-5" />
                     </button>
                   </div>
                 </template>
               </draggable>
               <button type="button" @click="addStep"
                 class="mt-3 flex w-full justify-center items-center gap-2 px-4 py-2 border-2 border-brand-primary text-brand-primary rounded-md hover:bg-brand-primary-600 hover:text-white transition-colors">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-                </svg>
+                <IconPlus class="w-5 h-5" />
                 Add directions
               </button>
             </div>
@@ -398,6 +356,10 @@ definePageMeta({
 })
 
 import draggable from 'vuedraggable'
+import IconTrash from '~/components/icons/IconTrash.vue'
+import IconPlus from '~/components/icons/IconPlus.vue'
+import IconDragHandle from '~/components/icons/IconDragHandle.vue'
+import IconChevronDown from '~/components/icons/IconChevronDown.vue'
 
 interface Ingredient {
   id: string

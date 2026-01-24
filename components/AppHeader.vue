@@ -11,9 +11,7 @@
         <div v-else class="flex items-center gap-3">
           <button @click="handleBack"
             class="w-8 h-8 rounded-full bg-gray-200 hover:bg-gray-300 flex items-center justify-center transition-colors">
-            <svg class="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-            </svg>
+            <IconClose class="w-5 h-5 text-gray-700" />
           </button>
           <span class="text-gray-900 font-semibold text-lg">
             {{ saveButtonText === 'Save Recipe' ? 'New Recipe' : (recipeTitle || 'Edit Recipe') }}
@@ -43,16 +41,10 @@
             <button v-if="isLoggedIn" @click="showDropdown = !showDropdown"
               class="text-gray-700 hover:text-gray-900 font-medium flex items-center gap-2">
               <span>Admin</span>
-              <svg class="w-4 h-4 transition-transform duration-200 ease-in-out" :class="{ 'rotate-180': showDropdown }"
-                fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-              </svg>
+              <IconChevronDown class="w-4 h-4 transition-transform duration-200 ease-in-out" :class="{ 'rotate-180': showDropdown }" />
             </button>
             <NuxtLink v-else to="/admin/login" class="text-gray-700 hover:text-gray-900">
-              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-              </svg>
+              <IconUser class="w-6 h-6" />
             </NuxtLink>
 
             <!-- Dropdown Menu -->
@@ -84,6 +76,11 @@
 </template>
 
 <script setup lang="ts">
+
+import IconClose from '~/components/icons/IconClose.vue'
+import IconChevronDown from '~/components/icons/IconChevronDown.vue'
+import IconUser from '~/components/icons/IconUser.vue'
+
 const route = useRoute()
 const isLoggedIn = ref(false)
 const showDropdown = ref(false)

@@ -26,11 +26,7 @@
               <div class="flex items-center gap-4">
                 <button @click="deleteSelected"
                   class="flex items-center gap-2 px-4 py-2 bg-white border border-red-300 rounded text-red-600 hover:bg-red-50 text-sm">
-                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                      d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
-                    </path>
-                  </svg>
+                  <IconTrash class="w-4 h-4" />
                   Delete selected
                 </button>
                 <button @click="table.toggleAllRowsSelected(false)"
@@ -44,11 +40,7 @@
             <div class="relative max-w-md w-full">
               <input v-model="searchTerm" type="text" placeholder="Search recipes..."
                 class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-transparent" />
-              <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" fill="none"
-                stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-              </svg>
+              <IconSearch class="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
             </div>
           </div>
         </Transition>
@@ -100,20 +92,7 @@
                   <div class="relative flex items-center justify-end" data-column-visibility-container>
                     <button @click.stop="toggleColumnVisibilityDropdown()" class="hidden md:table-cell p-1 hover:bg-gray-100 rounded"
                       data-column-visibility-button>
-                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"
-                        class="shrink-0 transition-all flex items-center justify-center cursor-pointer w-5 h-5"
-                        theme="black" type="button" id="radix-722" aria-haspopup="menu" aria-expanded="false"
-                        data-state="closed">
-                        <path class="transition-colors text-icon-black-primary" fill="currentColor" fill-opacity=".5"
-                          d="M2 5a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V5Z"></path>
-                        <path class="transition-colors text-icon-black-primary" fill="currentColor" fill-opacity=".5"
-                          fill-rule="evenodd"
-                          d="M15 4a1 1 0 0 0-1 1v5.5c.456-.607 1.182-1 2-1 .818 0 1.544.393 2 1V5a1 1 0 0 0-1-1h-2ZM9 4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h1.708A2.5 2.5 0 0 1 12 12.708V5a1 1 0 0 0-1-1H9Z"
-                          clip-rule="evenodd"></path>
-                        <path class="transition-colors text-icon-black-primary" fill="currentColor" fill-rule="evenodd"
-                          d="M16 11a1 1 0 0 1 1 1v2h2a1 1 0 1 1 0 2h-2v2a1 1 0 1 1-2 0v-2h-2a1 1 0 1 1 0-2h2v-2a1 1 0 0 1 1-1Z"
-                          clip-rule="evenodd"></path>
-                      </svg>
+                      <IconColumns class="shrink-0 transition-all flex items-center justify-center cursor-pointer w-5 h-5" />
                     </button>
                     <Transition enter-active-class="transition ease-out duration-200"
                       enter-from-class="opacity-0 scale-95 -translate-y-1"
@@ -166,18 +145,14 @@
                     header.id !== 'select-col' &&
                     header.id !== 'actions-col'
                   " class="flex flex-col">
-                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" :class="header.column.getIsSorted() === 'asc'
+                    <IconChevronUp class="w-3 h-3" :class="header.column.getIsSorted() === 'asc'
                       ? 'text-gray-900'
                       : 'text-gray-300'
-                      ">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path>
-                    </svg>
-                    <svg class="w-3 h-3 -mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" :class="header.column.getIsSorted() === 'desc'
+                      " />
+                    <IconChevronDown class="w-3 h-3 -mt-0.5" :class="header.column.getIsSorted() === 'desc'
                       ? 'text-gray-900'
                       : 'text-gray-300'
-                      ">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                    </svg>
+                      " />
                   </span>
                 </div>
               </th>
@@ -223,11 +198,7 @@
                       <button data-dropdown-button @click.stop="toggleActionsDropdown(row.original.id)"
                         class="cursor-pointer p-0.5 hover:bg-gray-100 rounded flex items-center justify-center"
                         aria-label="actions-btn">
-                        <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z">
-                          </path>
-                        </svg>
+                        <IconMoreVertical class="w-4 h-4 text-gray-500" />
                       </button>
                       <Transition enter-active-class="transition ease-out duration-200"
                         enter-from-class="opacity-0 scale-95 -translate-y-1"
@@ -302,6 +273,12 @@ definePageMeta({
 });
 
 import type { Recipe } from '~/types/recipe'
+import IconTrash from '~/components/icons/IconTrash.vue'
+import IconSearch from '~/components/icons/IconSearch.vue'
+import IconChevronUp from '~/components/icons/IconChevronUp.vue'
+import IconChevronDown from '~/components/icons/IconChevronDown.vue'
+import IconMoreVertical from '~/components/icons/IconMoreVertical.vue'
+import IconColumns from '~/components/icons/IconColumns.vue'
 
 const recipes = ref<Recipe[]>([]);
 const loading = ref(true);
