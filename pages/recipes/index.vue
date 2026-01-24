@@ -22,7 +22,7 @@
             <h2 class="text-xl font-semibold text-gray-900 mb-2">{{ recipe.title }}</h2>
 
             <div class="flex items-center gap-4 text-sm text-gray-600 mb-3">
-              <span>⏱️ {{ recipe.cookTimeMinutes }} min</span>
+              <span>⏱️ {{ totalTime(recipe) }}</span>
             </div>
 
             <div v-if="recipe.tags.length > 0" class="flex flex-wrap gap-2 mb-3">
@@ -56,6 +56,24 @@ const recipes = ref<Recipe[]>([])
 const loading = ref(true)
 const error = ref<string | null>(null)
 const isLoggedIn = ref(false)
+
+function totalTime(recipe: Recipe): string {
+  const prep = recipe.prepTimeMinutes ?? 0
+  const totalMinutes = recipe.cookTimeMinutes + prep
+  
+  if (totalMinutes < 60) {
+    return `${totalMinutes} min`
+  }
+  
+  const hours = Math.floor(totalMinutes / 60)
+  const minutes = totalMinutes % 60
+  
+  if (minutes === 0) {
+    return `${hours}hr`
+  }
+  
+  return `${hours}hr ${minutes}min`
+}
 
 // Check login status
 async function checkLoginStatus() {

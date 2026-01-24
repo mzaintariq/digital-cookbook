@@ -95,10 +95,10 @@
               </div>
             </div>
 
-            <!-- Cook Duration -->
+            <!-- Cook Time -->
             <div>
               <label for="cookTimeMinutes" class="block text-sm font-medium text-gray-700 mb-1">
-                Cook duration *
+                Cook time *
               </label>
               <div class="relative">
                 <input id="cookTimeMinutes" v-model.number="form.cookTimeMinutes" type="number" required min="0"
@@ -178,9 +178,9 @@
                       <!-- Quantity with unit inside -->
                       <div v-if="!ingredient.toTaste" class="md:col-span-2 relative">
                         <input v-model.number="ingredient.quantity" type="number" min="0" step="any" placeholder="4"
-                          class="w-full px-2 py-1.5 pr-20 md:pr-24 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-brand-primary" />
+                          class="w-full px-2 py-1.5 pr-20 md:pr-18 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-brand-primary" />
                         <div
-                          class="absolute inset-y-0 right-0 w-16 md:w-20 flex items-center justify-end border-l border-gray-300 pl-2 pr-2 pointer-events-none bg-gray-50 rounded-r border-r border-t border-b border-gray-300">
+                          class="absolute inset-y-0 right-0 w-16 md:w-16 flex items-center justify-end border-l border-gray-300 pl-2 pr-2 pointer-events-none bg-gray-50 rounded-r border-r border-t border-b border-gray-300">
                           <span class="text-xs md:text-sm text-gray-700 mr-1">{{ ingredient.unit }}</span>
                           <svg class="w-3 h-3 md:w-4 md:h-4 text-gray-400" fill="none" stroke="currentColor"
                             viewBox="0 0 24 24">
@@ -189,7 +189,7 @@
                           </svg>
                         </div>
                         <select v-model="ingredient.unit"
-                          class="absolute inset-y-0 right-0 w-16 md:w-20 opacity-0 cursor-pointer">
+                          class="absolute inset-y-0 right-0 w-12 md:w-16 opacity-0 cursor-pointer">
                           <option value="pcs">pcs</option>
                           <option value="cup">cup</option>
                           <option value="tbsp">tbsp</option>
@@ -212,9 +212,9 @@
                       <div v-if="ingredient.detailedSize && !ingredient.toTaste" class="md:col-span-2 relative">
                         <input v-model.number="ingredient.detailedSize.amount" type="number" min="0" step="any"
                           placeholder="15"
-                          class="w-full px-2 py-1.5 pr-20 md:pr-24 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-brand-primary" />
+                          class="w-full px-2 py-1.5 pr-20 md:pr-18 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-brand-primary" />
                         <div
-                          class="absolute inset-y-0 right-0 w-16 md:w-20 flex items-center justify-end border-l border-gray-300 pl-2 pr-2 pointer-events-none bg-gray-50 rounded-r border-r border-t border-b border-gray-300">
+                          class="absolute inset-y-0 right-0 w-16 md:w-16 flex items-center justify-end border-l border-gray-300 pl-2 pr-2 pointer-events-none bg-gray-50 rounded-r border-r border-t border-b border-gray-300">
                           <span class="text-xs md:text-sm text-gray-700 mr-1">{{ ingredient.detailedSize.unit }}</span>
                           <svg class="w-3 h-3 md:w-4 md:h-4 text-gray-400" fill="none" stroke="currentColor"
                             viewBox="0 0 24 24">
@@ -668,5 +668,16 @@ async function handleSubmit() {
   transform: scale(1.02);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   cursor: grabbing;
+}
+
+/* Hide number input arrows */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
 }
 </style>
