@@ -1,7 +1,6 @@
 {
-  "buildCommand": "prisma generate && npm run build",
+  "buildCommand": "prisma generate && prisma migrate deploy && npm run build",
   "outputDirectory": ".output",
   "installCommand": "npm install",
   "framework": "nuxtjs"
 }
-

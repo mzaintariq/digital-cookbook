@@ -21,6 +21,7 @@ export interface Recipe {
   steps: string[]
   cookTimeMinutes: number
   prepTimeMinutes?: number | null
+  restTimeMinutes?: number | null
   servings?: number | null
   tags: string[]
   notes?: string | null
@@ -29,4 +30,3 @@ export interface Recipe {
   createdAt: string | Date
   updatedAt: string | Date
 }
-

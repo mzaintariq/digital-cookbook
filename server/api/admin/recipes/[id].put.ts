@@ -73,6 +73,7 @@ export default defineEventHandler(async (event) => {
         steps: steps,
         cookTimeMinutes: parseInt(body.cookTimeMinutes) || 0,
         prepTimeMinutes: body.prepTimeMinutes ? parseInt(body.prepTimeMinutes) : null,
+        restTimeMinutes: body.restTimeMinutes ? parseInt(body.restTimeMinutes) : null,
         servings: body.servings ? parseInt(body.servings) : null,
         tags: tags,
         notes: body.notes || null,

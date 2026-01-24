@@ -18,6 +18,7 @@ model Recipe {
   steps           String[]
   cookTimeMinutes Int
   prepTimeMinutes Int?
+  restTimeMinutes Int?
   servings        Int?
   tags            String[]
   notes           String?

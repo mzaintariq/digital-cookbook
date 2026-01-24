@@ -123,6 +123,20 @@
               </div>
             </div>
 
+            <!-- Rest Time -->
+            <div>
+              <label for="restTimeMinutes" class="block text-sm font-medium text-gray-700 mb-1">
+                Rest time
+              </label>
+              <div class="relative">
+                <input id="restTimeMinutes" v-model.number="form.restTimeMinutes" type="number" min="0"
+                  class="w-full px-3 py-2 pr-20 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brand-primary" />
+                <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                  <span class="text-gray-700 text-sm">minute</span>
+                </div>
+              </div>
+            </div>
+
             <!-- Tags -->
             <div>
               <label for="tags" class="block text-sm font-medium text-gray-700 mb-1">
@@ -417,6 +431,7 @@ const form = reactive({
   servings: null as number | null,
   cookTimeMinutes: 0,
   prepTimeMinutes: null as number | null,
+  restTimeMinutes: null as number | null,
   tags: '',
   notes: '',
   published: false,
@@ -548,6 +563,7 @@ async function loadRecipe() {
     form.servings = recipe.servings || null
     form.cookTimeMinutes = recipe.cookTimeMinutes
     form.prepTimeMinutes = (recipe as any).prepTimeMinutes || null
+    form.restTimeMinutes = (recipe as any).restTimeMinutes || null
     form.description = recipe.description || ''
     form.credit = (recipe as any).credit || ''
     form.videoUrl = (recipe as any).videoUrl || ''
