@@ -37,7 +37,8 @@ export default defineEventHandler(async (event) => {
             unit: ing.detailedSize.unit || 'oz'
           }
         }),
-        ...(ing.alternateIngredient !== null && ing.alternateIngredient !== undefined && { alternateIngredient: ing.alternateIngredient })
+        ...(ing.alternateIngredient !== null && ing.alternateIngredient !== undefined && { alternateIngredient: ing.alternateIngredient }),
+        ...(ing.category && ing.category.trim() && { category: ing.category.trim() })
       })).filter((ing: any) => ing.name.trim())
     }
     

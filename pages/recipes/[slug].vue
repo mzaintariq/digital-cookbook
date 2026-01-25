@@ -92,7 +92,33 @@
           <!-- Ingredients Card -->
           <div class="order-1 lg:col-span-1 bg-white rounded-lg shadow-md p-6">
             <h2 class="text-2xl font-semibold text-gray-900 mb-4">Ingredients</h2>
-            <ul class="list-disc list-outside space-y-2 text-gray-700 pl-4">
+            
+            <!-- Grouped by Category -->
+            <div v-if="groupedIngredients.categories.length > 0 || groupedIngredients.uncategorized.length > 0" class="space-y-6">
+              <!-- Each Category -->
+              <div v-for="category in groupedIngredients.categories" :key="category.name" class="space-y-2">
+                <h3 class="text-sm font-semibold text-gray-600 uppercase tracking-wide border-b border-gray-200 pb-1">
+                  {{ category.name }}
+                </h3>
+                <ul class="list-disc list-outside space-y-2 text-gray-700 pl-4">
+                  <li v-for="(ingredient, idx) in category.ingredients" :key="idx" class="whitespace-pre-line">
+                    {{ ingredient }}
+                  </li>
+                </ul>
+              </div>
+              
+              <!-- Uncategorized -->
+              <div v-if="groupedIngredients.uncategorized.length > 0" class="space-y-2">
+                <ul class="list-disc list-outside space-y-2 text-gray-700 pl-4">
+                  <li v-for="(ingredient, idx) in groupedIngredients.uncategorized" :key="idx" class="whitespace-pre-line">
+                    {{ ingredient }}
+                  </li>
+                </ul>
+              </div>
+            </div>
+            
+            <!-- Fallback: No categories (backward compatibility) -->
+            <ul v-else class="list-disc list-outside space-y-2 text-gray-700 pl-4">
               <li v-for="(ingredient, idx) in formattedIngredients" :key="idx" class="whitespace-pre-line">
                 {{ ingredient }}
               </li>
@@ -228,62 +254,99 @@ function formatQuantity(quantity: number, unit: string): string {
 // Units that should have no space between number and unit
 const noSpaceUnits = ['g', 'kg', 'ml', 'l', 'oz']
 
-const formattedIngredients = computed(() => {
-  if (!recipe.value) return []
-
-  return recipe.value.ingredients.map((ing: any) => {
-    // Handle structured ingredients
-    if (typeof ing === 'object' && ing.quantity !== undefined) {
-      // If "to taste" is checked, show name with "(to taste)" at the end
-      if (ing.toTaste) {
-        let result = `${ing.name} (to taste)`
-        // Add alternate ingredient if present
-        if (ing.alternateIngredient) {
-          result += `\n(or ${ing.alternateIngredient})`
-        }
-        return result
-      }
-
-      const formattedQty = formatQuantity(ing.quantity, ing.unit)
-      const unitLower = ing.unit.toLowerCase()
-
-      // Format alternate size if present
-      let altSize = ''
-      if (ing.detailedSize) {
-        const altQty = formatQuantity(ing.detailedSize.amount, ing.detailedSize.unit)
-        const altUnitLower = ing.detailedSize.unit.toLowerCase()
-        const altUnitFormatted = noSpaceUnits.includes(altUnitLower)
-          ? altUnitLower
-          : ` ${altUnitLower}`
-        altSize = ` (${altQty}${altUnitFormatted})`
-      }
-
-      // Format main quantity and unit
-      let mainPart = ''
-      if (unitLower === 'pcs') {
-        // Don't show unit for pcs
-        mainPart = formattedQty
-      } else if (noSpaceUnits.includes(unitLower)) {
-        // No space for g, kg, ml, l, oz
-        mainPart = `${formattedQty}${unitLower}`
-      } else {
-        // Space for other units
-        mainPart = `${formattedQty} ${ing.unit}`
-      }
-
-      // Combine: quantity + unit + (alt size) + name
-      let result = `${mainPart}${altSize} ${ing.name}`
-
+// Format a single ingredient
+function formatIngredient(ing: any): string {
+  // Handle structured ingredients
+  if (typeof ing === 'object' && ing.quantity !== undefined) {
+    // If "to taste" is checked, show name with "(to taste)" at the end
+    if (ing.toTaste) {
+      let result = `${ing.name} (to taste)`
       // Add alternate ingredient if present
       if (ing.alternateIngredient) {
         result += `\n(or ${ing.alternateIngredient})`
       }
-
       return result
     }
-    // Fallback for string ingredients (backward compatibility)
-    return ing
+
+    const formattedQty = formatQuantity(ing.quantity, ing.unit)
+    const unitLower = ing.unit.toLowerCase()
+
+    // Format alternate size if present
+    let altSize = ''
+    if (ing.detailedSize) {
+      const altQty = formatQuantity(ing.detailedSize.amount, ing.detailedSize.unit)
+      const altUnitLower = ing.detailedSize.unit.toLowerCase()
+      const altUnitFormatted = noSpaceUnits.includes(altUnitLower)
+        ? altUnitLower
+        : ` ${altUnitLower}`
+      altSize = ` (${altQty}${altUnitFormatted})`
+    }
+
+    // Format main quantity and unit
+    let mainPart = ''
+    if (unitLower === 'pcs') {
+      // Don't show unit for pcs
+      mainPart = formattedQty
+    } else if (noSpaceUnits.includes(unitLower)) {
+      // No space for g, kg, ml, l, oz
+      mainPart = `${formattedQty}${unitLower}`
+    } else {
+      // Space for other units
+      mainPart = `${formattedQty} ${ing.unit}`
+    }
+
+    // Combine: quantity + unit + (alt size) + name
+    let result = `${mainPart}${altSize} ${ing.name}`
+
+    // Add alternate ingredient if present
+    if (ing.alternateIngredient) {
+      result += `\n(or ${ing.alternateIngredient})`
+    }
+
+    return result
+  }
+  // Fallback for string ingredients (backward compatibility)
+  return ing
+}
+
+const formattedIngredients = computed(() => {
+  if (!recipe.value) return []
+  return recipe.value.ingredients.map((ing: any) => formatIngredient(ing))
+})
+
+// Group ingredients by category, preserving order from ingredients array
+const groupedIngredients = computed(() => {
+  if (!recipe.value) return { categories: [], uncategorized: [] }
+  
+  const categoriesMap: { [key: string]: { name: string; ingredients: string[] } } = {}
+  const uncategorized: string[] = []
+  const categoryOrder: string[] = []
+  const seenCategories = new Set<string>()
+  
+  // Iterate through ingredients in order to preserve category order
+  recipe.value.ingredients.forEach((ing: any) => {
+    const formatted = formatIngredient(ing)
+    const category = ing.category && typeof ing === 'object' ? ing.category.trim() : null
+    
+    if (category) {
+      if (!categoriesMap[category]) {
+        categoriesMap[category] = { name: category, ingredients: [] }
+        // Track category order by first appearance
+        if (!seenCategories.has(category)) {
+          categoryOrder.push(category)
+          seenCategories.add(category)
+        }
+      }
+      categoriesMap[category].ingredients.push(formatted)
+    } else {
+      uncategorized.push(formatted)
+    }
   })
+  
+  // Build categories array in the order they first appeared
+  const categories = categoryOrder.map(cat => categoriesMap[cat])
+  
+  return { categories, uncategorized }
 })
 
 onMounted(async () => {

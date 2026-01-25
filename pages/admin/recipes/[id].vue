@@ -164,137 +164,439 @@
 
             <!-- Ingredients Section -->
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-3">Ingredients</label>
-              <draggable v-model="form.ingredients" item-key="id" handle=".drag-handle" :animation="200"
-                :force-fallback="true" ghost-class="sortable-ghost" chosen-class="sortable-chosen"
-                drag-class="sortable-drag" class="space-y-3">
-                <template #item="{ element: ingredient, index }">
-                  <div class="flex items-start gap-2 p-3 border border-gray-200 rounded-lg bg-gray-50">
-                    <div class="drag-handle cursor-move pt-2 text-gray-400 hover:text-gray-600 flex-shrink-0">
-                      <IconDragHandle class="w-5 h-5" />
-                    </div>
-                    <div class="flex-1 grid grid-cols-1 md:grid-cols-12 gap-2">
-                      <!-- Quantity with unit inside -->
-                      <div v-if="!ingredient.toTaste" class="md:col-span-2 relative">
-                        <input v-model.number="ingredient.quantity" type="number" min="0" step="any" placeholder="4"
-                          class="w-full px-2 py-1.5 pr-20 md:pr-18 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-brand-primary" />
-                        <div
-                          class="absolute inset-y-0 right-0 w-16 md:w-16 flex items-center justify-end border-l border-gray-300 pl-2 pr-2 pointer-events-none bg-gray-50 rounded-r border-r border-t border-b border-gray-300">
-                          <span class="text-xs md:text-sm text-gray-700 mr-1">{{ ingredient.unit }}</span>
-                          <IconChevronDown class="w-3 h-3 md:w-4 md:h-4 text-gray-400" />
-                        </div>
-                        <select v-model="ingredient.unit"
-                          class="absolute inset-y-0 right-0 w-12 md:w-16 opacity-0 cursor-pointer">
-                          <option value="pcs">pcs</option>
-                          <option value="cup">cup</option>
-                          <option value="tbsp">tbsp</option>
-                          <option value="tsp">tsp</option>
-                          <option value="oz">oz</option>
-                          <option value="g">g</option>
-                          <option value="kg">kg</option>
-                          <option value="ml">ml</option>
-                          <option value="l">l</option>
-                          <option value="lb">lb</option>
-                          <option value="pinch">pinch</option>
-                          <option value="clove">clove</option>
-                        </select>
-                      </div>
-                      <!-- "To taste" text when checked -->
-                      <div v-else class="md:col-span-1 flex items-center text-sm text-gray-600 italic">
-                        to taste
-                      </div>
-                      <!-- Alternate size with unit inside -->
-                      <div v-if="ingredient.detailedSize && !ingredient.toTaste" class="md:col-span-2 relative">
-                        <input v-model.number="ingredient.detailedSize.amount" type="number" min="0" step="any"
-                          placeholder="15"
-                          class="w-full px-2 py-1.5 pr-20 md:pr-18 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-brand-primary" />
-                        <div
-                          class="absolute inset-y-0 right-0 w-16 md:w-16 flex items-center justify-end border-l border-gray-300 pl-2 pr-2 pointer-events-none bg-gray-50 rounded-r border-r border-t border-b border-gray-300">
-                          <span class="text-xs md:text-sm text-gray-700 mr-1">{{ ingredient.detailedSize.unit }}</span>
-                          <IconChevronDown class="w-3 h-3 md:w-4 md:h-4 text-gray-400" />
-                        </div>
-                        <select v-model="ingredient.detailedSize.unit"
-                          class="absolute inset-y-0 right-0 w-16 md:w-20 opacity-0 cursor-pointer">
-                          <option value="g">g</option>
-                          <option value="kg">kg</option>
-                          <option value="ml">ml</option>
-                          <option value="l">l</option>
-                          <option value="oz">oz</option>
-                        </select>
-                      </div>
-                      <input v-model="ingredient.name" type="text" placeholder="eg: Large bell peppers (any color)"
-                        :class="[
-                          'px-2 py-1.5 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-brand-primary',
-                          ingredient.detailedSize
-                            ? (ingredient.toTaste ? 'md:col-span-11' : 'md:col-span-8')
-                            : (ingredient.toTaste ? 'md:col-span-11' : 'md:col-span-10')
-                        ]" />
-                      <div class="md:col-span-12 flex flex-wrap items-center gap-3 md:gap-4 mt-1">
-                        <label class="flex items-center text-xs text-gray-600 cursor-pointer">
-                          <span class="mr-2">To taste</span>
-                          <button type="button"
-                            @click="ingredient.toTaste = !ingredient.toTaste; handleToTasteChange(ingredient)" :class="[
-                              'relative inline-flex h-4 w-7 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-brand-primary focus:ring-offset-2',
-                              ingredient.toTaste ? 'bg-brand-primary' : 'bg-gray-300'
-                            ]">
-                            <span :class="[
-                              'inline-block h-3 w-3 transform rounded-full bg-white transition-transform',
-                              ingredient.toTaste ? 'translate-x-3.5' : 'translate-x-0.5'
-                            ]" />
-                          </button>
-                        </label>
-                        <label v-if="!ingredient.toTaste"
-                          class="flex items-center text-xs text-gray-600 cursor-pointer">
-                          <span class="mr-2">Alternate size</span>
-                          <button type="button"
-                            @click="ingredient.detailedSize = ingredient.detailedSize ? null : { amount: 0, unit: 'oz' }"
-                            :class="[
-                              'relative inline-flex h-4 w-7 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-brand-primary focus:ring-offset-2',
-                              ingredient.detailedSize ? 'bg-brand-primary' : 'bg-gray-300'
-                            ]">
-                            <span :class="[
-                              'inline-block h-3 w-3 transform rounded-full bg-white transition-transform',
-                              ingredient.detailedSize ? 'translate-x-3.5' : 'translate-x-0.5'
-                            ]" />
-                          </button>
-                        </label>
-                        <label class="flex items-center text-xs text-gray-600 cursor-pointer">
-                          <span class="mr-2">Alternate ingredient</span>
-                          <button type="button"
-                            @click="ingredient.alternateIngredient = (ingredient.alternateIngredient !== null && ingredient.alternateIngredient !== undefined) ? null : ''"
-                            :class="[
-                              'relative inline-flex h-4 w-7 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-brand-primary focus:ring-offset-2',
-                              (ingredient.alternateIngredient !== null && ingredient.alternateIngredient !== undefined) ? 'bg-brand-primary' : 'bg-gray-300'
-                            ]">
-                            <span :class="[
-                              'inline-block h-3 w-3 transform rounded-full bg-white transition-transform',
-                              (ingredient.alternateIngredient !== null && ingredient.alternateIngredient !== undefined) ? 'translate-x-3.5' : 'translate-x-0.5'
-                            ]" />
-                          </button>
-                        </label>
-                      </div>
-                      <!-- Alternate Ingredient Text Field -->
-                      <div
-                        v-if="ingredient.alternateIngredient !== null && ingredient.alternateIngredient !== undefined"
-                        class="md:col-span-12 mt-2">
-                        <input v-model="ingredient.alternateIngredient" type="text"
-                          placeholder="eg: or use butter instead"
-                          class="w-full px-2 py-1.5 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-brand-primary" />
-                      </div>
-                    </div>
-                    <button type="button" @click="removeIngredient(index)"
-                      class="pt-2 text-red-500 hover:text-red-700 flex-shrink-0">
-                      <IconTrash class="w-5 h-5" />
+              <div class="flex items-center justify-between mb-3">
+                <label class="block text-sm font-medium text-gray-700">Ingredients</label>
+                <div class="flex gap-2">
+                  <button v-if="!showAddCategory" type="button" @click="showAddCategory = true"
+                    class="px-3 py-1.5 text-xs border border-brand-primary text-brand-primary rounded-md hover:bg-brand-primary-50 transition-colors">
+                    + Add Category
+                  </button>
+                  <div v-else class="flex gap-2">
+                    <input v-model="newCategoryName" type="text" placeholder="Category name"
+                      @keyup.enter="addCategory"
+                      @keyup.esc="showAddCategory = false; newCategoryName = ''"
+                      class="px-2 py-1.5 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-brand-primary"
+                      autofocus />
+                    <button type="button" @click="addCategory"
+                      class="px-3 py-1.5 text-xs bg-brand-primary text-white rounded-md hover:bg-brand-primary-600 transition-colors">
+                      Add
                     </button>
+                    <button type="button" @click="showAddCategory = false; newCategoryName = ''"
+                      class="px-3 py-1.5 text-xs border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition-colors">
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Category Sections -->
+              <draggable 
+                v-if="categories.length > 0"
+                :model-value="categories"
+                @update:model-value="updateCategoryOrder"
+                item-key="category"
+                handle=".category-drag-handle"
+                :animation="200"
+                :force-fallback="true"
+                ghost-class="sortable-ghost"
+                chosen-class="sortable-chosen"
+                drag-class="sortable-drag"
+                class="space-y-4">
+                <template #item="{ element: category }">
+                  <div class="border border-gray-300 rounded-lg p-4 bg-white">
+                    <!-- Category Header -->
+                    <div class="flex items-center justify-between mb-3 pb-2 border-b border-gray-200 h-8">
+                      <div class="flex items-center gap-2 flex-1">
+                        <div v-if="editingCategory !== category" class="category-drag-handle cursor-move text-gray-400 hover:text-gray-600 flex-shrink-0">
+                          <IconDragHandle class="w-4 h-4" />
+                        </div>
+                        <input v-if="editingCategory === category" v-model="newCategoryName" type="text"
+                          @keyup.enter="saveCategoryEdit(category)"
+                          @keyup.esc="cancelCategoryEdit"
+                          @blur="saveCategoryEdit(category)"
+                          class="px-2 py-1 text-sm font-semibold border border-brand-primary rounded focus:outline-none focus:ring-1 focus:ring-brand-primary"
+                          autofocus />
+                        <h3 v-else class="text-sm font-semibold text-gray-900 uppercase">{{ category }}</h3>
+                      </div>
+                      <div class="flex items-center gap-2">
+                        <button type="button" 
+                          v-if="editingCategory !== category"
+                          @click="startEditCategory(category)"
+                          class="text-xs text-gray-500 hover:text-gray-700">
+                          Edit
+                        </button>
+                        <button type="button" 
+                          v-else
+                          @click="saveCategoryEdit(category)"
+                          class="text-xs text-brand-primary hover:text-brand-primary-600">
+                          Done
+                        </button>
+                        <button type="button" @click="deleteCategory(category)"
+                          class="text-red-500 hover:text-red-700">
+                          <IconClose class="w-4 h-4" />
+                        </button>
+                      </div>
+                    </div>
+
+                  <!-- Ingredients in this category -->
+                  <draggable 
+                    :model-value="ingredientsByCategory.grouped[category] || []"
+                    @update:model-value="(newList: Ingredient[]) => {
+                      // Update category for all ingredients in this list
+                      newList.forEach((ing: Ingredient) => {
+                        ing.category = category
+                      })
+                      // Rebuild ingredients array while preserving category order
+                      // Use newList for this category to preserve the new order
+                      const currentCategoryOrder: string[] = categories
+                      const ingredientsByCat: { [key: string]: Ingredient[] } = {}
+                      const uncategorized: Ingredient[] = []
+                      
+                      // Get ingredients from other categories
+                      form.ingredients.forEach(ing => {
+                        const ingCat = ing.category && ing.category.trim()
+                        if (ingCat && ingCat !== category) {
+                          if (!ingredientsByCat[ingCat]) {
+                            ingredientsByCat[ingCat] = []
+                          }
+                          ingredientsByCat[ingCat].push(ing)
+                        } else if (!ingCat) {
+                          uncategorized.push(ing)
+                        }
+                      })
+                      
+                      // Use newList for the current category (preserves the new order)
+                      ingredientsByCat[category] = newList
+                      
+                      // Rebuild ingredients array in current category order
+                      const reordered: Ingredient[] = []
+                      currentCategoryOrder.forEach((cat: string) => {
+                        if (ingredientsByCat[cat]) {
+                          reordered.push(...ingredientsByCat[cat])
+                        }
+                      })
+                      // Add uncategorized at the end
+                      reordered.push(...uncategorized)
+                      
+                      form.ingredients = reordered
+                    }"
+                    item-key="id" 
+                    handle=".drag-handle" 
+                    :animation="200"
+                    :force-fallback="true" 
+                    ghost-class="sortable-ghost" 
+                    chosen-class="sortable-chosen"
+                    drag-class="sortable-drag" 
+                    group="ingredients"
+                    class="space-y-2">
+                    <template #item="{ element: ingredient }">
+                      <div class="flex items-start gap-2 p-3 border border-gray-200 rounded-lg bg-gray-50">
+                        <div class="drag-handle cursor-move pt-2 text-gray-400 hover:text-gray-600 flex-shrink-0">
+                          <IconDragHandle class="w-5 h-5" />
+                        </div>
+                        <div class="flex-1 grid grid-cols-1 md:grid-cols-12 gap-2">
+                          <!-- Quantity with unit inside -->
+                          <div v-if="!ingredient.toTaste" class="md:col-span-2 relative">
+                            <input v-model.number="ingredient.quantity" type="number" min="0" step="any" placeholder="4"
+                              class="w-full px-2 py-1.5 pr-20 md:pr-18 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-brand-primary" />
+                            <div
+                              class="absolute inset-y-0 right-0 w-16 md:w-16 flex items-center justify-end border-l border-gray-300 pl-2 pr-2 pointer-events-none bg-gray-50 rounded-r border-r border-t border-b border-gray-300">
+                              <span class="text-xs md:text-sm text-gray-700 mr-1">{{ ingredient.unit }}</span>
+                              <IconChevronDown class="w-3 h-3 md:w-4 md:h-4 text-gray-400" />
+                            </div>
+                            <select v-model="ingredient.unit"
+                              class="absolute inset-y-0 right-0 w-12 md:w-16 opacity-0 cursor-pointer">
+                              <option value="pcs">pcs</option>
+                              <option value="cup">cup</option>
+                              <option value="tbsp">tbsp</option>
+                              <option value="tsp">tsp</option>
+                              <option value="oz">oz</option>
+                              <option value="g">g</option>
+                              <option value="kg">kg</option>
+                              <option value="ml">ml</option>
+                              <option value="l">l</option>
+                              <option value="lb">lb</option>
+                              <option value="pinch">pinch</option>
+                              <option value="clove">clove</option>
+                            </select>
+                          </div>
+                          <!-- "To taste" text when checked -->
+                          <div v-else class="md:col-span-1 flex items-center text-sm text-gray-600 italic">
+                            to taste
+                          </div>
+                          <!-- Alternate size with unit inside -->
+                          <div v-if="ingredient.detailedSize && !ingredient.toTaste" class="md:col-span-2 relative">
+                            <input v-model.number="ingredient.detailedSize.amount" type="number" min="0" step="any"
+                              placeholder="15"
+                              class="w-full px-2 py-1.5 pr-20 md:pr-18 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-brand-primary" />
+                            <div
+                              class="absolute inset-y-0 right-0 w-16 md:w-16 flex items-center justify-end border-l border-gray-300 pl-2 pr-2 pointer-events-none bg-gray-50 rounded-r border-r border-t border-b border-gray-300">
+                              <span class="text-xs md:text-sm text-gray-700 mr-1">{{ ingredient.detailedSize.unit }}</span>
+                              <IconChevronDown class="w-3 h-3 md:w-4 md:h-4 text-gray-400" />
+                            </div>
+                            <select v-model="ingredient.detailedSize.unit"
+                              class="absolute inset-y-0 right-0 w-16 md:w-20 opacity-0 cursor-pointer">
+                              <option value="g">g</option>
+                              <option value="kg">kg</option>
+                              <option value="ml">ml</option>
+                              <option value="l">l</option>
+                              <option value="oz">oz</option>
+                            </select>
+                          </div>
+                          <input v-model="ingredient.name" type="text" placeholder="eg: Large bell peppers (any color)"
+                            :class="[
+                              'px-2 py-1.5 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-brand-primary',
+                              ingredient.detailedSize
+                                ? (ingredient.toTaste ? 'md:col-span-11' : 'md:col-span-8')
+                                : (ingredient.toTaste ? 'md:col-span-11' : 'md:col-span-10')
+                            ]" />
+                          <div class="md:col-span-12 flex flex-wrap items-center gap-3 md:gap-4 mt-1">
+                            <label class="flex items-center text-xs text-gray-600 cursor-pointer">
+                              <span class="mr-2">To taste</span>
+                              <button type="button"
+                                @click="ingredient.toTaste = !ingredient.toTaste; handleToTasteChange(ingredient)" :class="[
+                                  'relative inline-flex h-4 w-7 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-brand-primary focus:ring-offset-2',
+                                  ingredient.toTaste ? 'bg-brand-primary' : 'bg-gray-300'
+                                ]">
+                                <span :class="[
+                                  'inline-block h-3 w-3 transform rounded-full bg-white transition-transform',
+                                  ingredient.toTaste ? 'translate-x-3.5' : 'translate-x-0.5'
+                                ]" />
+                              </button>
+                            </label>
+                            <label v-if="!ingredient.toTaste"
+                              class="flex items-center text-xs text-gray-600 cursor-pointer">
+                              <span class="mr-2">Alternate size</span>
+                              <button type="button"
+                                @click="ingredient.detailedSize = ingredient.detailedSize ? null : { amount: 0, unit: 'oz' }"
+                                :class="[
+                                  'relative inline-flex h-4 w-7 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-brand-primary focus:ring-offset-2',
+                                  ingredient.detailedSize ? 'bg-brand-primary' : 'bg-gray-300'
+                                ]">
+                                <span :class="[
+                                  'inline-block h-3 w-3 transform rounded-full bg-white transition-transform',
+                                  ingredient.detailedSize ? 'translate-x-3.5' : 'translate-x-0.5'
+                                ]" />
+                              </button>
+                            </label>
+                            <label class="flex items-center text-xs text-gray-600 cursor-pointer">
+                              <span class="mr-2">Alternate ingredient</span>
+                              <button type="button"
+                                @click="ingredient.alternateIngredient = (ingredient.alternateIngredient !== null && ingredient.alternateIngredient !== undefined) ? null : ''"
+                                :class="[
+                                  'relative inline-flex h-4 w-7 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-brand-primary focus:ring-offset-2',
+                                  (ingredient.alternateIngredient !== null && ingredient.alternateIngredient !== undefined) ? 'bg-brand-primary' : 'bg-gray-300'
+                                ]">
+                                <span :class="[
+                                  'inline-block h-3 w-3 transform rounded-full bg-white transition-transform',
+                                  (ingredient.alternateIngredient !== null && ingredient.alternateIngredient !== undefined) ? 'translate-x-3.5' : 'translate-x-0.5'
+                                ]" />
+                              </button>
+                            </label>
+                          </div>
+                          <!-- Alternate Ingredient Text Field -->
+                          <div
+                            v-if="ingredient.alternateIngredient !== null && ingredient.alternateIngredient !== undefined"
+                            class="md:col-span-12 mt-2">
+                            <input v-model="ingredient.alternateIngredient" type="text"
+                              placeholder="eg: or use butter instead"
+                              class="w-full px-2 py-1.5 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-brand-primary" />
+                          </div>
+                        </div>
+                        <button type="button" @click="removeIngredient(form.ingredients.findIndex(i => i.id === ingredient.id))"
+                          class="pt-2 text-red-500 hover:text-red-700 flex-shrink-0">
+                          <IconTrash class="w-5 h-5" />
+                        </button>
+                      </div>
+                    </template>
+                  </draggable>
+
+                  <button type="button" @click="addIngredient(category)"
+                    class="mt-2 w-full flex justify-center items-center gap-2 px-3 py-2 text-sm border border-dashed border-gray-300 text-gray-600 rounded-md hover:bg-gray-50 transition-colors">
+                    <IconPlus class="w-4 h-4" />
+                    Add ingredient
+                  </button>
                   </div>
                 </template>
               </draggable>
-              <button type="button" @click="addIngredient"
-                class="mt-3 flex w-full justify-center items-center gap-2 px-4 py-2 border-2 border-brand-primary text-brand-primary rounded-md hover:bg-brand-primary-600 hover:text-white transition-colors">
-                <IconPlus class="w-5 h-5" />
-                Add ingredients
-              </button>
+
+              <!-- Uncategorized Section (no box/title) -->
+              <div class="mt-4 space-y-3">
+                  <draggable 
+                    v-if="ingredientsByCategory.uncategorized.length > 0"
+                    :model-value="ingredientsByCategory.uncategorized"
+                    @update:model-value="(newList: Ingredient[]) => {
+                      // Remove category from all ingredients in this list
+                      newList.forEach((ing: Ingredient) => {
+                        ing.category = null
+                      })
+                      // Rebuild ingredients array while preserving category order
+                      // Use newList for uncategorized to preserve the new order
+                      const currentCategoryOrder: string[] = categories
+                      const ingredientsByCat: { [key: string]: Ingredient[] } = {}
+                      
+                      // Get ingredients from all categories
+                      form.ingredients.forEach(ing => {
+                        const ingCat = ing.category && ing.category.trim()
+                        if (ingCat) {
+                          if (!ingredientsByCat[ingCat]) {
+                            ingredientsByCat[ingCat] = []
+                          }
+                          ingredientsByCat[ingCat].push(ing)
+                        }
+                      })
+                      
+                      // Rebuild ingredients array in current category order
+                      const reordered: Ingredient[] = []
+                      currentCategoryOrder.forEach((cat: string) => {
+                        if (ingredientsByCat[cat]) {
+                          reordered.push(...ingredientsByCat[cat])
+                        }
+                      })
+                      // Add uncategorized at the end (use newList to preserve order)
+                      reordered.push(...newList)
+                      
+                      form.ingredients = reordered
+                    }"
+                    item-key="id" 
+                    handle=".drag-handle" 
+                    :animation="200"
+                    :force-fallback="true" 
+                    ghost-class="sortable-ghost" 
+                    chosen-class="sortable-chosen"
+                    drag-class="sortable-drag" 
+                    group="ingredients"
+                    class="space-y-3">
+                    <template #item="{ element: ingredient }">
+                      <div class="flex items-start gap-2 p-3 border border-gray-200 rounded-lg bg-gray-50">
+                        <div class="drag-handle cursor-move pt-2 text-gray-400 hover:text-gray-600 flex-shrink-0">
+                          <IconDragHandle class="w-5 h-5" />
+                        </div>
+                        <div class="flex-1 grid grid-cols-1 md:grid-cols-12 gap-2">
+                          <!-- Quantity with unit inside -->
+                          <div v-if="!ingredient.toTaste" class="md:col-span-2 relative">
+                            <input v-model.number="ingredient.quantity" type="number" min="0" step="any" placeholder="4"
+                              class="w-full px-2 py-1.5 pr-20 md:pr-18 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-brand-primary" />
+                            <div
+                              class="absolute inset-y-0 right-0 w-16 md:w-16 flex items-center justify-end border-l border-gray-300 pl-2 pr-2 pointer-events-none bg-gray-50 rounded-r border-r border-t border-b border-gray-300">
+                              <span class="text-xs md:text-sm text-gray-700 mr-1">{{ ingredient.unit }}</span>
+                              <IconChevronDown class="w-3 h-3 md:w-4 md:h-4 text-gray-400" />
+                            </div>
+                            <select v-model="ingredient.unit"
+                              class="absolute inset-y-0 right-0 w-12 md:w-16 opacity-0 cursor-pointer">
+                              <option value="pcs">pcs</option>
+                              <option value="cup">cup</option>
+                              <option value="tbsp">tbsp</option>
+                              <option value="tsp">tsp</option>
+                              <option value="oz">oz</option>
+                              <option value="g">g</option>
+                              <option value="kg">kg</option>
+                              <option value="ml">ml</option>
+                              <option value="l">l</option>
+                              <option value="lb">lb</option>
+                              <option value="pinch">pinch</option>
+                              <option value="clove">clove</option>
+                            </select>
+                          </div>
+                          <!-- "To taste" text when checked -->
+                          <div v-else class="md:col-span-1 flex items-center text-sm text-gray-600 italic">
+                            to taste
+                          </div>
+                          <!-- Alternate size with unit inside -->
+                          <div v-if="ingredient.detailedSize && !ingredient.toTaste" class="md:col-span-2 relative">
+                            <input v-model.number="ingredient.detailedSize.amount" type="number" min="0" step="any"
+                              placeholder="15"
+                              class="w-full px-2 py-1.5 pr-20 md:pr-18 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-brand-primary" />
+                            <div
+                              class="absolute inset-y-0 right-0 w-16 md:w-16 flex items-center justify-end border-l border-gray-300 pl-2 pr-2 pointer-events-none bg-gray-50 rounded-r border-r border-t border-b border-gray-300">
+                              <span class="text-xs md:text-sm text-gray-700 mr-1">{{ ingredient.detailedSize.unit }}</span>
+                              <IconChevronDown class="w-3 h-3 md:w-4 md:h-4 text-gray-400" />
+                            </div>
+                            <select v-model="ingredient.detailedSize.unit"
+                              class="absolute inset-y-0 right-0 w-16 md:w-20 opacity-0 cursor-pointer">
+                              <option value="g">g</option>
+                              <option value="kg">kg</option>
+                              <option value="ml">ml</option>
+                              <option value="l">l</option>
+                              <option value="oz">oz</option>
+                            </select>
+                          </div>
+                          <input v-model="ingredient.name" type="text" placeholder="eg: Large bell peppers (any color)"
+                            :class="[
+                              'px-2 py-1.5 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-brand-primary',
+                              ingredient.detailedSize
+                                ? (ingredient.toTaste ? 'md:col-span-11' : 'md:col-span-8')
+                                : (ingredient.toTaste ? 'md:col-span-11' : 'md:col-span-10')
+                            ]" />
+                          <div class="md:col-span-12 flex flex-wrap items-center gap-3 md:gap-4 mt-1">
+                            <label class="flex items-center text-xs text-gray-600 cursor-pointer">
+                              <span class="mr-2">To taste</span>
+                              <button type="button"
+                                @click="ingredient.toTaste = !ingredient.toTaste; handleToTasteChange(ingredient)" :class="[
+                                  'relative inline-flex h-4 w-7 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-brand-primary focus:ring-offset-2',
+                                  ingredient.toTaste ? 'bg-brand-primary' : 'bg-gray-300'
+                                ]">
+                                <span :class="[
+                                  'inline-block h-3 w-3 transform rounded-full bg-white transition-transform',
+                                  ingredient.toTaste ? 'translate-x-3.5' : 'translate-x-0.5'
+                                ]" />
+                              </button>
+                            </label>
+                            <label v-if="!ingredient.toTaste"
+                              class="flex items-center text-xs text-gray-600 cursor-pointer">
+                              <span class="mr-2">Alternate size</span>
+                              <button type="button"
+                                @click="ingredient.detailedSize = ingredient.detailedSize ? null : { amount: 0, unit: 'oz' }"
+                                :class="[
+                                  'relative inline-flex h-4 w-7 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-brand-primary focus:ring-offset-2',
+                                  ingredient.detailedSize ? 'bg-brand-primary' : 'bg-gray-300'
+                                ]">
+                                <span :class="[
+                                  'inline-block h-3 w-3 transform rounded-full bg-white transition-transform',
+                                  ingredient.detailedSize ? 'translate-x-3.5' : 'translate-x-0.5'
+                                ]" />
+                              </button>
+                            </label>
+                            <label class="flex items-center text-xs text-gray-600 cursor-pointer">
+                              <span class="mr-2">Alternate ingredient</span>
+                              <button type="button"
+                                @click="ingredient.alternateIngredient = (ingredient.alternateIngredient !== null && ingredient.alternateIngredient !== undefined) ? null : ''"
+                                :class="[
+                                  'relative inline-flex h-4 w-7 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-brand-primary focus:ring-offset-2',
+                                  (ingredient.alternateIngredient !== null && ingredient.alternateIngredient !== undefined) ? 'bg-brand-primary' : 'bg-gray-300'
+                                ]">
+                                <span :class="[
+                                  'inline-block h-3 w-3 transform rounded-full bg-white transition-transform',
+                                  (ingredient.alternateIngredient !== null && ingredient.alternateIngredient !== undefined) ? 'translate-x-3.5' : 'translate-x-0.5'
+                                ]" />
+                              </button>
+                            </label>
+                          </div>
+                          <!-- Alternate Ingredient Text Field -->
+                          <div
+                            v-if="ingredient.alternateIngredient !== null && ingredient.alternateIngredient !== undefined"
+                            class="md:col-span-12 mt-2">
+                            <input v-model="ingredient.alternateIngredient" type="text"
+                              placeholder="eg: or use butter instead"
+                              class="w-full px-2 py-1.5 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-brand-primary" />
+                          </div>
+                        </div>
+                        <button type="button" @click="removeIngredient(form.ingredients.findIndex(i => i.id === ingredient.id))"
+                          class="pt-2 text-red-500 hover:text-red-700 flex-shrink-0">
+                          <IconTrash class="w-5 h-5" />
+                        </button>
+                      </div>
+                    </template>
+                  </draggable>
+
+                  <button type="button" @click="addIngredient()"
+                    class="mt-3 flex w-full justify-center items-center gap-2 px-4 py-2 border-2 border-brand-primary text-brand-primary rounded-md hover:bg-brand-primary-600 hover:text-white transition-colors">
+                    <IconPlus class="w-5 h-5" />
+                    Add ingredient
+                  </button>
+                </div>
             </div>
+
 
             <!-- Directions Section -->
             <div>
@@ -360,6 +662,7 @@ import IconTrash from '~/components/icons/IconTrash.vue'
 import IconPlus from '~/components/icons/IconPlus.vue'
 import IconDragHandle from '~/components/icons/IconDragHandle.vue'
 import IconChevronDown from '~/components/icons/IconChevronDown.vue'
+import IconClose from '~/components/icons/IconClose.vue'
 
 interface Ingredient {
   id: string
@@ -372,6 +675,7 @@ interface Ingredient {
     unit: string
   } | null
   alternateIngredient?: string | null
+  category?: string | null
 }
 
 interface Step {
@@ -436,7 +740,155 @@ function generateId() {
   return Math.random().toString(36).substr(2, 9)
 }
 
-function addIngredient() {
+// Category management
+const editingCategory = ref<string | null>(null)
+const newCategoryName = ref('')
+const showAddCategory = ref(false)
+
+// Computed: Get all unique categories ordered by first appearance in ingredients
+const categories = computed(() => {
+  const categoryOrder: string[] = []
+  const seen = new Set<string>()
+  
+  // Iterate through ingredients in order to preserve category order
+  form.ingredients.forEach(ing => {
+    if (ing.category && ing.category.trim()) {
+      const cat = ing.category.trim()
+      if (!seen.has(cat)) {
+        categoryOrder.push(cat)
+        seen.add(cat)
+      }
+    }
+  })
+  
+  return categoryOrder
+})
+
+// Computed: Group ingredients by category
+const ingredientsByCategory = computed(() => {
+  const grouped: { [key: string]: Ingredient[] } = {}
+  const uncategorized: Ingredient[] = []
+  
+  form.ingredients.forEach(ing => {
+    if (ing.category && ing.category.trim()) {
+      const cat = ing.category.trim()
+      if (!grouped[cat]) {
+        grouped[cat] = []
+      }
+      grouped[cat].push(ing)
+    } else {
+      uncategorized.push(ing)
+    }
+  })
+  
+  return { grouped, uncategorized }
+})
+
+// Helper function to rebuild ingredients array while preserving category order
+function rebuildIngredientsPreservingCategoryOrder() {
+  // Get current category order
+  const currentCategoryOrder = categories.value
+  const ingredientsByCat: { [key: string]: Ingredient[] } = {}
+  const uncategorized: Ingredient[] = []
+  
+  form.ingredients.forEach(ing => {
+    if (ing.category && ing.category.trim()) {
+      const cat = ing.category.trim()
+      if (!ingredientsByCat[cat]) {
+        ingredientsByCat[cat] = []
+      }
+      ingredientsByCat[cat].push(ing)
+    } else {
+      uncategorized.push(ing)
+    }
+  })
+  
+  // Rebuild ingredients array in current category order
+  const reordered: Ingredient[] = []
+  currentCategoryOrder.forEach(cat => {
+    if (ingredientsByCat[cat]) {
+      reordered.push(...ingredientsByCat[cat])
+    }
+  })
+  // Add uncategorized at the end
+  reordered.push(...uncategorized)
+  
+  form.ingredients = reordered
+}
+
+// Function to reorder ingredients when categories are reordered
+function updateCategoryOrder(newCategoryOrder: string[]) {
+  // Get all ingredients grouped by category
+  const ingredientsByCat: { [key: string]: Ingredient[] } = {}
+  const uncategorized: Ingredient[] = []
+  
+  form.ingredients.forEach(ing => {
+    if (ing.category && ing.category.trim()) {
+      const cat = ing.category.trim()
+      if (!ingredientsByCat[cat]) {
+        ingredientsByCat[cat] = []
+      }
+      ingredientsByCat[cat].push(ing)
+    } else {
+      uncategorized.push(ing)
+    }
+  })
+  
+  // Rebuild ingredients array in new category order
+  const reordered: Ingredient[] = []
+  newCategoryOrder.forEach(cat => {
+    if (ingredientsByCat[cat]) {
+      reordered.push(...ingredientsByCat[cat])
+    }
+  })
+  // Add uncategorized at the end
+  reordered.push(...uncategorized)
+  
+  form.ingredients = reordered
+}
+
+function addCategory() {
+  if (newCategoryName.value.trim()) {
+    // Add a new ingredient with this category
+    addIngredient(newCategoryName.value.trim())
+    showAddCategory.value = false
+    newCategoryName.value = ''
+  }
+}
+
+function startEditCategory(category: string) {
+  editingCategory.value = category
+  newCategoryName.value = category
+}
+
+function saveCategoryEdit(oldCategory: string) {
+  if (newCategoryName.value.trim() && newCategoryName.value.trim() !== oldCategory) {
+    // Update all ingredients with this category
+    form.ingredients.forEach(ing => {
+      if (ing.category === oldCategory) {
+        ing.category = newCategoryName.value.trim()
+      }
+    })
+  }
+  editingCategory.value = null
+  newCategoryName.value = ''
+}
+
+function cancelCategoryEdit() {
+  editingCategory.value = null
+  newCategoryName.value = ''
+}
+
+function deleteCategory(category: string) {
+  // Remove category from all ingredients (move to uncategorized)
+  form.ingredients.forEach(ing => {
+    if (ing.category === category) {
+      ing.category = null
+    }
+  })
+}
+
+function addIngredient(category?: string) {
   form.ingredients.push({
     id: generateId(),
     quantity: 1,
@@ -445,7 +897,18 @@ function addIngredient() {
     toTaste: false,
     detailedSize: null,
     alternateIngredient: null,
+    category: category || null,
   })
+  
+  // If adding to a new category, set it
+  if (newCategoryName.value.trim() && !category) {
+    const lastIngredient = form.ingredients[form.ingredients.length - 1]
+    if (lastIngredient) {
+      lastIngredient.category = newCategoryName.value.trim()
+      newCategoryName.value = ''
+      showAddCategory.value = false
+    }
+  }
 }
 
 function removeIngredient(index: number) {
@@ -546,6 +1009,7 @@ async function loadRecipe() {
         toTaste: ing.toTaste || false,
         detailedSize: ing.detailedSize || null,
         alternateIngredient: ing.alternateIngredient || null,
+        category: ing.category || null,
       }))
     } else {
       form.ingredients = []
@@ -592,6 +1056,7 @@ async function handleSubmit() {
         toTaste: ing.toTaste || false,
         ...(ing.detailedSize && { detailedSize: ing.detailedSize }),
         ...(ing.alternateIngredient !== null && ing.alternateIngredient !== undefined && { alternateIngredient: ing.alternateIngredient }),
+        ...(ing.category && ing.category.trim() && { category: ing.category.trim() }),
       })),
       steps: form.steps.map(step => step.description),
       tags: form.tags.split(',').map(t => t.trim()).filter(t => t),

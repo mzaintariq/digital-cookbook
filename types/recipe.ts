@@ -8,6 +8,7 @@ export interface Ingredient {
     unit: string
   }
   alternateIngredient?: string | null
+  category?: string | null
 }
 
 export interface Recipe {
