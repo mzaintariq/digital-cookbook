@@ -15,7 +15,7 @@ model Recipe {
   slug            String   @unique
   description     String?
   ingredients     Json     // Array of structured ingredient objects
-  steps           String[]
+  steps           Json     // Array of structured step objects with category and subSteps
   cookTimeMinutes Int
   prepTimeMinutes Int?
   restTimeMinutes Int?
@@ -31,4 +31,3 @@ model Recipe {
 
   @@map("recipes")
 }
-

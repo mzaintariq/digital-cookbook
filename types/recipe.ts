@@ -11,6 +11,18 @@ export interface Ingredient {
   category?: string | null
 }
 
+export interface SubStep {
+  id: string
+  description: string
+}
+
+export interface Step {
+  id: string
+  description: string
+  category?: string | null
+  subSteps?: SubStep[]
+}
+
 export interface Recipe {
   id: string
   title: string
@@ -18,8 +30,8 @@ export interface Recipe {
   description?: string | null
   credit?: string | null
   videoUrl?: string | null
-  ingredients: Ingredient[] | string[]
-  steps: string[]
+  ingredients: Ingredient[]
+  steps: Step[]
   cookTimeMinutes: number
   prepTimeMinutes?: number | null
   restTimeMinutes?: number | null

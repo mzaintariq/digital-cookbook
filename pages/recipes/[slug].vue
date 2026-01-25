@@ -130,9 +130,51 @@
             <!-- Directions -->
             <div>
               <h2 class="text-2xl font-semibold text-gray-900 mb-4">Directions</h2>
-              <ol class="list-decimal list-outside space-y-3 text-gray-700 pl-4">
+              
+              <!-- Grouped by Category -->
+              <div v-if="groupedSteps.categories.length > 0 || groupedSteps.uncategorized.length > 0" class="space-y-6">
+                <!-- Each Category -->
+                <div v-for="category in groupedSteps.categories" :key="category.name" class="space-y-3">
+                  <h3 class="text-sm font-semibold text-gray-600 uppercase tracking-wide border-b border-gray-200 pb-1">
+                    {{ category.name }}
+                  </h3>
+                  <ol class="list-decimal list-outside space-y-3 text-gray-700 pl-4">
+                    <li v-for="(step, idx) in category.steps" :key="idx" class="pl-2">
+                      <div class="space-y-2">
+                        <div>{{ step.description }}</div>
+                        <!-- Sub-steps -->
+                        <ol v-if="step.subSteps && step.subSteps.length > 0" class="list-[lower-alpha] list-outside space-y-1 text-gray-600 ml-4 mt-1">
+                          <li v-for="(subStep, subIdx) in step.subSteps" :key="subIdx" class="pl-2">
+                            {{ subStep.description }}
+                          </li>
+                        </ol>
+                      </div>
+                    </li>
+                  </ol>
+                </div>
+                
+                <!-- Uncategorized -->
+                <div v-if="groupedSteps.uncategorized.length > 0" class="space-y-3">
+                  <ol class="list-decimal list-outside space-y-3 text-gray-700 pl-4">
+                    <li v-for="(step, idx) in groupedSteps.uncategorized" :key="idx" class="pl-2">
+                      <div class="space-y-2">
+                        <div>{{ step.description }}</div>
+                        <!-- Sub-steps -->
+                        <ol v-if="step.subSteps && step.subSteps.length > 0" class="list-[lower-alpha] list-outside space-y-1 text-gray-600 ml-4 mt-1">
+                          <li v-for="(subStep, subIdx) in step.subSteps" :key="subIdx" class="pl-2">
+                            {{ subStep.description }}
+                          </li>
+                        </ol>
+                      </div>
+                    </li>
+                  </ol>
+                </div>
+              </div>
+              
+              <!-- Fallback: No categories (backward compatibility) -->
+              <ol v-else class="list-decimal list-outside space-y-3 text-gray-700 pl-4">
                 <li v-for="(step, idx) in recipe.steps" :key="idx" class="pl-2">
-                  {{ step }}
+                  {{ step.description }}
                 </li>
               </ol>
             </div>
@@ -170,7 +212,7 @@
 
 <script setup lang="ts">
 
-import type { Recipe } from '~/types/recipe'
+import type { Recipe, Ingredient, Step, SubStep } from '~/types/recipe'
 import IconEdit from '~/components/icons/IconEdit.vue'
 import IconClock from '~/components/icons/IconClock.vue'
 import IconUsers from '~/components/icons/IconUsers.vue'
@@ -255,63 +297,58 @@ function formatQuantity(quantity: number, unit: string): string {
 const noSpaceUnits = ['g', 'kg', 'ml', 'l', 'oz']
 
 // Format a single ingredient
-function formatIngredient(ing: any): string {
-  // Handle structured ingredients
-  if (typeof ing === 'object' && ing.quantity !== undefined) {
-    // If "to taste" is checked, show name with "(to taste)" at the end
-    if (ing.toTaste) {
-      let result = `${ing.name} (to taste)`
-      // Add alternate ingredient if present
-      if (ing.alternateIngredient) {
-        result += `\n(or ${ing.alternateIngredient})`
-      }
-      return result
-    }
-
-    const formattedQty = formatQuantity(ing.quantity, ing.unit)
-    const unitLower = ing.unit.toLowerCase()
-
-    // Format alternate size if present
-    let altSize = ''
-    if (ing.detailedSize) {
-      const altQty = formatQuantity(ing.detailedSize.amount, ing.detailedSize.unit)
-      const altUnitLower = ing.detailedSize.unit.toLowerCase()
-      const altUnitFormatted = noSpaceUnits.includes(altUnitLower)
-        ? altUnitLower
-        : ` ${altUnitLower}`
-      altSize = ` (${altQty}${altUnitFormatted})`
-    }
-
-    // Format main quantity and unit
-    let mainPart = ''
-    if (unitLower === 'pcs') {
-      // Don't show unit for pcs
-      mainPart = formattedQty
-    } else if (noSpaceUnits.includes(unitLower)) {
-      // No space for g, kg, ml, l, oz
-      mainPart = `${formattedQty}${unitLower}`
-    } else {
-      // Space for other units
-      mainPart = `${formattedQty} ${ing.unit}`
-    }
-
-    // Combine: quantity + unit + (alt size) + name
-    let result = `${mainPart}${altSize} ${ing.name}`
-
+function formatIngredient(ing: Ingredient): string {
+  // If "to taste" is checked, show name with "(to taste)" at the end
+  if (ing.toTaste) {
+    let result = `${ing.name} (to taste)`
     // Add alternate ingredient if present
     if (ing.alternateIngredient) {
       result += `\n(or ${ing.alternateIngredient})`
     }
-
     return result
   }
-  // Fallback for string ingredients (backward compatibility)
-  return ing
+
+  const formattedQty = formatQuantity(ing.quantity, ing.unit)
+  const unitLower = ing.unit.toLowerCase()
+
+  // Format alternate size if present
+  let altSize = ''
+  if (ing.detailedSize) {
+    const altQty = formatQuantity(ing.detailedSize.amount, ing.detailedSize.unit)
+    const altUnitLower = ing.detailedSize.unit.toLowerCase()
+    const altUnitFormatted = noSpaceUnits.includes(altUnitLower)
+      ? altUnitLower
+      : ` ${altUnitLower}`
+    altSize = ` (${altQty}${altUnitFormatted})`
+  }
+
+  // Format main quantity and unit
+  let mainPart = ''
+  if (unitLower === 'pcs') {
+    // Don't show unit for pcs
+    mainPart = formattedQty
+  } else if (noSpaceUnits.includes(unitLower)) {
+    // No space for g, kg, ml, l, oz
+    mainPart = `${formattedQty}${unitLower}`
+  } else {
+    // Space for other units
+    mainPart = `${formattedQty} ${ing.unit}`
+  }
+
+  // Combine: quantity + unit + (alt size) + name
+  let result = `${mainPart}${altSize} ${ing.name}`
+
+  // Add alternate ingredient if present
+  if (ing.alternateIngredient) {
+    result += `\n(or ${ing.alternateIngredient})`
+  }
+
+  return result
 }
 
 const formattedIngredients = computed(() => {
   if (!recipe.value) return []
-  return recipe.value.ingredients.map((ing: any) => formatIngredient(ing))
+  return recipe.value.ingredients.map((ing: Ingredient) => formatIngredient(ing))
 })
 
 // Group ingredients by category, preserving order from ingredients array
@@ -324,9 +361,9 @@ const groupedIngredients = computed(() => {
   const seenCategories = new Set<string>()
   
   // Iterate through ingredients in order to preserve category order
-  recipe.value.ingredients.forEach((ing: any) => {
+  recipe.value.ingredients.forEach((ing: Ingredient) => {
     const formatted = formatIngredient(ing)
-    const category = ing.category && typeof ing === 'object' ? ing.category.trim() : null
+    const category = ing.category ? ing.category.trim() : null
     
     if (category) {
       if (!categoriesMap[category]) {
@@ -340,6 +377,40 @@ const groupedIngredients = computed(() => {
       categoriesMap[category].ingredients.push(formatted)
     } else {
       uncategorized.push(formatted)
+    }
+  })
+  
+  // Build categories array in the order they first appeared
+  const categories = categoryOrder.map(cat => categoriesMap[cat])
+  
+  return { categories, uncategorized }
+})
+
+// Group steps by category, preserving order from steps array
+const groupedSteps = computed(() => {
+  if (!recipe.value) return { categories: [], uncategorized: [] }
+  
+  const categoriesMap: { [key: string]: { name: string; steps: Step[] } } = {}
+  const uncategorized: Step[] = []
+  const categoryOrder: string[] = []
+  const seenCategories = new Set<string>()
+  
+  // Iterate through steps in order to preserve category order
+  recipe.value.steps.forEach((step: Step) => {
+    const category = step.category ? step.category.trim() : null
+    
+    if (category) {
+      if (!categoriesMap[category]) {
+        categoriesMap[category] = { name: category, steps: [] }
+        // Track category order by first appearance
+        if (!seenCategories.has(category)) {
+          categoryOrder.push(category)
+          seenCategories.add(category)
+        }
+      }
+      categoriesMap[category].steps.push(step)
+    } else {
+      uncategorized.push(step)
     }
   })
   

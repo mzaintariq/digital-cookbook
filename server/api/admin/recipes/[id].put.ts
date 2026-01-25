@@ -1,5 +1,6 @@
 import prisma from '../../../utils/prisma'
 import { getAdminSession } from '../../../utils/auth'
+import type { Ingredient, Step, SubStep } from '~/types/recipe'
 
 export default defineEventHandler(async (event) => {
   try {
@@ -23,36 +24,39 @@ export default defineEventHandler(async (event) => {
     const body = await readBody(event)
 
     // Handle structured ingredients (array of objects)
-    let ingredients: any[] = []
+    let ingredients: Ingredient[] = []
     if (Array.isArray(body.ingredients)) {
       // Validate and clean ingredient objects
-      ingredients = body.ingredients.map((ing: any) => ({
-        quantity: parseFloat(ing.quantity) || 1,
+      ingredients = body.ingredients.map((ing: Partial<Ingredient>) => ({
+        quantity: parseFloat(String(ing.quantity)) || 1,
         unit: ing.unit || 'pcs',
         name: ing.name || '',
         toTaste: ing.toTaste || false,
         ...(ing.detailedSize && {
           detailedSize: {
-            amount: parseFloat(ing.detailedSize.amount) || 0,
+            amount: parseFloat(String(ing.detailedSize.amount)) || 0,
             unit: ing.detailedSize.unit || 'oz'
           }
         }),
         ...(ing.alternateIngredient !== null && ing.alternateIngredient !== undefined && { alternateIngredient: ing.alternateIngredient }),
         ...(ing.category && ing.category.trim() && { category: ing.category.trim() })
-      })).filter((ing: any) => ing.name.trim())
+      })).filter((ing: Ingredient) => ing.name.trim())
     }
     
-    // Handle steps (array of objects or strings)
-    let steps: string[] = []
+    // Handle steps (array of structured objects)
+    let steps: Step[] = []
     if (Array.isArray(body.steps)) {
-      // If steps are objects with description, extract descriptions
-      if (body.steps.length > 0 && typeof body.steps[0] === 'object' && body.steps[0].description) {
-        steps = body.steps.map((step: any) => step.description || '').filter((s: string) => s.trim())
-      } else if (typeof body.steps[0] === 'string') {
-        steps = body.steps.filter((s: string) => s.trim())
-      }
-    } else if (typeof body.steps === 'string') {
-      steps = body.steps.split('\n').filter((line: string) => line.trim())
+      steps = body.steps.map((step: Partial<Step>) => ({
+        id: step.id || `step-${Math.random().toString(36).substr(2, 9)}`,
+        description: step.description || '',
+        ...(step.category && step.category.trim() && { category: step.category.trim() }),
+        ...(step.subSteps && Array.isArray(step.subSteps) && step.subSteps.length > 0 && {
+          subSteps: step.subSteps.map((sub: Partial<SubStep>) => ({
+            id: sub.id || `substep-${Math.random().toString(36).substr(2, 9)}`,
+            description: sub.description || ''
+          }))
+        })
+      })).filter((step: Step) => step.description.trim())
     }
 
     // Convert tags from comma-separated string to array
@@ -71,7 +75,7 @@ export default defineEventHandler(async (event) => {
         credit: body.credit || null,
         videoUrl: body.videoUrl || null,
         ingredients: ingredients as any, // Store as JSON
-        steps: steps,
+        steps: steps as any, // Store as JSON
         cookTimeMinutes: parseInt(body.cookTimeMinutes) || 0,
         prepTimeMinutes: body.prepTimeMinutes ? parseInt(body.prepTimeMinutes) : null,
         restTimeMinutes: body.restTimeMinutes ? parseInt(body.restTimeMinutes) : null,

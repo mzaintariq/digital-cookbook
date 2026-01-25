@@ -600,36 +600,247 @@
 
             <!-- Directions Section -->
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-3">Directions</label>
-              <draggable v-model="form.steps" item-key="id" handle=".drag-handle" :animation="200"
-                :force-fallback="true" ghost-class="sortable-ghost" chosen-class="sortable-chosen"
-                drag-class="sortable-drag" class="space-y-3">
-                <template #item="{ element: step, index }">
-                  <div class="flex items-start gap-2 p-3 border border-gray-200 rounded-lg bg-gray-50">
-                    <div class="drag-handle cursor-move pt-2 text-gray-400 hover:text-gray-600 flex-shrink-0">
-                      <IconDragHandle class="w-5 h-5" />
-                    </div>
-                    <div class="flex-1 flex flex-col md:flex-row gap-2">
-                      <div class="flex items-start gap-2 md:mb-0">
-                        <span class="text-sm font-medium text-gray-700 pt-2 md:pt-0">{{ String(index + 1).padStart(2,
-                          '0') }}</span>
+              <div class="flex items-center justify-between mb-3">
+                <label class="block text-sm font-medium text-gray-700">Directions</label>
+                <div class="flex gap-2">
+                  <button v-if="!showAddStepCategory" type="button" @click="showAddStepCategory = true"
+                    class="px-3 py-1.5 text-xs border border-brand-primary text-brand-primary rounded-md hover:bg-brand-primary-50 transition-colors">
+                    + Add Category
+                  </button>
+                  <div v-else class="flex gap-2">
+                    <input v-model="newStepCategoryName" type="text" placeholder="Category name"
+                      @keyup.enter="addStepCategory"
+                      @keyup.esc="showAddStepCategory = false; newStepCategoryName = ''"
+                      class="px-2 py-1.5 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-brand-primary"
+                      autofocus />
+                    <button type="button" @click="addStepCategory"
+                      class="px-3 py-1.5 text-xs bg-brand-primary text-white rounded-md hover:bg-brand-primary-600 transition-colors">
+                      Add
+                    </button>
+                    <button type="button" @click="showAddStepCategory = false; newStepCategoryName = ''"
+                      class="px-3 py-1.5 text-xs border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition-colors">
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Category Sections -->
+              <draggable 
+                v-if="stepCategories.length > 0"
+                :model-value="stepCategories"
+                @update:model-value="updateStepCategoryOrder"
+                item-key="category"
+                handle=".step-category-drag-handle"
+                :animation="200"
+                :force-fallback="true"
+                ghost-class="sortable-ghost"
+                chosen-class="sortable-chosen"
+                drag-class="sortable-drag"
+                class="space-y-4">
+                <template #item="{ element: category }">
+                  <div class="border border-gray-300 rounded-lg p-4 bg-white">
+                    <!-- Category Header -->
+                    <div class="flex items-center justify-between mb-3 pb-2 border-b border-gray-200 h-8">
+                      <div class="flex items-center gap-2 flex-1">
+                        <div v-if="editingStepCategory !== category" class="step-category-drag-handle cursor-move text-gray-400 hover:text-gray-600 flex-shrink-0">
+                          <IconDragHandle class="w-4 h-4" />
+                        </div>
+                        <input v-if="editingStepCategory === category" v-model="newStepCategoryName" type="text"
+                          @keyup.enter="saveStepCategoryEdit(category)"
+                          @keyup.esc="cancelStepCategoryEdit"
+                          @blur="saveStepCategoryEdit(category)"
+                          class="px-2 py-1 text-sm font-semibold border border-brand-primary rounded focus:outline-none focus:ring-1 focus:ring-brand-primary"
+                          autofocus />
+                        <h3 v-else class="text-sm font-semibold text-gray-900 uppercase">{{ category }}</h3>
                       </div>
-                      <textarea v-model="step.description" rows="2"
-                        placeholder="eg: Preheat your oven to 375°F (190°C)..."
-                        class="flex-1 px-3 py-2 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-brand-primary" />
+                      <div class="flex items-center gap-2">
+                        <button type="button" 
+                          v-if="editingStepCategory !== category"
+                          @click="startEditStepCategory(category)"
+                          class="text-xs text-gray-500 hover:text-gray-700">
+                          Edit
+                        </button>
+                        <button type="button" 
+                          v-else
+                          @click="saveStepCategoryEdit(category)"
+                          class="text-xs text-brand-primary hover:text-brand-primary-600">
+                          Done
+                        </button>
+                        <button type="button" @click="deleteStepCategory(category)"
+                          class="text-red-500 hover:text-red-700">
+                          <IconClose class="w-4 h-4" />
+                        </button>
+                      </div>
                     </div>
-                    <button type="button" @click="removeStep(index)"
-                      class="pt-2 text-red-500 hover:text-red-700 flex-shrink-0">
-                      <IconTrash class="w-5 h-5" />
+
+                    <!-- Steps in this category -->
+                    <draggable 
+                      :model-value="stepsByCategory.grouped[category] || []"
+                      @update:model-value="(newList: Step[]) => {
+                        newList.forEach((step: Step) => {
+                          step.category = category
+                        })
+                        rebuildStepsPreservingCategoryOrderWithNewList(category, newList)
+                      }"
+                      item-key="id" 
+                      handle=".drag-handle" 
+                      :animation="200"
+                      :force-fallback="true" 
+                      ghost-class="sortable-ghost" 
+                      chosen-class="sortable-chosen"
+                      drag-class="sortable-drag" 
+                      class="space-y-3">
+                      <template #item="{ element: step, index }">
+                        <div class="flex items-start gap-2 p-3 border border-gray-200 rounded-lg bg-gray-50">
+                          <div class="drag-handle cursor-move pt-2 text-gray-400 hover:text-gray-600 flex-shrink-0">
+                            <IconDragHandle class="w-5 h-5" />
+                          </div>
+                          <div class="flex-1 space-y-2">
+                            <div class="flex items-start gap-2">
+                              <span class="text-sm font-medium text-gray-700 pt-2 flex-shrink-0">{{ String(index + 1).padStart(2, '0') }}</span>
+                              <textarea v-model="step.description" rows="2"
+                                placeholder="eg: Preheat your oven to 375°F (190°C)..."
+                                class="flex-1 px-3 py-2 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-brand-primary" />
+                              <button type="button" @click="removeStep(form.steps.findIndex(s => s.id === step.id))"
+                                class="pt-2 text-red-500 hover:text-red-700 flex-shrink-0">
+                                <IconTrash class="w-5 h-5" />
+                              </button>
+                            </div>
+                            
+                            <!-- Sub-steps -->
+                            <div v-if="step.subSteps && step.subSteps.length > 0" class="ml-6 space-y-2">
+                              <draggable 
+                                v-model="step.subSteps"
+                                item-key="id"
+                                handle=".drag-handle"
+                                :animation="200"
+                                :force-fallback="true"
+                                ghost-class="sortable-ghost"
+                                chosen-class="sortable-chosen"
+                                drag-class="sortable-drag"
+                                class="space-y-2">
+                                <template #item="{ element: subStep, index: subIndex }">
+                                  <div class="flex items-start gap-2 p-2 border border-gray-200 rounded bg-white">
+                                    <div class="drag-handle cursor-move pt-1 text-gray-400 hover:text-gray-600 flex-shrink-0">
+                                      <IconDragHandle class="w-4 h-4" />
+                                    </div>
+                                    <span class="text-xs font-medium text-gray-600 pt-1 flex-shrink-0">{{ String.fromCharCode(97 + subIndex) }}</span>
+                                    <textarea v-model="subStep.description" rows="1"
+                                      placeholder="Sub-step description..."
+                                      class="flex-1 px-2 py-1 text-xs border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-brand-primary" />
+                                    <button type="button" @click="removeSubStep(step, subIndex)"
+                                      class="pt-1 text-red-500 hover:text-red-700 flex-shrink-0">
+                                      <IconTrash class="w-4 h-4" />
+                                    </button>
+                                  </div>
+                                </template>
+                              </draggable>
+                            </div>
+                            
+                            <!-- Add Sub-step button -->
+                            <button type="button" @click="addSubStep(step)"
+                              class="ml-6 text-xs text-gray-500 hover:text-gray-700 flex items-center gap-1">
+                              <IconPlus class="w-3 h-3" />
+                              Add sub-step
+                            </button>
+                          </div>
+                        </div>
+                      </template>
+                    </draggable>
+
+                    <button type="button" @click="addStep(category)"
+                      class="mt-2 w-full flex justify-center items-center gap-2 px-3 py-2 text-sm border border-dashed border-gray-300 text-gray-600 rounded-md hover:bg-gray-50 transition-colors">
+                      <IconPlus class="w-4 h-4" />
+                      Add step
                     </button>
                   </div>
                 </template>
               </draggable>
-              <button type="button" @click="addStep"
-                class="mt-3 flex w-full justify-center items-center gap-2 px-4 py-2 border-2 border-brand-primary text-brand-primary rounded-md hover:bg-brand-primary-600 hover:text-white transition-colors">
-                <IconPlus class="w-5 h-5" />
-                Add directions
-              </button>
+
+              <!-- Uncategorized Steps Section -->
+              <div class="mt-4 space-y-3">
+                <draggable 
+                  v-if="stepsByCategory.uncategorized.length > 0"
+                  :model-value="stepsByCategory.uncategorized"
+                  @update:model-value="(newList: Step[]) => {
+                    newList.forEach((step: Step) => {
+                      step.category = null
+                    })
+                    rebuildStepsPreservingCategoryOrderWithNewListForUncategorized(newList)
+                  }"
+                  item-key="id" 
+                  handle=".drag-handle" 
+                  :animation="200"
+                  :force-fallback="true" 
+                  ghost-class="sortable-ghost" 
+                  chosen-class="sortable-chosen"
+                  drag-class="sortable-drag" 
+                  class="space-y-3">
+                  <template #item="{ element: step, index }">
+                    <div class="flex items-start gap-2 p-3 border border-gray-200 rounded-lg bg-gray-50">
+                      <div class="drag-handle cursor-move pt-2 text-gray-400 hover:text-gray-600 flex-shrink-0">
+                        <IconDragHandle class="w-5 h-5" />
+                      </div>
+                      <div class="flex-1 space-y-2">
+                        <div class="flex items-start gap-2">
+                          <span class="text-sm font-medium text-gray-700 pt-2 flex-shrink-0">{{ String(index + 1).padStart(2, '0') }}</span>
+                          <textarea v-model="step.description" rows="2"
+                            placeholder="eg: Preheat your oven to 375°F (190°C)..."
+                            class="flex-1 px-3 py-2 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-brand-primary" />
+                          <button type="button" @click="removeStep(form.steps.findIndex(s => s.id === step.id))"
+                            class="pt-2 text-red-500 hover:text-red-700 flex-shrink-0">
+                            <IconTrash class="w-5 h-5" />
+                          </button>
+                        </div>
+                        
+                        <!-- Sub-steps -->
+                        <div v-if="step.subSteps && step.subSteps.length > 0" class="ml-6 space-y-2">
+                          <draggable 
+                            v-model="step.subSteps"
+                            item-key="id"
+                            handle=".drag-handle"
+                            :animation="200"
+                            :force-fallback="true"
+                            ghost-class="sortable-ghost"
+                            chosen-class="sortable-chosen"
+                            drag-class="sortable-drag"
+                            class="space-y-2">
+                            <template #item="{ element: subStep, index: subIndex }">
+                              <div class="flex items-start gap-2 p-2 border border-gray-200 rounded bg-white">
+                                <div class="drag-handle cursor-move pt-1 text-gray-400 hover:text-gray-600 flex-shrink-0">
+                                  <IconDragHandle class="w-4 h-4" />
+                                </div>
+                                <span class="text-xs font-medium text-gray-600 pt-1 flex-shrink-0">{{ String.fromCharCode(97 + subIndex) }}</span>
+                                <textarea v-model="subStep.description" rows="1"
+                                  placeholder="Sub-step description..."
+                                  class="flex-1 px-2 py-1 text-xs border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-brand-primary" />
+                                <button type="button" @click="removeSubStep(step, subIndex)"
+                                  class="pt-1 text-red-500 hover:text-red-700 flex-shrink-0">
+                                  <IconTrash class="w-4 h-4" />
+                                </button>
+                              </div>
+                            </template>
+                          </draggable>
+                        </div>
+                        
+                        <!-- Add Sub-step button -->
+                        <button type="button" @click="addSubStep(step)"
+                          class="ml-6 text-xs text-gray-500 hover:text-gray-700 flex items-center gap-1">
+                          <IconPlus class="w-3 h-3" />
+                          Add sub-step
+                        </button>
+                      </div>
+                    </div>
+                  </template>
+                </draggable>
+
+                <button type="button" @click="addStep()"
+                  class="mt-3 flex w-full justify-center items-center gap-2 px-4 py-2 border-2 border-brand-primary text-brand-primary rounded-md hover:bg-brand-primary-600 hover:text-white transition-colors">
+                  <IconPlus class="w-5 h-5" />
+                  Add step
+                </button>
+              </div>
             </div>
 
             <!-- Notes Section -->
@@ -663,6 +874,7 @@ import IconPlus from '~/components/icons/IconPlus.vue'
 import IconDragHandle from '~/components/icons/IconDragHandle.vue'
 import IconChevronDown from '~/components/icons/IconChevronDown.vue'
 import IconClose from '~/components/icons/IconClose.vue'
+import type { Recipe, Ingredient as RecipeIngredient, Step as RecipeStep, SubStep as RecipeSubStep } from '~/types/recipe'
 
 interface Ingredient {
   id: string
@@ -678,9 +890,16 @@ interface Ingredient {
   category?: string | null
 }
 
+interface SubStep {
+  id: string
+  description: string
+}
+
 interface Step {
   id: string
   description: string
+  category?: string | null
+  subSteps?: SubStep[]
 }
 
 const route = useRoute()
@@ -740,10 +959,15 @@ function generateId() {
   return Math.random().toString(36).substr(2, 9)
 }
 
-// Category management
+// Category management for ingredients
 const editingCategory = ref<string | null>(null)
 const newCategoryName = ref('')
 const showAddCategory = ref(false)
+
+// Category management for steps
+const editingStepCategory = ref<string | null>(null)
+const newStepCategoryName = ref('')
+const showAddStepCategory = ref(false)
 
 // Computed: Get all unique categories ordered by first appearance in ingredients
 const categories = computed(() => {
@@ -922,15 +1146,224 @@ function handleToTasteChange(ingredient: Ingredient) {
   }
 }
 
-function addStep() {
+// Computed: Get all unique step categories ordered by first appearance
+const stepCategories = computed(() => {
+  const categoryOrder: string[] = []
+  const seen = new Set<string>()
+  
+  // Iterate through steps in order to preserve category order
+  form.steps.forEach(step => {
+    if (step.category && step.category.trim()) {
+      const cat = step.category.trim()
+      if (!seen.has(cat)) {
+        categoryOrder.push(cat)
+        seen.add(cat)
+      }
+    }
+  })
+  
+  return categoryOrder
+})
+
+// Computed: Group steps by category
+const stepsByCategory = computed(() => {
+  const grouped: { [key: string]: Step[] } = {}
+  const uncategorized: Step[] = []
+  
+  form.steps.forEach(step => {
+    if (step.category && step.category.trim()) {
+      const cat = step.category.trim()
+      if (!grouped[cat]) {
+        grouped[cat] = []
+      }
+      grouped[cat].push(step)
+    } else {
+      uncategorized.push(step)
+    }
+  })
+  
+  return { grouped, uncategorized }
+})
+
+// Helper function to rebuild steps array while preserving category order
+function rebuildStepsPreservingCategoryOrder() {
+  const currentCategoryOrder = stepCategories.value
+  const stepsByCat: { [key: string]: Step[] } = {}
+  const uncategorized: Step[] = []
+  
+  form.steps.forEach(step => {
+    if (step.category && step.category.trim()) {
+      const cat = step.category.trim()
+      if (!stepsByCat[cat]) {
+        stepsByCat[cat] = []
+      }
+      stepsByCat[cat].push(step)
+    } else {
+      uncategorized.push(step)
+    }
+  })
+  
+  const reordered: Step[] = []
+  currentCategoryOrder.forEach((cat: string) => {
+    if (stepsByCat[cat]) {
+      reordered.push(...stepsByCat[cat])
+    }
+  })
+  reordered.push(...uncategorized)
+  
+  form.steps = reordered
+}
+
+// Helper function to rebuild steps with new list for a specific category
+function rebuildStepsPreservingCategoryOrderWithNewList(category: string, newList: Step[]) {
+  const currentCategoryOrder = stepCategories.value
+  const stepsByCat: { [key: string]: Step[] } = {}
+  const uncategorized: Step[] = []
+  
+  form.steps.forEach(step => {
+    const stepCat = step.category && step.category.trim()
+    if (stepCat && stepCat !== category) {
+      if (!stepsByCat[stepCat]) {
+        stepsByCat[stepCat] = []
+      }
+      stepsByCat[stepCat].push(step)
+    } else if (!stepCat) {
+      uncategorized.push(step)
+    }
+  })
+  
+  stepsByCat[category] = newList
+  
+  const reordered: Step[] = []
+  currentCategoryOrder.forEach((cat: string) => {
+    if (stepsByCat[cat]) {
+      reordered.push(...stepsByCat[cat])
+    }
+  })
+  reordered.push(...uncategorized)
+  
+  form.steps = reordered
+}
+
+// Helper function to rebuild steps with new list for uncategorized
+function rebuildStepsPreservingCategoryOrderWithNewListForUncategorized(newList: Step[]) {
+  const currentCategoryOrder = stepCategories.value
+  const stepsByCat: { [key: string]: Step[] } = {}
+  
+  form.steps.forEach(step => {
+    const stepCat = step.category && step.category.trim()
+    if (stepCat) {
+      if (!stepsByCat[stepCat]) {
+        stepsByCat[stepCat] = []
+      }
+      stepsByCat[stepCat].push(step)
+    }
+  })
+  
+  const reordered: Step[] = []
+  currentCategoryOrder.forEach((cat: string) => {
+    if (stepsByCat[cat]) {
+      reordered.push(...stepsByCat[cat])
+    }
+  })
+  reordered.push(...newList)
+  
+  form.steps = reordered
+}
+
+// Function to reorder steps when categories are reordered
+function updateStepCategoryOrder(newCategoryOrder: string[]) {
+  const stepsByCat: { [key: string]: Step[] } = {}
+  const uncategorized: Step[] = []
+  
+  form.steps.forEach(step => {
+    if (step.category && step.category.trim()) {
+      const cat = step.category.trim()
+      if (!stepsByCat[cat]) {
+        stepsByCat[cat] = []
+      }
+      stepsByCat[cat].push(step)
+    } else {
+      uncategorized.push(step)
+    }
+  })
+  
+  const reordered: Step[] = []
+  newCategoryOrder.forEach((cat: string) => {
+    if (stepsByCat[cat]) {
+      reordered.push(...stepsByCat[cat])
+    }
+  })
+  reordered.push(...uncategorized)
+  
+  form.steps = reordered
+}
+
+function addStepCategory() {
+  if (newStepCategoryName.value.trim()) {
+    addStep(newStepCategoryName.value.trim())
+    showAddStepCategory.value = false
+    newStepCategoryName.value = ''
+  }
+}
+
+function startEditStepCategory(category: string) {
+  editingStepCategory.value = category
+  newStepCategoryName.value = category
+}
+
+function saveStepCategoryEdit(oldCategory: string) {
+  if (newStepCategoryName.value.trim() && newStepCategoryName.value.trim() !== oldCategory) {
+    form.steps.forEach(step => {
+      if (step.category === oldCategory) {
+        step.category = newStepCategoryName.value.trim()
+      }
+    })
+  }
+  editingStepCategory.value = null
+  newStepCategoryName.value = ''
+}
+
+function cancelStepCategoryEdit() {
+  editingStepCategory.value = null
+  newStepCategoryName.value = ''
+}
+
+function deleteStepCategory(category: string) {
+  form.steps.forEach(step => {
+    if (step.category === category) {
+      step.category = null
+    }
+  })
+}
+
+function addStep(category?: string) {
   form.steps.push({
     id: generateId(),
     description: '',
+    category: category || null,
+    subSteps: [],
   })
 }
 
 function removeStep(index: number) {
   form.steps.splice(index, 1)
+}
+
+function addSubStep(step: Step) {
+  if (!step.subSteps) {
+    step.subSteps = []
+  }
+  step.subSteps.push({
+    id: generateId(),
+    description: '',
+  })
+}
+
+function removeSubStep(step: Step, subStepIndex: number) {
+  if (step.subSteps) {
+    step.subSteps.splice(subStepIndex, 1)
+  }
 }
 
 // Listen for save event from header
@@ -975,8 +1408,8 @@ async function loadRecipe() {
   if (!isEditMode) return
 
   try {
-    const recipes = await $fetch('/api/admin/recipes')
-    const recipe = recipes.find((r: any) => r.id === recipeId)
+    const recipes = await $fetch<Recipe[]>('/api/admin/recipes')
+    const recipe = recipes.find((r: Recipe) => r.id === recipeId)
 
     if (!recipe) {
       error.value = 'Recipe not found'
@@ -987,11 +1420,11 @@ async function loadRecipe() {
     form.slug = recipe.slug
     form.servings = recipe.servings || null
     form.cookTimeMinutes = recipe.cookTimeMinutes
-    form.prepTimeMinutes = (recipe as any).prepTimeMinutes || null
-    form.restTimeMinutes = (recipe as any).restTimeMinutes || null
+    form.prepTimeMinutes = recipe.prepTimeMinutes || null
+    form.restTimeMinutes = recipe.restTimeMinutes || null
     form.description = recipe.description || ''
-    form.credit = (recipe as any).credit || ''
-    form.videoUrl = (recipe as any).videoUrl || ''
+    form.credit = recipe.credit || ''
+    form.videoUrl = recipe.videoUrl || ''
     form.tags = recipe.tags.join(', ')
     form.notes = recipe.notes || ''
     form.published = recipe.status === 'publish'
@@ -1001,7 +1434,7 @@ async function loadRecipe() {
 
     // Convert ingredients from JSON to structured format
     if (Array.isArray(recipe.ingredients)) {
-      form.ingredients = recipe.ingredients.map((ing: any) => ({
+      form.ingredients = recipe.ingredients.map((ing: RecipeIngredient) => ({
         id: generateId(),
         quantity: ing.quantity || 1,
         unit: ing.unit || 'pcs',
@@ -1015,11 +1448,16 @@ async function loadRecipe() {
       form.ingredients = []
     }
 
-    // Convert steps from string array to structured format
+    // Convert steps from array to structured format
     if (Array.isArray(recipe.steps)) {
-      form.steps = recipe.steps.map((step: string) => ({
-        id: generateId(),
-        description: step,
+      form.steps = recipe.steps.map((step: RecipeStep) => ({
+        id: step.id || generateId(),
+        description: step.description || '',
+        category: step.category || null,
+        subSteps: (step.subSteps || []).map((sub: RecipeSubStep) => ({
+          id: sub.id || generateId(),
+          description: sub.description || '',
+        })),
       }))
     } else {
       form.steps = []
@@ -1058,7 +1496,12 @@ async function handleSubmit() {
         ...(ing.alternateIngredient !== null && ing.alternateIngredient !== undefined && { alternateIngredient: ing.alternateIngredient }),
         ...(ing.category && ing.category.trim() && { category: ing.category.trim() }),
       })),
-      steps: form.steps.map(step => step.description),
+      steps: form.steps.map(step => ({
+        id: step.id,
+        description: step.description,
+        ...(step.category && step.category.trim() && { category: step.category.trim() }),
+        ...(step.subSteps && step.subSteps.length > 0 && { subSteps: step.subSteps }),
+      })),
       tags: form.tags.split(',').map(t => t.trim()).filter(t => t),
     }
 
