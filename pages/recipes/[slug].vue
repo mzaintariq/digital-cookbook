@@ -92,9 +92,10 @@
           <!-- Ingredients Card -->
           <div class="order-1 lg:col-span-1 bg-white rounded-lg shadow-md p-6">
             <h2 class="text-2xl font-semibold text-gray-900 mb-4">Ingredients</h2>
-            
+
             <!-- Grouped by Category -->
-            <div v-if="groupedIngredients.categories.length > 0 || groupedIngredients.uncategorized.length > 0" class="space-y-6">
+            <div v-if="groupedIngredients.categories.length > 0 || groupedIngredients.uncategorized.length > 0"
+              class="space-y-6">
               <!-- Each Category -->
               <div v-for="category in groupedIngredients.categories" :key="category.name" class="space-y-2">
                 <h3 class="text-sm font-semibold text-gray-600 uppercase tracking-wide border-b border-gray-200 pb-1">
@@ -106,17 +107,18 @@
                   </li>
                 </ul>
               </div>
-              
+
               <!-- Uncategorized -->
               <div v-if="groupedIngredients.uncategorized.length > 0" class="space-y-2">
                 <ul class="list-disc list-outside space-y-2 text-gray-700 pl-4">
-                  <li v-for="(ingredient, idx) in groupedIngredients.uncategorized" :key="idx" class="whitespace-pre-line">
+                  <li v-for="(ingredient, idx) in groupedIngredients.uncategorized" :key="idx"
+                    class="whitespace-pre-line">
                     {{ ingredient }}
                   </li>
                 </ul>
               </div>
             </div>
-            
+
             <!-- Fallback: No categories (backward compatibility) -->
             <ul v-else class="list-disc list-outside space-y-2 text-gray-700 pl-4">
               <li v-for="(ingredient, idx) in formattedIngredients" :key="idx" class="whitespace-pre-line">
@@ -130,7 +132,7 @@
             <!-- Directions -->
             <div>
               <h2 class="text-2xl font-semibold text-gray-900 mb-4">Directions</h2>
-              
+
               <!-- Grouped by Category -->
               <div v-if="groupedSteps.categories.length > 0 || groupedSteps.uncategorized.length > 0" class="space-y-6">
                 <!-- Each Category -->
@@ -143,7 +145,8 @@
                       <div class="space-y-2">
                         <div>{{ step.description }}</div>
                         <!-- Sub-steps -->
-                        <ol v-if="step.subSteps && step.subSteps.length > 0" class="list-[lower-alpha] list-outside space-y-1 text-gray-600 ml-4 mt-1">
+                        <ol v-if="step.subSteps && step.subSteps.length > 0"
+                          class="list-[lower-alpha] list-outside space-y-1 text-gray-600 ml-4 mt-1">
                           <li v-for="(subStep, subIdx) in step.subSteps" :key="subIdx" class="pl-2">
                             {{ subStep.description }}
                           </li>
@@ -152,7 +155,7 @@
                     </li>
                   </ol>
                 </div>
-                
+
                 <!-- Uncategorized -->
                 <div v-if="groupedSteps.uncategorized.length > 0" class="space-y-3">
                   <ol class="list-decimal list-outside space-y-3 text-gray-700 pl-4">
@@ -160,7 +163,8 @@
                       <div class="space-y-2">
                         <div>{{ step.description }}</div>
                         <!-- Sub-steps -->
-                        <ol v-if="step.subSteps && step.subSteps.length > 0" class="list-[lower-alpha] list-outside space-y-1 text-gray-600 ml-4 mt-1">
+                        <ol v-if="step.subSteps && step.subSteps.length > 0"
+                          class="list-[lower-alpha] list-outside space-y-1 text-gray-600 ml-4 mt-1">
                           <li v-for="(subStep, subIdx) in step.subSteps" :key="subIdx" class="pl-2">
                             {{ subStep.description }}
                           </li>
@@ -170,7 +174,7 @@
                   </ol>
                 </div>
               </div>
-              
+
               <!-- Fallback: No categories (backward compatibility) -->
               <ol v-else class="list-decimal list-outside space-y-3 text-gray-700 pl-4">
                 <li v-for="(step, idx) in recipe.steps" :key="idx" class="pl-2">
@@ -354,17 +358,17 @@ const formattedIngredients = computed(() => {
 // Group ingredients by category, preserving order from ingredients array
 const groupedIngredients = computed(() => {
   if (!recipe.value) return { categories: [], uncategorized: [] }
-  
+
   const categoriesMap: { [key: string]: { name: string; ingredients: string[] } } = {}
   const uncategorized: string[] = []
   const categoryOrder: string[] = []
   const seenCategories = new Set<string>()
-  
+
   // Iterate through ingredients in order to preserve category order
   recipe.value.ingredients.forEach((ing: Ingredient) => {
     const formatted = formatIngredient(ing)
     const category = ing.category ? ing.category.trim() : null
-    
+
     if (category) {
       if (!categoriesMap[category]) {
         categoriesMap[category] = { name: category, ingredients: [] }
@@ -379,26 +383,26 @@ const groupedIngredients = computed(() => {
       uncategorized.push(formatted)
     }
   })
-  
+
   // Build categories array in the order they first appeared
-  const categories = categoryOrder.map(cat => categoriesMap[cat])
-  
+  const categories = categoryOrder.map(cat => categoriesMap[cat]).filter((cat): cat is { name: string; ingredients: string[] } => cat !== undefined)
+
   return { categories, uncategorized }
 })
 
 // Group steps by category, preserving order from steps array
 const groupedSteps = computed(() => {
   if (!recipe.value) return { categories: [], uncategorized: [] }
-  
+
   const categoriesMap: { [key: string]: { name: string; steps: Step[] } } = {}
   const uncategorized: Step[] = []
   const categoryOrder: string[] = []
   const seenCategories = new Set<string>()
-  
+
   // Iterate through steps in order to preserve category order
   recipe.value.steps.forEach((step: Step) => {
     const category = step.category ? step.category.trim() : null
-    
+
     if (category) {
       if (!categoriesMap[category]) {
         categoriesMap[category] = { name: category, steps: [] }
@@ -413,10 +417,10 @@ const groupedSteps = computed(() => {
       uncategorized.push(step)
     }
   })
-  
+
   // Build categories array in the order they first appeared
-  const categories = categoryOrder.map(cat => categoriesMap[cat])
-  
+  const categories = categoryOrder.map(cat => categoriesMap[cat]).filter((cat): cat is { name: string; steps: Step[] } => cat !== undefined)
+
   return { categories, uncategorized }
 })
 

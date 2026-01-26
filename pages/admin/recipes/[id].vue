@@ -167,10 +167,9 @@
               <div class="flex items-center justify-between mb-3">
                 <label class="block text-sm font-medium text-gray-700">Ingredients</label>
                 <div class="flex gap-2">
-                  <button v-if="!showAddCategory" type="button" @click="showAddCategory = true"
-                    class="px-3 py-1.5 text-xs border border-brand-primary text-brand-primary rounded-md hover:bg-brand-primary-50 transition-colors">
+                  <Button v-if="!showAddCategory" type="button" @click="showAddCategory = true" variant="reverse-primary" size="xs">
                     + Add Category
-                  </button>
+                  </Button>
                   <div v-else class="flex gap-2">
                     <input v-model="newCategoryName" type="text" placeholder="Category name"
                       @keyup.enter="addCategory"
@@ -411,11 +410,10 @@
                     </template>
                   </draggable>
 
-                  <button type="button" @click="addIngredient(category)"
-                    class="mt-2 w-full flex justify-center items-center gap-2 px-3 py-2 text-sm border border-dashed border-gray-300 text-gray-600 rounded-md hover:bg-gray-50 transition-colors">
+                  <Button type="button" @click="addIngredient(category)" variant="dashed" size="sm" class="mt-2 w-full flex justify-center items-center gap-2">
                     <IconPlus class="w-4 h-4" />
                     Add ingredient
-                  </button>
+                  </Button>
                   </div>
                 </template>
               </draggable>
@@ -589,11 +587,10 @@
                     </template>
                   </draggable>
 
-                  <button type="button" @click="addIngredient()"
-                    class="mt-3 flex w-full justify-center items-center gap-2 px-4 py-2 border-2 border-brand-primary text-brand-primary rounded-md hover:bg-brand-primary-600 hover:text-white transition-colors">
+                  <Button type="button" @click="addIngredient()" variant="reverse-primary" size="sm" class="mt-3 flex w-full justify-center items-center gap-2">
                     <IconPlus class="w-5 h-5" />
                     Add ingredient
-                  </button>
+                  </Button>
                 </div>
             </div>
 
@@ -603,10 +600,9 @@
               <div class="flex items-center justify-between mb-3">
                 <label class="block text-sm font-medium text-gray-700">Directions</label>
                 <div class="flex gap-2">
-                  <button v-if="!showAddStepCategory" type="button" @click="showAddStepCategory = true"
-                    class="px-3 py-1.5 text-xs border border-brand-primary text-brand-primary rounded-md hover:bg-brand-primary-50 transition-colors">
+                  <Button v-if="!showAddStepCategory" type="button" @click="showAddStepCategory = true" variant="reverse-primary" size="xs">
                     + Add Category
-                  </button>
+                  </Button>
                   <div v-else class="flex gap-2">
                     <input v-model="newStepCategoryName" type="text" placeholder="Category name"
                       @keyup.enter="addStepCategory"
@@ -749,11 +745,10 @@
                       </template>
                     </draggable>
 
-                    <button type="button" @click="addStep(category)"
-                      class="mt-2 w-full flex justify-center items-center gap-2 px-3 py-2 text-sm border border-dashed border-gray-300 text-gray-600 rounded-md hover:bg-gray-50 transition-colors">
+                    <Button type="button" @click="addStep(category)" variant="dashed" size="sm" class="mt-2 w-full flex justify-center items-center gap-2">
                       <IconPlus class="w-4 h-4" />
                       Add step
-                    </button>
+                    </Button>
                   </div>
                 </template>
               </draggable>
@@ -835,11 +830,10 @@
                   </template>
                 </draggable>
 
-                <button type="button" @click="addStep()"
-                  class="mt-3 flex w-full justify-center items-center gap-2 px-4 py-2 border-2 border-brand-primary text-brand-primary rounded-md hover:bg-brand-primary-600 hover:text-white transition-colors">
+                <Button type="button" @click="addStep()" variant="reverse-primary" size="sm" class="mt-3 flex w-full justify-center items-center gap-2">
                   <IconPlus class="w-5 h-5" />
                   Add step
-                </button>
+                </Button>
               </div>
             </div>
 
@@ -874,6 +868,7 @@ import IconPlus from '~/components/icons/IconPlus.vue'
 import IconDragHandle from '~/components/icons/IconDragHandle.vue'
 import IconChevronDown from '~/components/icons/IconChevronDown.vue'
 import IconClose from '~/components/icons/IconClose.vue'
+import Button from '~/components/Button.vue'
 import type { Recipe, Ingredient as RecipeIngredient, Step as RecipeStep, SubStep as RecipeSubStep } from '~/types/recipe'
 
 interface Ingredient {

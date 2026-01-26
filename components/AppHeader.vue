@@ -1,7 +1,7 @@
 <template>
-  <header class="bg-white border-b border-gray-200">
-    <div class="container mx-auto px-4 py-4">
-      <div class="flex items-center justify-between">
+  <header class="bg-white border-b border-gray-200 h-16">
+    <div class="container mx-auto px-4 h-full">
+      <div class="flex items-center justify-between h-full">
         <!-- Logo or Recipe Title -->
         <NuxtLink v-if="!isRecipeEditPage" to="/" class="flex items-center">
           <div class="w-10 h-10 bg-gray-300 rounded flex items-center justify-center">
@@ -26,14 +26,12 @@
 
           <!-- Recipe Edit Page Actions -->
           <div v-if="isRecipeEditPage" class="flex items-center gap-3">
-            <button @click="handleCancel"
-              class="bg-gray-200 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-300 text-sm">
+            <Button @click="handleCancel" variant="secondary">
               Cancel
-            </button>
-            <button @click="handleSave" :disabled="isSaving"
-              class="bg-brand-primary text-white px-4 py-2 rounded-md hover:bg-brand-primary-600 disabled:bg-gray-400 disabled:cursor-not-allowed text-sm">
+            </Button>
+            <Button @click="handleSave" :disabled="isSaving" variant="primary">
               {{ isSaving ? 'Saving...' : saveButtonText }}
-            </button>
+            </Button>
           </div>
 
           <!-- Admin Menu (only show when not on recipe edit page) -->
@@ -56,7 +54,7 @@
                 class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg border border-gray-200 py-1 z-50">
                 <NuxtLink to="/admin/recipes/new" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                   @click="showDropdown = false">
-                  + New Recipe
+                  Add Recipe
                 </NuxtLink>
                 <NuxtLink to="/admin/recipes" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                   @click="showDropdown = false">
@@ -80,6 +78,7 @@
 import IconClose from '~/components/icons/IconClose.vue'
 import IconChevronDown from '~/components/icons/IconChevronDown.vue'
 import IconUser from '~/components/icons/IconUser.vue'
+import Button from '~/components/Button.vue'
 
 const route = useRoute()
 const isLoggedIn = ref(false)

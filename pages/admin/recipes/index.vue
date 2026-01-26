@@ -24,11 +24,10 @@
                 }}
                 selected</span>
               <div class="flex items-center gap-4">
-                <button @click="deleteSelected"
-                  class="flex items-center gap-2 px-4 py-2 bg-white border border-red-300 rounded text-red-600 hover:bg-red-50 text-sm">
+                <Button @click="deleteSelected" variant="delete" size="sm" class="flex items-center gap-2">
                   <IconTrash class="w-4 h-4" />
                   Delete selected
-                </button>
+                </Button>
                 <button @click="table.toggleAllRowsSelected(false)"
                   class="text-brand-primary hover:text-brand-primary-700 text-sm">
                   Clear selection
@@ -83,10 +82,11 @@
                   : null
                 ">
                 <template v-if="header.id === 'select-col'">
-                  <input type="checkbox" :checked="table.getIsAllRowsSelected()"
+                  <Checkbox
+                    :checked="table.getIsAllRowsSelected()"
                     :indeterminate="table.getIsSomeRowsSelected()"
-                    @change="table.getToggleAllRowsSelectedHandler()?.($event)"
-                    class="w-4 h-4 text-brand-primary border-gray-300 rounded focus:ring-brand-primary" />
+                    @change="table.getToggleAllRowsSelectedHandler()?.($event as any)"
+                  />
                 </template>
                 <template v-else-if="header.id === 'actions-col'">
                   <div class="relative flex items-center justify-end" data-column-visibility-container>
@@ -188,9 +188,11 @@
                 },
               ]">
                 <template v-if="cell.column.id === 'select-col'">
-                  <input type="checkbox" :checked="row.getIsSelected()" :disabled="!row.getCanSelect()"
-                    @change="row.getToggleSelectedHandler()?.($event)"
-                    class="w-4 h-4 text-brand-primary border-gray-300 rounded focus:ring-brand-primary" />
+                  <Checkbox
+                    :checked="row.getIsSelected()"
+                    :disabled="!row.getCanSelect()"
+                    @change="row.getToggleSelectedHandler()?.($event as any)"
+                  />
                 </template>
                 <template v-else-if="cell.column.id === 'actions-col'">
                   <div class="flex justify-end pr-2">
@@ -279,6 +281,8 @@ import IconChevronUp from '~/components/icons/IconChevronUp.vue'
 import IconChevronDown from '~/components/icons/IconChevronDown.vue'
 import IconMoreVertical from '~/components/icons/IconMoreVertical.vue'
 import IconColumns from '~/components/icons/IconColumns.vue'
+import Checkbox from '~/components/Checkbox.vue'
+import Button from '~/components/Button.vue'
 
 const recipes = ref<Recipe[]>([]);
 const loading = ref(true);

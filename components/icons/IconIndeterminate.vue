@@ -1,7 +1,7 @@
 <template>
-    <svg :class="iconClass" :width="size" :height="size" fill="none" stroke="currentColor" viewBox="0 0 10 9"
+    <svg :class="iconClass" :width="size" :height="size" fill="none" stroke="currentColor" viewBox="0 0 10 2"
         stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-        <path d="m1 5 2.8 2.8 5.2-6" />
+        <path d="M1 1h8" />
     </svg>
 </template>
 
