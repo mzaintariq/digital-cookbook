@@ -13,7 +13,7 @@
         <p class="text-red-600">{{ error }}</p>
       </div>
 
-      <div v-else-if="recipe" class="relative mx-auto px-4 lg:px-[12rem]">
+      <div v-else-if="recipe" class="relative mx-auto px-4 max-w-7xl">
         <!-- Header Section -->
         <div class="mb-8">
           <!-- Category Tag -->
@@ -39,12 +39,6 @@
           <p v-if="recipe.description" class="text-lg text-brand-primary mb-6">
             {{ recipe.description }}
           </p>
-
-          <!-- <div class="flex items-center gap-6 text-gray-600">
-            <span>⏱️ {{ recipe.cookTimeMinutes }} minutes</span>
-            <span v-if="recipe.servings">👥 {{ recipe.servings }} servings</span>
-            <span>⭐ {{ '⭐'.repeat(recipe.rating) }}</span>
-          </div> -->
 
           <div class="bg-white-100 p-4 rounded-lg shadow-md pl-4 lg:pl-8 mr-auto w-full lg:w-fit">
             <div class="flex flex-wrap items-center gap-4 lg:gap-6">
@@ -87,10 +81,10 @@
 
         <!-- Main Content: Ingredients, Directions, Notes -->
         <!-- Mobile: Stacked vertically (ingredients first, then directions, then notes) -->
-        <!-- Desktop: Ingredients (left 1/4) and Directions+Notes (right 3/4) -->
-        <div class="flex flex-col lg:grid lg:grid-cols-4 gap-6">
+        <!-- Desktop: Ingredients and steps side by side with flexbox -->
+        <div class="flex flex-col lg:flex-row gap-6">
           <!-- Ingredients Card -->
-          <div class="order-1 lg:col-span-1 bg-white rounded-lg shadow-md p-6">
+          <div class="order-1 lg:flex-shrink-0 lg:w-64 xl:w-72 bg-white rounded-lg shadow-md p-6">
             <h2 class="text-2xl font-semibold text-gray-900 mb-4">Ingredients</h2>
 
             <!-- Grouped by Category -->
@@ -110,6 +104,9 @@
 
               <!-- Uncategorized -->
               <div v-if="groupedIngredients.uncategorized.length > 0" class="space-y-2">
+                <h3 v-if="groupedIngredients.categories.length > 0" class="text-sm font-semibold text-gray-600 uppercase tracking-wide border-b border-gray-200 pb-1">
+                  Other Ingredients
+                </h3>
                 <ul class="list-disc list-outside space-y-2 text-gray-700 pl-4">
                   <li v-for="(ingredient, idx) in groupedIngredients.uncategorized" :key="idx"
                     class="whitespace-pre-line">
@@ -128,7 +125,7 @@
           </div>
 
           <!-- Directions and Notes -->
-          <div class="order-2 lg:col-span-3 space-y-6">
+          <div class="order-2 lg:flex-1 space-y-6">
             <!-- Directions -->
             <div>
               <h2 class="text-2xl font-semibold text-gray-900 mb-4">Directions</h2>
@@ -158,6 +155,9 @@
 
                 <!-- Uncategorized -->
                 <div v-if="groupedSteps.uncategorized.length > 0" class="space-y-3">
+                  <h3 v-if="groupedSteps.categories.length > 0" class="text-sm font-semibold text-gray-600 uppercase tracking-wide border-b border-gray-200 pb-1">
+                    Additional Steps
+                  </h3>
                   <ol class="list-decimal list-outside space-y-3 text-gray-700 pl-4">
                     <li v-for="(step, idx) in groupedSteps.uncategorized" :key="idx" class="pl-2">
                       <div class="space-y-2">

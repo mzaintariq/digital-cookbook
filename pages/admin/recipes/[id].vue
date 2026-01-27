@@ -214,39 +214,17 @@
                 class="space-y-4">
                 <template #item="{ element: category }">
                   <div class="border border-gray-300 rounded-lg p-4 bg-white">
-                    <!-- Category Header -->
-                    <div class="flex items-center justify-between mb-3 pb-2 border-b border-gray-200 h-8">
-                      <div class="flex items-center gap-2 flex-1">
-                        <div v-if="editingCategory !== category" class="category-drag-handle cursor-move text-gray-400 hover:text-gray-600 flex-shrink-0">
-                          <IconDragHandle class="w-4 h-4" />
-                        </div>
-                        <input v-if="editingCategory === category" v-model="newCategoryName" type="text"
-                          @keyup.enter="saveCategoryEdit(category)"
-                          @keyup.esc="cancelCategoryEdit"
-                          @blur="saveCategoryEdit(category)"
-                          class="px-2 py-1 text-sm font-semibold border border-brand-primary rounded focus:outline-none focus:ring-1 focus:ring-brand-primary"
-                          autofocus />
-                        <h3 v-else class="text-sm font-semibold text-gray-900 uppercase">{{ category }}</h3>
-                      </div>
-                      <div class="flex items-center gap-2">
-                        <button type="button" 
-                          v-if="editingCategory !== category"
-                          @click="startEditCategory(category)"
-                          class="text-xs text-gray-500 hover:text-gray-700">
-                          Edit
-                        </button>
-                        <button type="button" 
-                          v-else
-                          @click="saveCategoryEdit(category)"
-                          class="text-xs text-brand-primary hover:text-brand-primary-600">
-                          Done
-                        </button>
-                        <button type="button" @click="deleteCategory(category)"
-                          class="text-red-500 hover:text-red-700">
-                          <IconClose class="w-4 h-4" />
-                        </button>
-                      </div>
-                    </div>
+                    <CategoryHeader
+                      :category="category"
+                      :is-editing="editingCategory === category"
+                      :edit-value="newCategoryName"
+                      drag-handle-class="category-drag-handle"
+                      @edit="startEditCategory(category)"
+                      @update:edit-value="newCategoryName = $event"
+                      @save="saveCategoryEdit(category)"
+                      @cancel="cancelCategoryEdit"
+                      @delete="deleteCategory(category)"
+                    />
 
                   <!-- Ingredients in this category -->
                   <draggable 
@@ -304,115 +282,10 @@
                         <div class="drag-handle cursor-move pt-2 text-gray-400 hover:text-gray-600 flex-shrink-0">
                           <IconDragHandle class="w-5 h-5" />
                         </div>
-                        <div class="flex-1 grid grid-cols-1 md:grid-cols-12 gap-2">
-                          <!-- Quantity with unit inside -->
-                          <div v-if="!ingredient.toTaste" class="md:col-span-2 relative">
-                            <input v-model.number="ingredient.quantity" type="number" min="0" step="any" placeholder="4"
-                              class="w-full px-2 py-1.5 pr-20 md:pr-18 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-brand-primary" />
-                            <div
-                              class="absolute inset-y-0 right-0 w-16 md:w-16 flex items-center justify-end border-l border-gray-300 pl-2 pr-2 pointer-events-none bg-gray-50 rounded-r border-r border-t border-b border-gray-300">
-                              <span class="text-xs md:text-sm text-gray-700 mr-1">{{ ingredient.unit }}</span>
-                              <IconChevronDown class="w-3 h-3 md:w-4 md:h-4 text-gray-400" />
-                            </div>
-                            <select v-model="ingredient.unit"
-                              class="absolute inset-y-0 right-0 w-12 md:w-16 opacity-0 cursor-pointer">
-                              <option value="pcs">pcs</option>
-                              <option value="cup">cup</option>
-                              <option value="tbsp">tbsp</option>
-                              <option value="tsp">tsp</option>
-                              <option value="oz">oz</option>
-                              <option value="g">g</option>
-                              <option value="kg">kg</option>
-                              <option value="ml">ml</option>
-                              <option value="l">l</option>
-                              <option value="lb">lb</option>
-                              <option value="pinch">pinch</option>
-                              <option value="clove">clove</option>
-                            </select>
-                          </div>
-                          <!-- "To taste" text when checked -->
-                          <div v-else class="md:col-span-1 flex items-center text-sm text-gray-600 italic">
-                            to taste
-                          </div>
-                          <!-- Alternate size with unit inside -->
-                          <div v-if="ingredient.detailedSize && !ingredient.toTaste" class="md:col-span-2 relative">
-                            <input v-model.number="ingredient.detailedSize.amount" type="number" min="0" step="any"
-                              placeholder="15"
-                              class="w-full px-2 py-1.5 pr-20 md:pr-18 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-brand-primary" />
-                            <div
-                              class="absolute inset-y-0 right-0 w-16 md:w-16 flex items-center justify-end border-l border-gray-300 pl-2 pr-2 pointer-events-none bg-gray-50 rounded-r border-r border-t border-b border-gray-300">
-                              <span class="text-xs md:text-sm text-gray-700 mr-1">{{ ingredient.detailedSize.unit }}</span>
-                              <IconChevronDown class="w-3 h-3 md:w-4 md:h-4 text-gray-400" />
-                            </div>
-                            <select v-model="ingredient.detailedSize.unit"
-                              class="absolute inset-y-0 right-0 w-16 md:w-20 opacity-0 cursor-pointer">
-                              <option value="g">g</option>
-                              <option value="kg">kg</option>
-                              <option value="ml">ml</option>
-                              <option value="l">l</option>
-                              <option value="oz">oz</option>
-                            </select>
-                          </div>
-                          <input v-model="ingredient.name" type="text" placeholder="eg: Large bell peppers (any color)"
-                            :class="[
-                              'px-2 py-1.5 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-brand-primary',
-                              ingredient.detailedSize
-                                ? (ingredient.toTaste ? 'md:col-span-11' : 'md:col-span-8')
-                                : (ingredient.toTaste ? 'md:col-span-11' : 'md:col-span-10')
-                            ]" />
-                          <div class="md:col-span-12 flex flex-wrap items-center gap-3 md:gap-4 mt-1">
-                            <label class="flex items-center text-xs text-gray-600 cursor-pointer">
-                              <span class="mr-2">To taste</span>
-                              <button type="button"
-                                @click="ingredient.toTaste = !ingredient.toTaste; handleToTasteChange(ingredient)" :class="[
-                                  'relative inline-flex h-4 w-7 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-brand-primary focus:ring-offset-2',
-                                  ingredient.toTaste ? 'bg-brand-primary' : 'bg-gray-300'
-                                ]">
-                                <span :class="[
-                                  'inline-block h-3 w-3 transform rounded-full bg-white transition-transform',
-                                  ingredient.toTaste ? 'translate-x-3.5' : 'translate-x-0.5'
-                                ]" />
-                              </button>
-                            </label>
-                            <label v-if="!ingredient.toTaste"
-                              class="flex items-center text-xs text-gray-600 cursor-pointer">
-                              <span class="mr-2">Alternate size</span>
-                              <button type="button"
-                                @click="ingredient.detailedSize = ingredient.detailedSize ? null : { amount: 0, unit: 'g' }"
-                                :class="[
-                                  'relative inline-flex h-4 w-7 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-brand-primary focus:ring-offset-2',
-                                  ingredient.detailedSize ? 'bg-brand-primary' : 'bg-gray-300'
-                                ]">
-                                <span :class="[
-                                  'inline-block h-3 w-3 transform rounded-full bg-white transition-transform',
-                                  ingredient.detailedSize ? 'translate-x-3.5' : 'translate-x-0.5'
-                                ]" />
-                              </button>
-                            </label>
-                            <label class="flex items-center text-xs text-gray-600 cursor-pointer">
-                              <span class="mr-2">Alternate ingredient</span>
-                              <button type="button"
-                                @click="ingredient.alternateIngredient = (ingredient.alternateIngredient !== null && ingredient.alternateIngredient !== undefined) ? null : ''"
-                                :class="[
-                                  'relative inline-flex h-4 w-7 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-brand-primary focus:ring-offset-2',
-                                  (ingredient.alternateIngredient !== null && ingredient.alternateIngredient !== undefined) ? 'bg-brand-primary' : 'bg-gray-300'
-                                ]">
-                                <span :class="[
-                                  'inline-block h-3 w-3 transform rounded-full bg-white transition-transform',
-                                  (ingredient.alternateIngredient !== null && ingredient.alternateIngredient !== undefined) ? 'translate-x-3.5' : 'translate-x-0.5'
-                                ]" />
-                              </button>
-                            </label>
-                          </div>
-                          <!-- Alternate Ingredient Text Field -->
-                          <div
-                            v-if="ingredient.alternateIngredient !== null && ingredient.alternateIngredient !== undefined"
-                            class="md:col-span-12 mt-2">
-                            <input v-model="ingredient.alternateIngredient" type="text"
-                              placeholder="eg: or use butter instead"
-                              class="w-full px-2 py-1.5 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-brand-primary" />
-                          </div>
-                        </div>
+                        <IngredientInput
+                          :ingredient="ingredient"
+                          @to-taste-change="handleToTasteChange"
+                        />
                         <button type="button" @click="removeIngredient(form.ingredients.findIndex(i => i.id === ingredient.id))"
                           class="pt-2 text-red-500 hover:text-red-700 flex-shrink-0">
                           <IconTrash class="w-5 h-5" />
@@ -481,115 +354,10 @@
                         <div class="drag-handle cursor-move pt-2 text-gray-400 hover:text-gray-600 flex-shrink-0">
                           <IconDragHandle class="w-5 h-5" />
                         </div>
-                        <div class="flex-1 grid grid-cols-1 md:grid-cols-12 gap-2">
-                          <!-- Quantity with unit inside -->
-                          <div v-if="!ingredient.toTaste" class="md:col-span-2 relative">
-                            <input v-model.number="ingredient.quantity" type="number" min="0" step="any" placeholder="4"
-                              class="w-full px-2 py-1.5 pr-20 md:pr-18 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-brand-primary" />
-                            <div
-                              class="absolute inset-y-0 right-0 w-16 md:w-16 flex items-center justify-end border-l border-gray-300 pl-2 pr-2 pointer-events-none bg-gray-50 rounded-r border-r border-t border-b border-gray-300">
-                              <span class="text-xs md:text-sm text-gray-700 mr-1">{{ ingredient.unit }}</span>
-                              <IconChevronDown class="w-3 h-3 md:w-4 md:h-4 text-gray-400" />
-                            </div>
-                            <select v-model="ingredient.unit"
-                              class="absolute inset-y-0 right-0 w-12 md:w-16 opacity-0 cursor-pointer">
-                              <option value="pcs">pcs</option>
-                              <option value="cup">cup</option>
-                              <option value="tbsp">tbsp</option>
-                              <option value="tsp">tsp</option>
-                              <option value="oz">oz</option>
-                              <option value="g">g</option>
-                              <option value="kg">kg</option>
-                              <option value="ml">ml</option>
-                              <option value="l">l</option>
-                              <option value="lb">lb</option>
-                              <option value="pinch">pinch</option>
-                              <option value="clove">clove</option>
-                            </select>
-                          </div>
-                          <!-- "To taste" text when checked -->
-                          <div v-else class="md:col-span-1 flex items-center text-sm text-gray-600 italic">
-                            to taste
-                          </div>
-                          <!-- Alternate size with unit inside -->
-                          <div v-if="ingredient.detailedSize && !ingredient.toTaste" class="md:col-span-2 relative">
-                            <input v-model.number="ingredient.detailedSize.amount" type="number" min="0" step="any"
-                              placeholder="15"
-                              class="w-full px-2 py-1.5 pr-20 md:pr-18 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-brand-primary" />
-                            <div
-                              class="absolute inset-y-0 right-0 w-16 md:w-16 flex items-center justify-end border-l border-gray-300 pl-2 pr-2 pointer-events-none bg-gray-50 rounded-r border-r border-t border-b border-gray-300">
-                              <span class="text-xs md:text-sm text-gray-700 mr-1">{{ ingredient.detailedSize.unit }}</span>
-                              <IconChevronDown class="w-3 h-3 md:w-4 md:h-4 text-gray-400" />
-                            </div>
-                            <select v-model="ingredient.detailedSize.unit"
-                              class="absolute inset-y-0 right-0 w-16 md:w-20 opacity-0 cursor-pointer">
-                              <option value="g">g</option>
-                              <option value="kg">kg</option>
-                              <option value="ml">ml</option>
-                              <option value="l">l</option>
-                              <option value="oz">oz</option>
-                            </select>
-                          </div>
-                          <input v-model="ingredient.name" type="text" placeholder="eg: Large bell peppers (any color)"
-                            :class="[
-                              'px-2 py-1.5 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-brand-primary',
-                              ingredient.detailedSize
-                                ? (ingredient.toTaste ? 'md:col-span-11' : 'md:col-span-8')
-                                : (ingredient.toTaste ? 'md:col-span-11' : 'md:col-span-10')
-                            ]" />
-                          <div class="md:col-span-12 flex flex-wrap items-center gap-3 md:gap-4 mt-1">
-                            <label class="flex items-center text-xs text-gray-600 cursor-pointer">
-                              <span class="mr-2">To taste</span>
-                              <button type="button"
-                                @click="ingredient.toTaste = !ingredient.toTaste; handleToTasteChange(ingredient)" :class="[
-                                  'relative inline-flex h-4 w-7 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-brand-primary focus:ring-offset-2',
-                                  ingredient.toTaste ? 'bg-brand-primary' : 'bg-gray-300'
-                                ]">
-                                <span :class="[
-                                  'inline-block h-3 w-3 transform rounded-full bg-white transition-transform',
-                                  ingredient.toTaste ? 'translate-x-3.5' : 'translate-x-0.5'
-                                ]" />
-                              </button>
-                            </label>
-                            <label v-if="!ingredient.toTaste"
-                              class="flex items-center text-xs text-gray-600 cursor-pointer">
-                              <span class="mr-2">Alternate size</span>
-                              <button type="button"
-                                @click="ingredient.detailedSize = ingredient.detailedSize ? null : { amount: 0, unit: 'g' }"
-                                :class="[
-                                  'relative inline-flex h-4 w-7 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-brand-primary focus:ring-offset-2',
-                                  ingredient.detailedSize ? 'bg-brand-primary' : 'bg-gray-300'
-                                ]">
-                                <span :class="[
-                                  'inline-block h-3 w-3 transform rounded-full bg-white transition-transform',
-                                  ingredient.detailedSize ? 'translate-x-3.5' : 'translate-x-0.5'
-                                ]" />
-                              </button>
-                            </label>
-                            <label class="flex items-center text-xs text-gray-600 cursor-pointer">
-                              <span class="mr-2">Alternate ingredient</span>
-                              <button type="button"
-                                @click="ingredient.alternateIngredient = (ingredient.alternateIngredient !== null && ingredient.alternateIngredient !== undefined) ? null : ''"
-                                :class="[
-                                  'relative inline-flex h-4 w-7 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-brand-primary focus:ring-offset-2',
-                                  (ingredient.alternateIngredient !== null && ingredient.alternateIngredient !== undefined) ? 'bg-brand-primary' : 'bg-gray-300'
-                                ]">
-                                <span :class="[
-                                  'inline-block h-3 w-3 transform rounded-full bg-white transition-transform',
-                                  (ingredient.alternateIngredient !== null && ingredient.alternateIngredient !== undefined) ? 'translate-x-3.5' : 'translate-x-0.5'
-                                ]" />
-                              </button>
-                            </label>
-                          </div>
-                          <!-- Alternate Ingredient Text Field -->
-                          <div
-                            v-if="ingredient.alternateIngredient !== null && ingredient.alternateIngredient !== undefined"
-                            class="md:col-span-12 mt-2">
-                            <input v-model="ingredient.alternateIngredient" type="text"
-                              placeholder="eg: or use butter instead"
-                              class="w-full px-2 py-1.5 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-brand-primary" />
-                          </div>
-                        </div>
+                        <IngredientInput
+                          :ingredient="ingredient"
+                          @to-taste-change="handleToTasteChange"
+                        />
                         <button type="button" @click="removeIngredient(form.ingredients.findIndex(i => i.id === ingredient.id))"
                           class="pt-2 text-red-500 hover:text-red-700 flex-shrink-0">
                           <IconTrash class="w-5 h-5" />
@@ -645,39 +413,17 @@
                 class="space-y-4">
                 <template #item="{ element: category }">
                   <div class="border border-gray-300 rounded-lg p-4 bg-white">
-                    <!-- Category Header -->
-                    <div class="flex items-center justify-between mb-3 pb-2 border-b border-gray-200 h-8">
-                      <div class="flex items-center gap-2 flex-1">
-                        <div v-if="editingStepCategory !== category" class="step-category-drag-handle cursor-move text-gray-400 hover:text-gray-600 flex-shrink-0">
-                          <IconDragHandle class="w-4 h-4" />
-                        </div>
-                        <input v-if="editingStepCategory === category" v-model="newStepCategoryName" type="text"
-                          @keyup.enter="saveStepCategoryEdit(category)"
-                          @keyup.esc="cancelStepCategoryEdit"
-                          @blur="saveStepCategoryEdit(category)"
-                          class="px-2 py-1 text-sm font-semibold border border-brand-primary rounded focus:outline-none focus:ring-1 focus:ring-brand-primary"
-                          autofocus />
-                        <h3 v-else class="text-sm font-semibold text-gray-900 uppercase">{{ category }}</h3>
-                      </div>
-                      <div class="flex items-center gap-2">
-                        <button type="button" 
-                          v-if="editingStepCategory !== category"
-                          @click="startEditStepCategory(category)"
-                          class="text-xs text-gray-500 hover:text-gray-700">
-                          Edit
-                        </button>
-                        <button type="button" 
-                          v-else
-                          @click="saveStepCategoryEdit(category)"
-                          class="text-xs text-brand-primary hover:text-brand-primary-600">
-                          Done
-                        </button>
-                        <button type="button" @click="deleteStepCategory(category)"
-                          class="text-red-500 hover:text-red-700">
-                          <IconClose class="w-4 h-4" />
-                        </button>
-                      </div>
-                    </div>
+                    <CategoryHeader
+                      :category="category"
+                      :is-editing="editingStepCategory === category"
+                      :edit-value="newStepCategoryName"
+                      drag-handle-class="step-category-drag-handle"
+                      @edit="startEditStepCategory(category)"
+                      @update:edit-value="newStepCategoryName = $event"
+                      @save="saveStepCategoryEdit(category)"
+                      @cancel="cancelStepCategoryEdit"
+                      @delete="deleteStepCategory(category)"
+                    />
 
                     <!-- Steps in this category -->
                     <draggable 
@@ -697,60 +443,13 @@
                       drag-class="sortable-drag" 
                       class="space-y-3">
                       <template #item="{ element: step, index }">
-                        <div class="flex items-start gap-2 p-3 border border-gray-200 rounded-lg bg-gray-50">
-                          <div class="drag-handle cursor-move pt-2 text-gray-400 hover:text-gray-600 flex-shrink-0">
-                            <IconDragHandle class="w-5 h-5" />
-                          </div>
-                          <div class="flex-1 space-y-2">
-                            <div class="flex items-start gap-2">
-                              <span class="text-sm font-medium text-gray-700 pt-2 flex-shrink-0">{{ String(index + 1).padStart(2, '0') }}</span>
-                              <textarea v-model="step.description" rows="2"
-                                placeholder="eg: Preheat your oven to 375°F (190°C)..."
-                                class="flex-1 px-3 py-2 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-brand-primary" />
-                              <button type="button" @click="removeStep(form.steps.findIndex(s => s.id === step.id))"
-                                class="pt-2 text-red-500 hover:text-red-700 flex-shrink-0">
-                                <IconTrash class="w-5 h-5" />
-                              </button>
-                            </div>
-                            
-                            <!-- Sub-steps -->
-                            <div v-if="step.subSteps && step.subSteps.length > 0" class="ml-6 space-y-2">
-                              <draggable 
-                                v-model="step.subSteps"
-                                item-key="id"
-                                handle=".drag-handle"
-                                :animation="200"
-                                :force-fallback="true"
-                                ghost-class="sortable-ghost"
-                                chosen-class="sortable-chosen"
-                                drag-class="sortable-drag"
-                                class="space-y-2">
-                                <template #item="{ element: subStep, index: subIndex }">
-                                  <div class="flex items-start gap-2 p-2 border border-gray-200 rounded bg-white">
-                                    <div class="drag-handle cursor-move pt-1 text-gray-400 hover:text-gray-600 flex-shrink-0">
-                                      <IconDragHandle class="w-4 h-4" />
-                                    </div>
-                                    <span class="text-xs font-medium text-gray-600 pt-1 flex-shrink-0">{{ String.fromCharCode(97 + subIndex) }}</span>
-                                    <textarea v-model="subStep.description" rows="1"
-                                      placeholder="Sub-step description..."
-                                      class="flex-1 px-2 py-1 text-xs border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-brand-primary" />
-                                    <button type="button" @click="removeSubStep(step, subIndex)"
-                                      class="pt-1 text-red-500 hover:text-red-700 flex-shrink-0">
-                                      <IconTrash class="w-4 h-4" />
-                                    </button>
-                                  </div>
-                                </template>
-                              </draggable>
-                            </div>
-                            
-                            <!-- Add Sub-step button -->
-                            <button type="button" @click="addSubStep(step)"
-                              class="ml-6 text-xs text-gray-500 hover:text-gray-700 flex items-center gap-1">
-                              <IconPlus class="w-3 h-3" />
-                              Add sub-step
-                            </button>
-                          </div>
-                        </div>
+                        <StepInput
+                          :step="step"
+                          :index="index"
+                          @remove="removeStep(form.steps.findIndex(s => s.id === step.id))"
+                          @add-sub-step="addSubStep(step)"
+                          @remove-sub-step="removeSubStep(step, $event)"
+                        />
                       </template>
                     </draggable>
 
@@ -782,60 +481,13 @@
                   drag-class="sortable-drag" 
                   class="space-y-3">
                   <template #item="{ element: step, index }">
-                    <div class="flex items-start gap-2 p-3 border border-gray-200 rounded-lg bg-gray-50">
-                      <div class="drag-handle cursor-move pt-2 text-gray-400 hover:text-gray-600 flex-shrink-0">
-                        <IconDragHandle class="w-5 h-5" />
-                      </div>
-                      <div class="flex-1 space-y-2">
-                        <div class="flex items-start gap-2">
-                          <span class="text-sm font-medium text-gray-700 pt-2 flex-shrink-0">{{ String(index + 1).padStart(2, '0') }}</span>
-                          <textarea v-model="step.description" rows="2"
-                            placeholder="eg: Preheat your oven to 375°F (190°C)..."
-                            class="flex-1 px-3 py-2 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-brand-primary" />
-                          <button type="button" @click="removeStep(form.steps.findIndex(s => s.id === step.id))"
-                            class="pt-2 text-red-500 hover:text-red-700 flex-shrink-0">
-                            <IconTrash class="w-5 h-5" />
-                          </button>
-                        </div>
-                        
-                        <!-- Sub-steps -->
-                        <div v-if="step.subSteps && step.subSteps.length > 0" class="ml-6 space-y-2">
-                          <draggable 
-                            v-model="step.subSteps"
-                            item-key="id"
-                            handle=".drag-handle"
-                            :animation="200"
-                            :force-fallback="true"
-                            ghost-class="sortable-ghost"
-                            chosen-class="sortable-chosen"
-                            drag-class="sortable-drag"
-                            class="space-y-2">
-                            <template #item="{ element: subStep, index: subIndex }">
-                              <div class="flex items-start gap-2 p-2 border border-gray-200 rounded bg-white">
-                                <div class="drag-handle cursor-move pt-1 text-gray-400 hover:text-gray-600 flex-shrink-0">
-                                  <IconDragHandle class="w-4 h-4" />
-                                </div>
-                                <span class="text-xs font-medium text-gray-600 pt-1 flex-shrink-0">{{ String.fromCharCode(97 + subIndex) }}</span>
-                                <textarea v-model="subStep.description" rows="1"
-                                  placeholder="Sub-step description..."
-                                  class="flex-1 px-2 py-1 text-xs border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-brand-primary" />
-                                <button type="button" @click="removeSubStep(step, subIndex)"
-                                  class="pt-1 text-red-500 hover:text-red-700 flex-shrink-0">
-                                  <IconTrash class="w-4 h-4" />
-                                </button>
-                              </div>
-                            </template>
-                          </draggable>
-                        </div>
-                        
-                        <!-- Add Sub-step button -->
-                        <button type="button" @click="addSubStep(step)"
-                          class="ml-6 text-xs text-gray-500 hover:text-gray-700 flex items-center gap-1">
-                          <IconPlus class="w-3 h-3" />
-                          Add sub-step
-                        </button>
-                      </div>
-                    </div>
+                    <StepInput
+                      :step="step"
+                      :index="index"
+                      @remove="removeStep(form.steps.findIndex(s => s.id === step.id))"
+                      @add-sub-step="addSubStep(step)"
+                      @remove-sub-step="removeSubStep(step, $event)"
+                    />
                   </template>
                 </draggable>
 
@@ -872,449 +524,96 @@ import draggable from 'vuedraggable'
 import IconTrash from '~/components/icons/IconTrash.vue'
 import IconPlus from '~/components/icons/IconPlus.vue'
 import IconDragHandle from '~/components/icons/IconDragHandle.vue'
-import IconChevronDown from '~/components/icons/IconChevronDown.vue'
-import IconClose from '~/components/icons/IconClose.vue'
 import Button from '~/components/Button.vue'
-import type { Recipe, Ingredient as RecipeIngredient, Step as RecipeStep, SubStep as RecipeSubStep } from '~/types/recipe'
-
-interface Ingredient {
-  id: string
-  quantity: number
-  unit: string
-  name: string
-  toTaste?: boolean
-  detailedSize?: {
-    amount: number
-    unit: string
-  } | null
-  alternateIngredient?: string | null
-  category?: string | null
-}
-
-interface SubStep {
-  id: string
-  description: string
-}
-
-interface Step {
-  id: string
-  description: string
-  category?: string | null
-  subSteps?: SubStep[]
-}
+import IngredientInput from '~/components/IngredientInput.vue'
+import StepInput from '~/components/StepInput.vue'
+import CategoryHeader from '~/components/CategoryHeader.vue'
+import { useRecipeForm } from '~/composables/useRecipeForm'
+import { useRecipeCategories } from '~/composables/useRecipeCategories'
+import { useRecipeIngredients } from '~/composables/useRecipeIngredients'
+import { useRecipeSteps } from '~/composables/useRecipeSteps'
+import type { Ingredient, Step } from '~/types/recipe'
 
 const route = useRoute()
 const recipeId = route.params.id as string
-const isEditMode = recipeId !== 'new'
-const slugManuallyChanged = ref(false)
 
-const form = reactive({
-  title: '',
-  slug: '',
-  description: '',
-  credit: '',
-  videoUrl: '',
-  servings: null as number | null,
-  cookTimeMinutes: 0,
-  prepTimeMinutes: 0 as number,
-  restTimeMinutes: 0 as number,
-  tags: '',
-  notes: '',
-  published: false,
-  ingredients: [] as Ingredient[],
-  steps: [] as Step[],
-})
+// Form composable
+const {
+  form,
+  loading,
+  saving,
+  error,
+  fieldErrors,
+  recipeFormRef,
+  isEditMode,
+  slugManuallyChanged,
+  generateId,
+  getInputClasses,
+  getTextareaClasses,
+  loadRecipe,
+  handleSubmit,
+} = useRecipeForm(recipeId)
 
-const loading = ref(isEditMode)
-const saving = ref(false)
-const error = ref<string | null>(null)
-const fieldErrors = reactive<Record<string, string>>({})
-const recipeFormRef = ref<HTMLFormElement | null>(null)
+// Categories composable
+const {
+  editingCategory,
+  newCategoryName,
+  showAddCategory,
+  categories,
+  ingredientsByCategory,
+  updateCategoryOrder,
+  startEditCategory,
+  saveCategoryEdit,
+  cancelCategoryEdit,
+  deleteCategory,
+  editingStepCategory,
+  newStepCategoryName,
+  showAddStepCategory,
+  stepCategories,
+  stepsByCategory,
+  updateStepCategoryOrder,
+  startEditStepCategory,
+  saveStepCategoryEdit,
+  cancelStepCategoryEdit,
+  deleteStepCategory,
+} = useRecipeCategories(
+  computed(() => form.ingredients),
+  computed(() => form.steps)
+)
 
-// Function to generate slug from title
-function generateSlug(title: string): string {
-  return title
-    .toLowerCase()
-    .trim()
-    .replace(/[^\w\s-]/g, '') // Remove special characters
-    .replace(/\s+/g, '-') // Replace spaces with hyphens
-    .replace(/-+/g, '-') // Replace multiple hyphens with single hyphen
-    .replace(/^-+|-+$/g, '') // Remove leading/trailing hyphens
-}
+// Ingredients composable
+const {
+  addIngredient,
+  removeIngredient,
+  handleToTasteChange,
+} = useRecipeIngredients(
+  computed(() => form.ingredients),
+  generateId,
+  newCategoryName,
+  showAddCategory
+)
 
-// Watch form.title and auto-generate slug if not manually changed
-watch(() => form.title, (newTitle) => {
-  // Only send title update to header if in edit mode
-  if (process.client && isEditMode) {
-    window.dispatchEvent(new CustomEvent('recipe-title-update', {
-      detail: { title: newTitle || null }
-    }))
-  }
+// Steps composable
+const {
+  addStep,
+  removeStep,
+  addSubStep,
+  removeSubStep,
+  rebuildStepsPreservingCategoryOrderWithNewList,
+  rebuildStepsPreservingCategoryOrderWithNewListForUncategorized,
+} = useRecipeSteps(
+  computed(() => form.steps),
+  generateId,
+  stepCategories
+)
 
-  // Auto-generate slug from title if slug hasn't been manually changed
-  if (!slugManuallyChanged.value && newTitle) {
-    form.slug = generateSlug(newTitle)
-  }
-}, { immediate: true })
-
-function generateId() {
-  return Math.random().toString(36).substr(2, 9)
-}
-
-// Helper function to get input classes with error state
-function getInputClasses(fieldName: string): string {
-  const baseClasses = 'w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 transition-colors'
-  const hasError = fieldErrors[fieldName]
-  
-  if (hasError) {
-    return `${baseClasses} border-red-500 focus:ring-red-500 focus:border-red-500 bg-red-50`
-  }
-  return `${baseClasses} border-gray-300 focus:ring-brand-primary`
-}
-
-// Helper function to get textarea classes with error state
-function getTextareaClasses(fieldName: string): string {
-  return getInputClasses(fieldName)
-}
-
-// Category management for ingredients
-const editingCategory = ref<string | null>(null)
-const newCategoryName = ref('')
-const showAddCategory = ref(false)
-
-// Category management for steps
-const editingStepCategory = ref<string | null>(null)
-const newStepCategoryName = ref('')
-const showAddStepCategory = ref(false)
-
-// Computed: Get all unique categories ordered by first appearance in ingredients
-const categories = computed(() => {
-  const categoryOrder: string[] = []
-  const seen = new Set<string>()
-  
-  // Iterate through ingredients in order to preserve category order
-  form.ingredients.forEach(ing => {
-    if (ing.category && ing.category.trim()) {
-      const cat = ing.category.trim()
-      if (!seen.has(cat)) {
-        categoryOrder.push(cat)
-        seen.add(cat)
-      }
-    }
-  })
-  
-  return categoryOrder
-})
-
-// Computed: Group ingredients by category
-const ingredientsByCategory = computed(() => {
-  const grouped: { [key: string]: Ingredient[] } = {}
-  const uncategorized: Ingredient[] = []
-  
-  form.ingredients.forEach(ing => {
-    if (ing.category && ing.category.trim()) {
-      const cat = ing.category.trim()
-      if (!grouped[cat]) {
-        grouped[cat] = []
-      }
-      grouped[cat].push(ing)
-    } else {
-      uncategorized.push(ing)
-    }
-  })
-  
-  return { grouped, uncategorized }
-})
-
-// Helper function to rebuild ingredients array while preserving category order
-function rebuildIngredientsPreservingCategoryOrder() {
-  // Get current category order
-  const currentCategoryOrder = categories.value
-  const ingredientsByCat: { [key: string]: Ingredient[] } = {}
-  const uncategorized: Ingredient[] = []
-  
-  form.ingredients.forEach(ing => {
-    if (ing.category && ing.category.trim()) {
-      const cat = ing.category.trim()
-      if (!ingredientsByCat[cat]) {
-        ingredientsByCat[cat] = []
-      }
-      ingredientsByCat[cat].push(ing)
-    } else {
-      uncategorized.push(ing)
-    }
-  })
-  
-  // Rebuild ingredients array in current category order
-  const reordered: Ingredient[] = []
-  currentCategoryOrder.forEach(cat => {
-    if (ingredientsByCat[cat]) {
-      reordered.push(...ingredientsByCat[cat])
-    }
-  })
-  // Add uncategorized at the end
-  reordered.push(...uncategorized)
-  
-  form.ingredients = reordered
-}
-
-// Function to reorder ingredients when categories are reordered
-function updateCategoryOrder(newCategoryOrder: string[]) {
-  // Get all ingredients grouped by category
-  const ingredientsByCat: { [key: string]: Ingredient[] } = {}
-  const uncategorized: Ingredient[] = []
-  
-  form.ingredients.forEach(ing => {
-    if (ing.category && ing.category.trim()) {
-      const cat = ing.category.trim()
-      if (!ingredientsByCat[cat]) {
-        ingredientsByCat[cat] = []
-      }
-      ingredientsByCat[cat].push(ing)
-    } else {
-      uncategorized.push(ing)
-    }
-  })
-  
-  // Rebuild ingredients array in new category order
-  const reordered: Ingredient[] = []
-  newCategoryOrder.forEach(cat => {
-    if (ingredientsByCat[cat]) {
-      reordered.push(...ingredientsByCat[cat])
-    }
-  })
-  // Add uncategorized at the end
-  reordered.push(...uncategorized)
-  
-  form.ingredients = reordered
-}
-
+// Helper functions
 function addCategory() {
   if (newCategoryName.value.trim()) {
-    // Add a new ingredient with this category
     addIngredient(newCategoryName.value.trim())
     showAddCategory.value = false
     newCategoryName.value = ''
   }
-}
-
-function startEditCategory(category: string) {
-  editingCategory.value = category
-  newCategoryName.value = category
-}
-
-function saveCategoryEdit(oldCategory: string) {
-  if (newCategoryName.value.trim() && newCategoryName.value.trim() !== oldCategory) {
-    // Update all ingredients with this category
-    form.ingredients.forEach(ing => {
-      if (ing.category === oldCategory) {
-        ing.category = newCategoryName.value.trim()
-      }
-    })
-  }
-  editingCategory.value = null
-  newCategoryName.value = ''
-}
-
-function cancelCategoryEdit() {
-  editingCategory.value = null
-  newCategoryName.value = ''
-}
-
-function deleteCategory(category: string) {
-  // Remove category from all ingredients (move to uncategorized)
-  form.ingredients.forEach(ing => {
-    if (ing.category === category) {
-      ing.category = null
-    }
-  })
-}
-
-function addIngredient(category?: string) {
-  form.ingredients.push({
-    id: generateId(),
-    quantity: 1,
-    unit: 'pcs',
-    name: '',
-    toTaste: false,
-    detailedSize: null,
-    alternateIngredient: null,
-    category: category || null,
-  })
-  
-  // If adding to a new category, set it
-  if (newCategoryName.value.trim() && !category) {
-    const lastIngredient = form.ingredients[form.ingredients.length - 1]
-    if (lastIngredient) {
-      lastIngredient.category = newCategoryName.value.trim()
-      newCategoryName.value = ''
-      showAddCategory.value = false
-    }
-  }
-}
-
-function removeIngredient(index: number) {
-  form.ingredients.splice(index, 1)
-}
-
-function handleToTasteChange(ingredient: Ingredient) {
-  // Clear detailedSize when toTaste is enabled
-  if (ingredient.toTaste) {
-    ingredient.detailedSize = null
-  }
-}
-
-// Computed: Get all unique step categories ordered by first appearance
-const stepCategories = computed(() => {
-  const categoryOrder: string[] = []
-  const seen = new Set<string>()
-  
-  // Iterate through steps in order to preserve category order
-  form.steps.forEach(step => {
-    if (step.category && step.category.trim()) {
-      const cat = step.category.trim()
-      if (!seen.has(cat)) {
-        categoryOrder.push(cat)
-        seen.add(cat)
-      }
-    }
-  })
-  
-  return categoryOrder
-})
-
-// Computed: Group steps by category
-const stepsByCategory = computed(() => {
-  const grouped: { [key: string]: Step[] } = {}
-  const uncategorized: Step[] = []
-  
-  form.steps.forEach(step => {
-    if (step.category && step.category.trim()) {
-      const cat = step.category.trim()
-      if (!grouped[cat]) {
-        grouped[cat] = []
-      }
-      grouped[cat].push(step)
-    } else {
-      uncategorized.push(step)
-    }
-  })
-  
-  return { grouped, uncategorized }
-})
-
-// Helper function to rebuild steps array while preserving category order
-function rebuildStepsPreservingCategoryOrder() {
-  const currentCategoryOrder = stepCategories.value
-  const stepsByCat: { [key: string]: Step[] } = {}
-  const uncategorized: Step[] = []
-  
-  form.steps.forEach(step => {
-    if (step.category && step.category.trim()) {
-      const cat = step.category.trim()
-      if (!stepsByCat[cat]) {
-        stepsByCat[cat] = []
-      }
-      stepsByCat[cat].push(step)
-    } else {
-      uncategorized.push(step)
-    }
-  })
-  
-  const reordered: Step[] = []
-  currentCategoryOrder.forEach((cat: string) => {
-    if (stepsByCat[cat]) {
-      reordered.push(...stepsByCat[cat])
-    }
-  })
-  reordered.push(...uncategorized)
-  
-  form.steps = reordered
-}
-
-// Helper function to rebuild steps with new list for a specific category
-function rebuildStepsPreservingCategoryOrderWithNewList(category: string, newList: Step[]) {
-  const currentCategoryOrder = stepCategories.value
-  const stepsByCat: { [key: string]: Step[] } = {}
-  const uncategorized: Step[] = []
-  
-  form.steps.forEach(step => {
-    const stepCat = step.category && step.category.trim()
-    if (stepCat && stepCat !== category) {
-      if (!stepsByCat[stepCat]) {
-        stepsByCat[stepCat] = []
-      }
-      stepsByCat[stepCat].push(step)
-    } else if (!stepCat) {
-      uncategorized.push(step)
-    }
-  })
-  
-  stepsByCat[category] = newList
-  
-  const reordered: Step[] = []
-  currentCategoryOrder.forEach((cat: string) => {
-    if (stepsByCat[cat]) {
-      reordered.push(...stepsByCat[cat])
-    }
-  })
-  reordered.push(...uncategorized)
-  
-  form.steps = reordered
-}
-
-// Helper function to rebuild steps with new list for uncategorized
-function rebuildStepsPreservingCategoryOrderWithNewListForUncategorized(newList: Step[]) {
-  const currentCategoryOrder = stepCategories.value
-  const stepsByCat: { [key: string]: Step[] } = {}
-  
-  form.steps.forEach(step => {
-    const stepCat = step.category && step.category.trim()
-    if (stepCat) {
-      if (!stepsByCat[stepCat]) {
-        stepsByCat[stepCat] = []
-      }
-      stepsByCat[stepCat].push(step)
-    }
-  })
-  
-  const reordered: Step[] = []
-  currentCategoryOrder.forEach((cat: string) => {
-    if (stepsByCat[cat]) {
-      reordered.push(...stepsByCat[cat])
-    }
-  })
-  reordered.push(...newList)
-  
-  form.steps = reordered
-}
-
-// Function to reorder steps when categories are reordered
-function updateStepCategoryOrder(newCategoryOrder: string[]) {
-  const stepsByCat: { [key: string]: Step[] } = {}
-  const uncategorized: Step[] = []
-  
-  form.steps.forEach(step => {
-    if (step.category && step.category.trim()) {
-      const cat = step.category.trim()
-      if (!stepsByCat[cat]) {
-        stepsByCat[cat] = []
-      }
-      stepsByCat[cat].push(step)
-    } else {
-      uncategorized.push(step)
-    }
-  })
-  
-  const reordered: Step[] = []
-  newCategoryOrder.forEach((cat: string) => {
-    if (stepsByCat[cat]) {
-      reordered.push(...stepsByCat[cat])
-    }
-  })
-  reordered.push(...uncategorized)
-  
-  form.steps = reordered
 }
 
 function addStepCategory() {
@@ -1325,64 +624,6 @@ function addStepCategory() {
   }
 }
 
-function startEditStepCategory(category: string) {
-  editingStepCategory.value = category
-  newStepCategoryName.value = category
-}
-
-function saveStepCategoryEdit(oldCategory: string) {
-  if (newStepCategoryName.value.trim() && newStepCategoryName.value.trim() !== oldCategory) {
-    form.steps.forEach(step => {
-      if (step.category === oldCategory) {
-        step.category = newStepCategoryName.value.trim()
-      }
-    })
-  }
-  editingStepCategory.value = null
-  newStepCategoryName.value = ''
-}
-
-function cancelStepCategoryEdit() {
-  editingStepCategory.value = null
-  newStepCategoryName.value = ''
-}
-
-function deleteStepCategory(category: string) {
-  form.steps.forEach(step => {
-    if (step.category === category) {
-      step.category = null
-    }
-  })
-}
-
-function addStep(category?: string) {
-  form.steps.push({
-    id: generateId(),
-    description: '',
-    category: category || null,
-    subSteps: [],
-  })
-}
-
-function removeStep(index: number) {
-  form.steps.splice(index, 1)
-}
-
-function addSubStep(step: Step) {
-  if (!step.subSteps) {
-    step.subSteps = []
-  }
-  step.subSteps.push({
-    id: generateId(),
-    description: '',
-  })
-}
-
-function removeSubStep(step: Step, subStepIndex: number) {
-  if (step.subSteps) {
-    step.subSteps.splice(subStepIndex, 1)
-  }
-}
 
 // Listen for save event from header
 onMounted(async () => {
@@ -1421,203 +662,6 @@ onMounted(async () => {
     })
   }
 })
-
-async function loadRecipe() {
-  if (!isEditMode) return
-
-  try {
-    const recipes = await $fetch<Recipe[]>('/api/admin/recipes')
-    const recipe = recipes.find((r: Recipe) => r.id === recipeId)
-
-    if (!recipe) {
-      error.value = 'Recipe not found'
-      return
-    }
-
-    form.title = recipe.title
-    form.slug = recipe.slug
-    form.servings = recipe.servings || null
-    form.cookTimeMinutes = recipe.cookTimeMinutes
-    form.prepTimeMinutes = recipe.prepTimeMinutes ?? 0
-    form.restTimeMinutes = recipe.restTimeMinutes ?? 0
-    form.description = recipe.description || ''
-    form.credit = recipe.credit || ''
-    form.videoUrl = recipe.videoUrl || ''
-    form.tags = recipe.tags.join(', ')
-    form.notes = recipe.notes || ''
-    form.published = recipe.status === 'publish'
-
-    // In edit mode, slug is already set, so mark as manually changed
-    slugManuallyChanged.value = true
-
-    // Convert ingredients from JSON to structured format
-    if (Array.isArray(recipe.ingredients)) {
-      form.ingredients = recipe.ingredients.map((ing: RecipeIngredient) => ({
-        id: generateId(),
-        quantity: ing.quantity || 1,
-        unit: ing.unit || 'pcs',
-        name: ing.name || '',
-        toTaste: ing.toTaste || false,
-        detailedSize: ing.detailedSize || null,
-        alternateIngredient: ing.alternateIngredient || null,
-        category: ing.category || null,
-      }))
-    } else {
-      form.ingredients = []
-    }
-
-    // Convert steps from array to structured format
-    if (Array.isArray(recipe.steps)) {
-      form.steps = recipe.steps.map((step: RecipeStep) => ({
-        id: step.id || generateId(),
-        description: step.description || '',
-        category: step.category || null,
-        subSteps: (step.subSteps || []).map((sub: RecipeSubStep) => ({
-          id: sub.id || generateId(),
-          description: sub.description || '',
-        })),
-      }))
-    } else {
-      form.steps = []
-    }
-  } catch (err: any) {
-    if (err.statusCode === 401) {
-      await navigateTo('/admin/login')
-    } else {
-      error.value = 'Failed to load recipe'
-    }
-  } finally {
-    loading.value = false
-  }
-}
-
-
-async function handleSubmit() {
-  // Client-side validation
-  Object.keys(fieldErrors).forEach(key => delete fieldErrors[key])
-  
-  let hasErrors = false
-  
-  if (!form.title || !form.title.trim()) {
-    fieldErrors.title = 'Title is required'
-    hasErrors = true
-  }
-  
-  if (!form.slug || !form.slug.trim()) {
-    fieldErrors.slug = 'Slug is required'
-    hasErrors = true
-  }
-
-  if (hasErrors) {
-    return
-  }
-
-  try {
-    saving.value = true
-    error.value = null
-
-    // Ensure slug is set (fallback if watch didn't trigger)
-    if (!form.slug && form.title) {
-      form.slug = generateSlug(form.title)
-    }
-
-    // Convert form data to API format
-    const submitData = {
-      ...form,
-      ingredients: form.ingredients.map(ing => ({
-        quantity: ing.quantity,
-        unit: ing.unit,
-        name: ing.name,
-        toTaste: ing.toTaste || false,
-        ...(ing.detailedSize && { detailedSize: ing.detailedSize }),
-        ...(ing.alternateIngredient !== null && ing.alternateIngredient !== undefined && { alternateIngredient: ing.alternateIngredient }),
-        ...(ing.category && ing.category.trim() && { category: ing.category.trim() }),
-      })),
-      steps: form.steps.map(step => ({
-        id: step.id,
-        description: step.description,
-        ...(step.category && step.category.trim() && { category: step.category.trim() }),
-        ...(step.subSteps && step.subSteps.length > 0 && { subSteps: step.subSteps }),
-      })),
-      tags: form.tags.split(',').map(t => t.trim()).filter(t => t),
-    }
-
-    if (isEditMode) {
-      await $fetch(`/api/admin/recipes/${recipeId}`, {
-        method: 'PUT',
-        body: submitData,
-      })
-    } else {
-      await $fetch('/api/recipes', {
-        method: 'POST',
-        body: submitData,
-      })
-    }
-
-    // Dispatch success notification
-    if (process.client) {
-      window.dispatchEvent(new CustomEvent('recipe-saved', {
-        detail: { message: isEditMode ? 'Recipe updated successfully!' : 'Recipe created successfully!' }
-      }))
-
-      // Small delay to show notification before navigation
-      await new Promise(resolve => setTimeout(resolve, 500))
-    }
-
-    await navigateTo('/admin/recipes')
-  } catch (err: any) {
-    // Parse field-specific errors from errors object
-    if (err.data?.errors && typeof err.data.errors === 'object') {
-      const topLevelFields = ['title', 'slug', 'description', 'servings', 'cookTimeMinutes', 'prepTimeMinutes', 'restTimeMinutes', 'tags', 'credit', 'videoUrl', 'notes']
-      Object.keys(err.data.errors).forEach(field => {
-        // Only show errors for top-level form fields, ignore nested field errors (ingredients.0.unit, etc.)
-        if (topLevelFields.includes(field) || !field.includes('.')) {
-          fieldErrors[field] = err.data.errors[field]
-        }
-      })
-      // If we have structured field errors, don't show general error message
-      if (Object.keys(fieldErrors).length > 0) {
-        error.value = null
-      } else {
-        error.value = err.data?.statusMessage || (isEditMode ? 'Failed to update recipe' : 'Failed to create recipe')
-      }
-    } else {
-      // For general error messages, parse and set field-specific errors only if the field is actually empty
-      const statusMessage = err.data?.statusMessage || err.message || ''
-      if (statusMessage) {
-        const lowerMessage = statusMessage.toLowerCase()
-        // Only set field errors if the field is actually empty
-        if (lowerMessage.includes('title') && lowerMessage.includes('required')) {
-          if (!form.title || !form.title.trim()) {
-            fieldErrors.title = 'Title is required'
-          }
-        }
-        if (lowerMessage.includes('slug') && lowerMessage.includes('required')) {
-          if (!form.slug || !form.slug.trim()) {
-            fieldErrors.slug = 'Slug is required'
-          }
-        }
-        if (lowerMessage.includes('title and slug are required')) {
-          // Only set errors for fields that are actually empty
-          if (!form.title || !form.title.trim()) {
-            fieldErrors.title = 'Title is required'
-          }
-          if (!form.slug || !form.slug.trim()) {
-            fieldErrors.slug = 'Slug is required'
-          }
-        }
-        if (lowerMessage.includes('cook time') || lowerMessage.includes('cooktime')) {
-          if (!form.cookTimeMinutes || form.cookTimeMinutes < 0) {
-            fieldErrors.cookTimeMinutes = 'Cook time is required'
-          }
-        }
-      }
-      error.value = statusMessage || (isEditMode ? 'Failed to update recipe' : 'Failed to create recipe')
-    }
-  } finally {
-    saving.value = false
-  }
-}
 </script>
 
 <style scoped>

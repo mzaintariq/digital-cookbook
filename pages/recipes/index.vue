@@ -41,7 +41,10 @@
             <h2 class="text-xl font-semibold text-gray-900 mb-2">{{ recipe.title }}</h2>
 
             <div class="flex items-center gap-4 text-sm text-gray-600 mb-3">
-              <span>⏱️ {{ totalTime(recipe) }}</span>
+              <div class="flex items-center gap-2">
+                <IconClock class="w-4 h-4 text-gray-400 flex-shrink-0" />
+                <span>{{ totalTime(recipe) }}</span>
+              </div>
             </div>
 
             <div v-if="recipe.tags.length > 0" class="flex flex-wrap gap-2 mb-3">
@@ -69,6 +72,7 @@
 import type { Recipe } from '~/types/recipe'
 import IconEdit from '~/components/icons/IconEdit.vue'
 import IconSearch from '~/components/icons/IconSearch.vue'
+import IconClock from '~/components/icons/IconClock.vue'
 
 const recipes = ref<Recipe[]>([])
 const loading = ref(true)

@@ -1,4 +1,5 @@
 export interface Ingredient {
+  id?: string
   quantity: number
   unit: string
   name: string
@@ -6,7 +7,7 @@ export interface Ingredient {
   detailedSize?: {
     amount: number
     unit: string
-  }
+  } | null
   alternateIngredient?: string | null
   category?: string | null
 }
