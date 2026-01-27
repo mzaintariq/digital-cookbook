@@ -137,15 +137,14 @@
             </div>
 
             <!-- Tags -->
-            <div>
-              <label for="tags" class="block text-sm font-medium text-gray-700 mb-1">
-                Tags
-              </label>
-              <input id="tags" v-model="form.tags" type="text" placeholder="pakistani, curry, spicy"
-                :class="getInputClasses('tags')"
-                @input="delete fieldErrors.tags" />
-              <p v-if="fieldErrors.tags" class="mt-1 text-sm text-red-600">{{ fieldErrors.tags }}</p>
-            </div>
+            <TagInput
+              v-model="form.tags"
+              label="Tags"
+              placeholder="Type and press Enter to add tags"
+              :error-message="fieldErrors.tags"
+              input-id="tags"
+              @update:model-value="form.tags = $event; delete fieldErrors.tags"
+            />
 
             <!-- Credit -->
             <div>
@@ -179,24 +178,14 @@
             <div>
               <div class="flex items-center justify-between mb-3">
                 <label class="block text-sm font-medium text-gray-700">Ingredients</label>
-                <div class="flex gap-2 h-8">
-                  <Button v-if="!showAddCategory" type="button" @click="showAddCategory = true" variant="reverse-primary" size="xs">
-                    + Add Category
-                  </Button>
-                  <div v-else class="flex gap-2">
-                    <input v-model="newCategoryName" type="text" placeholder="Category name"
-                      @keyup.enter="addCategory"
-                      @keyup.esc="showAddCategory = false; newCategoryName = ''"
-                      class="px-2 py-1.5 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-brand-primary"
-                      autofocus />
-                    <Button type="button" @click="addCategory" variant="primary" size="xs">
-                      Add
-                    </Button>
-                    <Button type="button" @click="showAddCategory = false; newCategoryName = ''" variant="secondary" size="xs">
-                      Cancel
-                    </Button>
-                  </div>
-                </div>
+                <AddCategoryInput
+                  :show-input="showAddCategory"
+                  :value="newCategoryName"
+                  @show="showAddCategory = true"
+                  @update:value="newCategoryName = $event"
+                  @add="addCategory"
+                  @cancel="showAddCategory = false; newCategoryName = ''"
+                />
               </div>
 
               <!-- Category Sections -->
@@ -213,7 +202,13 @@
                 drag-class="sortable-drag"
                 class="space-y-4">
                 <template #item="{ element: category }">
-                  <div class="border border-gray-300 rounded-lg p-4 bg-white">
+                  <div :ref="el => { if (el) ingredientCategoryRefs[category] = el as HTMLElement }" 
+                    :class="[
+                      'border rounded-lg p-4 transition-all duration-500',
+                      highlightedIngredientCategory === category 
+                        ? 'border-brand-primary bg-brand-primary-50 shadow-md' 
+                        : 'border-gray-300 bg-white'
+                    ]">
                     <CategoryHeader
                       :category="category"
                       :is-editing="editingCategory === category"
@@ -378,24 +373,14 @@
             <div>
               <div class="flex items-center justify-between mb-3">
                 <label class="block text-sm font-medium text-gray-700">Directions</label>
-                <div class="flex gap-2 h-8">
-                  <Button v-if="!showAddStepCategory" type="button" @click="showAddStepCategory = true" variant="reverse-primary" size="xs">
-                    + Add Category
-                  </Button>
-                  <div v-else class="flex gap-2">
-                    <input v-model="newStepCategoryName" type="text" placeholder="Category name"
-                      @keyup.enter="addStepCategory"
-                      @keyup.esc="showAddStepCategory = false; newStepCategoryName = ''"
-                      class="px-2 py-1.5 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-brand-primary"
-                      autofocus />
-                    <Button type="button" @click="addStepCategory" variant="primary" size="xs">
-                      Add
-                    </Button>
-                    <Button type="button" @click="showAddStepCategory = false; newStepCategoryName = ''" variant="secondary" size="xs">
-                      Cancel
-                    </Button>
-                  </div>
-                </div>
+                <AddCategoryInput
+                  :show-input="showAddStepCategory"
+                  :value="newStepCategoryName"
+                  @show="showAddStepCategory = true"
+                  @update:value="newStepCategoryName = $event"
+                  @add="addStepCategory"
+                  @cancel="showAddStepCategory = false; newStepCategoryName = ''"
+                />
               </div>
 
               <!-- Category Sections -->
@@ -412,7 +397,13 @@
                 drag-class="sortable-drag"
                 class="space-y-4">
                 <template #item="{ element: category }">
-                  <div class="border border-gray-300 rounded-lg p-4 bg-white">
+                  <div :ref="el => { if (el) stepCategoryRefs[category] = el as HTMLElement }" 
+                    :class="[
+                      'border rounded-lg p-4 transition-all duration-500',
+                      highlightedStepCategory === category 
+                        ? 'border-brand-primary bg-brand-primary-50 shadow-md' 
+                        : 'border-gray-300 bg-white'
+                    ]">
                     <CategoryHeader
                       :category="category"
                       :is-editing="editingStepCategory === category"
@@ -528,6 +519,8 @@ import Button from '~/components/Button.vue'
 import IngredientInput from '~/components/IngredientInput.vue'
 import StepInput from '~/components/StepInput.vue'
 import CategoryHeader from '~/components/CategoryHeader.vue'
+import AddCategoryInput from '~/components/AddCategoryInput.vue'
+import TagInput from '~/components/TagInput.vue'
 import { useRecipeForm } from '~/composables/useRecipeForm'
 import { useRecipeCategories } from '~/composables/useRecipeCategories'
 import { useRecipeIngredients } from '~/composables/useRecipeIngredients'
@@ -607,20 +600,58 @@ const {
   stepCategories
 )
 
+// Refs for scrolling to categories
+const ingredientCategoryRefs = ref<Record<string, HTMLElement>>({})
+const stepCategoryRefs = ref<Record<string, HTMLElement>>({})
+
+// Track newly added categories for highlighting
+const highlightedIngredientCategory = ref<string | null>(null)
+const highlightedStepCategory = ref<string | null>(null)
+
 // Helper functions
 function addCategory() {
   if (newCategoryName.value.trim()) {
-    addIngredient(newCategoryName.value.trim())
+    const categoryName = newCategoryName.value.trim()
+    addIngredient(categoryName)
     showAddCategory.value = false
     newCategoryName.value = ''
+    
+    // Highlight and scroll to the new category after DOM updates
+    nextTick(() => {
+      const categoryElement = ingredientCategoryRefs.value[categoryName]
+      if (categoryElement) {
+        highlightedIngredientCategory.value = categoryName
+        categoryElement.scrollIntoView({ behavior: 'smooth', block: 'center' })
+        
+        // Remove highlight after animation
+        setTimeout(() => {
+          highlightedIngredientCategory.value = null
+        }, 2000)
+      }
+    })
   }
 }
 
 function addStepCategory() {
   if (newStepCategoryName.value.trim()) {
-    addStep(newStepCategoryName.value.trim())
+    const categoryName = newStepCategoryName.value.trim()
+    addStep(categoryName)
     showAddStepCategory.value = false
     newStepCategoryName.value = ''
+    
+    // Highlight and scroll to the new category after DOM updates
+    nextTick(() => {
+      const categoryElement = stepCategoryRefs.value[categoryName]
+      if (categoryElement) {
+        highlightedStepCategory.value = categoryName
+        categoryElement.scrollIntoView({ behavior: 'smooth', block: 'center' })
+        
+        // Remove highlight after animation
+        setTimeout(() => {
+          highlightedStepCategory.value = null
+        }, 2000)
+      }
+    })
   }
 }
 

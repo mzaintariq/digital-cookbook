@@ -11,13 +11,11 @@
         class="px-2 py-1 text-sm font-semibold border border-brand-primary rounded focus:outline-none focus:ring-1 focus:ring-brand-primary"
         autofocus />
       <h3 v-else class="text-sm font-semibold text-gray-900 uppercase">{{ category }}</h3>
-    </div>
-    <div class="flex items-center gap-2">
       <button type="button" 
         v-if="!isEditing"
         @click="$emit('edit')"
         class="text-xs text-gray-500 hover:text-gray-700">
-        Edit
+        <IconEdit class="w-4 h-4" />
       </button>
       <button type="button" 
         v-else
@@ -25,6 +23,8 @@
         class="text-xs text-brand-primary hover:text-brand-primary-600">
         Done
       </button>
+    </div>
+    <div class="flex items-center gap-2">
       <button type="button" @click="$emit('delete')"
         class="text-red-500 hover:text-red-700">
         <IconClose class="w-4 h-4" />
@@ -37,6 +37,7 @@
 import { ref, watch } from 'vue'
 import IconDragHandle from '~/components/icons/IconDragHandle.vue'
 import IconClose from '~/components/icons/IconClose.vue'
+import IconEdit from './icons/IconEdit.vue'
 
 interface Props {
   category: string
