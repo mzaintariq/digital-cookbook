@@ -1,7 +1,36 @@
 <template>
   <div class="flex items-center justify-center min-h-[calc(100vh-80px)]">
     <div class="text-center">
-      <h1 class="text-6xl font-bold text-gray-900 mb-4">Recipe Vault</h1>
+      <h1 class="text-6xl font-bold text-gray-900 mb-6">Recipe Vault</h1>
+      <div class="flex items-center justify-center gap-4">
+        <Button @click="navigateTo('/recipes')" variant="secondary" size="md">
+          Browse
+        </Button>
+        <Button v-if="isLoggedIn" @click="navigateTo('/admin/recipes/new')" variant="primary" size="md">
+          Add
+        </Button>
+      </div>
     </div>
   </div>
 </template>
+
+<script setup lang="ts">
+import Button from '~/components/Button.vue'
+
+const isLoggedIn = ref(false)
+
+async function checkLoginStatus() {
+  try {
+    const session = await $fetch('/api/admin/session')
+    isLoggedIn.value = session.loggedIn
+  } catch {
+    isLoggedIn.value = false
+  }
+}
+
+onMounted(() => {
+  checkLoginStatus()
+  // Refresh login status periodically
+  setInterval(checkLoginStatus, 5000)
+})
+</script>

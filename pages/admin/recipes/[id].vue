@@ -10,7 +10,7 @@
         <p class="text-gray-600">Loading recipe...</p>
       </div>
 
-      <form ref="recipeFormRef" v-else @submit.prevent="handleSubmit">
+      <form ref="recipeFormRef" v-else @submit.prevent="handleSubmit" novalidate>
         <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
           <!-- Left Column: Recipe General Information -->
           <div class="lg:col-span-1 space-y-6">
@@ -28,11 +28,13 @@
 
             <!-- Recipe Name -->
             <div>
-              <label for="title" class="block text-sm font-medium text-gray-700 mb-1">
-                Recipe name *
+              <label for="title" class="flex items-center gap-1 text-sm font-medium text-gray-700 mb-1">
+                Recipe name <span class="text-gray-500 text-xs font-normal">(required)</span>
               </label>
               <input id="title" v-model="form.title" type="text" required placeholder="eg: Savory Stuffed Bell Peppers"
-                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brand-primary" />
+                :class="getInputClasses('title')"
+                @input="delete fieldErrors.title" />
+              <p v-if="fieldErrors.title" class="mt-1 text-sm text-red-600">{{ fieldErrors.title }}</p>
             </div>
 
             <!-- Description -->
@@ -42,16 +44,19 @@
               </label>
               <textarea id="description" v-model="form.description" rows="3"
                 placeholder="Brief description of the recipe..."
-                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brand-primary" />
+                :class="getTextareaClasses('description')"
+                @input="delete fieldErrors.description" />
+              <p v-if="fieldErrors.description" class="mt-1 text-sm text-red-600">{{ fieldErrors.description }}</p>
             </div>
 
             <!-- Slug -->
             <div>
-              <label for="slug" class="block text-sm font-medium text-gray-700 mb-1">
-                Slug * (unique, lowercase, hyphens)
+              <label for="slug" class="flex items-center gap-1 text-sm font-medium text-gray-700 mb-1">
+                Slug <span class="text-gray-500 text-xs font-normal">(required)</span>
               </label>
-              <input id="slug" v-model="form.slug" type="text" required @input="slugManuallyChanged = true"
-                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brand-primary" />
+              <input id="slug" v-model="form.slug" type="text" required placeholder="eg: savory-stuffed-bell-peppers" @input="slugManuallyChanged = true; delete fieldErrors.slug"
+                :class="getInputClasses('slug')" />
+              <p v-if="fieldErrors.slug" class="mt-1 text-sm text-red-600">{{ fieldErrors.slug }}</p>
             </div>
 
             <!-- Set Recipe As (Publish/Draft) -->
@@ -79,7 +84,7 @@
                 Number of serving
               </label>
               <div class="relative">
-                <input id="servings" v-model.number="form.servings" type="number" min="1" placeholder="eg: 4 or 3-5"
+                <input id="servings" v-model.number="form.servings" type="number" min="1" placeholder="eg: 4 or 5"
                   class="w-full px-3 py-2 pr-20 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brand-primary" />
                 <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
                   <span class="text-gray-700 text-sm">person</span>
@@ -90,11 +95,13 @@
             <!-- Cook Time -->
             <div>
               <label for="cookTimeMinutes" class="block text-sm font-medium text-gray-700 mb-1">
-                Cook time *
+                Cook duration
               </label>
               <div class="relative">
                 <input id="cookTimeMinutes" v-model.number="form.cookTimeMinutes" type="number" required min="0"
-                  class="w-full px-3 py-2 pr-20 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brand-primary" />
+                  :class="getInputClasses('cookTimeMinutes') + ' pr-20'"
+                  @input="delete fieldErrors.cookTimeMinutes" />
+              <p v-if="fieldErrors.cookTimeMinutes" class="mt-1 text-sm text-red-600">{{ fieldErrors.cookTimeMinutes }}</p>
                 <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
                   <span class="text-gray-700 text-sm">minute</span>
                 </div>
@@ -104,7 +111,7 @@
             <!-- Prep Time -->
             <div>
               <label for="prepTimeMinutes" class="block text-sm font-medium text-gray-700 mb-1">
-                Prep time
+                Prep duration
               </label>
               <div class="relative">
                 <input id="prepTimeMinutes" v-model.number="form.prepTimeMinutes" type="number" min="0"
@@ -118,7 +125,7 @@
             <!-- Rest Time -->
             <div>
               <label for="restTimeMinutes" class="block text-sm font-medium text-gray-700 mb-1">
-                Rest time
+                Rest duration
               </label>
               <div class="relative">
                 <input id="restTimeMinutes" v-model.number="form.restTimeMinutes" type="number" min="0"
@@ -132,10 +139,12 @@
             <!-- Tags -->
             <div>
               <label for="tags" class="block text-sm font-medium text-gray-700 mb-1">
-                Tags (comma-separated)
+                Tags
               </label>
               <input id="tags" v-model="form.tags" type="text" placeholder="pakistani, curry, spicy"
-                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brand-primary" />
+                :class="getInputClasses('tags')"
+                @input="delete fieldErrors.tags" />
+              <p v-if="fieldErrors.tags" class="mt-1 text-sm text-red-600">{{ fieldErrors.tags }}</p>
             </div>
 
             <!-- Credit -->
@@ -143,8 +152,10 @@
               <label for="credit" class="block text-sm font-medium text-gray-700 mb-1">
                 Credit
               </label>
-              <input id="credit" v-model="form.credit" type="text" placeholder="eg: Recipe by Chef John"
-                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brand-primary" />
+              <input id="credit" v-model="form.credit" type="text" placeholder="eg: Recipe by Zain"
+                :class="getInputClasses('credit')"
+                @input="delete fieldErrors.credit" />
+              <p v-if="fieldErrors.credit" class="mt-1 text-sm text-red-600">{{ fieldErrors.credit }}</p>
             </div>
 
             <!-- Video URL -->
@@ -154,7 +165,9 @@
               </label>
               <input id="videoUrl" v-model="form.videoUrl" type="url"
                 placeholder="eg: https://www.youtube.com/watch?v=..."
-                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brand-primary" />
+                :class="getInputClasses('videoUrl')"
+                @input="delete fieldErrors.videoUrl" />
+              <p v-if="fieldErrors.videoUrl" class="mt-1 text-sm text-red-600">{{ fieldErrors.videoUrl }}</p>
             </div>
           </div>
 
@@ -166,7 +179,7 @@
             <div>
               <div class="flex items-center justify-between mb-3">
                 <label class="block text-sm font-medium text-gray-700">Ingredients</label>
-                <div class="flex gap-2">
+                <div class="flex gap-2 h-8">
                   <Button v-if="!showAddCategory" type="button" @click="showAddCategory = true" variant="reverse-primary" size="xs">
                     + Add Category
                   </Button>
@@ -176,14 +189,12 @@
                       @keyup.esc="showAddCategory = false; newCategoryName = ''"
                       class="px-2 py-1.5 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-brand-primary"
                       autofocus />
-                    <button type="button" @click="addCategory"
-                      class="px-3 py-1.5 text-xs bg-brand-primary text-white rounded-md hover:bg-brand-primary-600 transition-colors">
+                    <Button type="button" @click="addCategory" variant="primary" size="xs">
                       Add
-                    </button>
-                    <button type="button" @click="showAddCategory = false; newCategoryName = ''"
-                      class="px-3 py-1.5 text-xs border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition-colors">
+                    </Button>
+                    <Button type="button" @click="showAddCategory = false; newCategoryName = ''" variant="secondary" size="xs">
                       Cancel
-                    </button>
+                    </Button>
                   </div>
                 </div>
               </div>
@@ -367,7 +378,7 @@
                               class="flex items-center text-xs text-gray-600 cursor-pointer">
                               <span class="mr-2">Alternate size</span>
                               <button type="button"
-                                @click="ingredient.detailedSize = ingredient.detailedSize ? null : { amount: 0, unit: 'oz' }"
+                                @click="ingredient.detailedSize = ingredient.detailedSize ? null : { amount: 0, unit: 'g' }"
                                 :class="[
                                   'relative inline-flex h-4 w-7 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-brand-primary focus:ring-offset-2',
                                   ingredient.detailedSize ? 'bg-brand-primary' : 'bg-gray-300'
@@ -544,7 +555,7 @@
                               class="flex items-center text-xs text-gray-600 cursor-pointer">
                               <span class="mr-2">Alternate size</span>
                               <button type="button"
-                                @click="ingredient.detailedSize = ingredient.detailedSize ? null : { amount: 0, unit: 'oz' }"
+                                @click="ingredient.detailedSize = ingredient.detailedSize ? null : { amount: 0, unit: 'g' }"
                                 :class="[
                                   'relative inline-flex h-4 w-7 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-brand-primary focus:ring-offset-2',
                                   ingredient.detailedSize ? 'bg-brand-primary' : 'bg-gray-300'
@@ -599,7 +610,7 @@
             <div>
               <div class="flex items-center justify-between mb-3">
                 <label class="block text-sm font-medium text-gray-700">Directions</label>
-                <div class="flex gap-2">
+                <div class="flex gap-2 h-8">
                   <Button v-if="!showAddStepCategory" type="button" @click="showAddStepCategory = true" variant="reverse-primary" size="xs">
                     + Add Category
                   </Button>
@@ -609,14 +620,12 @@
                       @keyup.esc="showAddStepCategory = false; newStepCategoryName = ''"
                       class="px-2 py-1.5 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-brand-primary"
                       autofocus />
-                    <button type="button" @click="addStepCategory"
-                      class="px-3 py-1.5 text-xs bg-brand-primary text-white rounded-md hover:bg-brand-primary-600 transition-colors">
+                    <Button type="button" @click="addStepCategory" variant="primary" size="xs">
                       Add
-                    </button>
-                    <button type="button" @click="showAddStepCategory = false; newStepCategoryName = ''"
-                      class="px-3 py-1.5 text-xs border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition-colors">
+                    </Button>
+                    <Button type="button" @click="showAddStepCategory = false; newStepCategoryName = ''" variant="secondary" size="xs">
                       Cancel
-                    </button>
+                    </Button>
                   </div>
                 </div>
               </div>
@@ -843,14 +852,11 @@
                 Notes
               </label>
               <textarea id="notes" v-model="form.notes" rows="4" placeholder="Additional notes, tips, or variations..."
-                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brand-primary" />
+                :class="getTextareaClasses('notes')"
+                @input="delete fieldErrors.notes" />
+              <p v-if="fieldErrors.notes" class="mt-1 text-sm text-red-600">{{ fieldErrors.notes }}</p>
             </div>
           </div>
-        </div>
-
-        <!-- Error Message -->
-        <div v-if="error" class="mt-8 pt-6 border-t border-gray-200">
-          <div class="text-red-600 text-sm">{{ error }}</div>
         </div>
       </form>
     </div>
@@ -910,8 +916,8 @@ const form = reactive({
   videoUrl: '',
   servings: null as number | null,
   cookTimeMinutes: 0,
-  prepTimeMinutes: null as number | null,
-  restTimeMinutes: null as number | null,
+  prepTimeMinutes: 0 as number,
+  restTimeMinutes: 0 as number,
   tags: '',
   notes: '',
   published: false,
@@ -922,6 +928,7 @@ const form = reactive({
 const loading = ref(isEditMode)
 const saving = ref(false)
 const error = ref<string | null>(null)
+const fieldErrors = reactive<Record<string, string>>({})
 const recipeFormRef = ref<HTMLFormElement | null>(null)
 
 // Function to generate slug from title
@@ -952,6 +959,22 @@ watch(() => form.title, (newTitle) => {
 
 function generateId() {
   return Math.random().toString(36).substr(2, 9)
+}
+
+// Helper function to get input classes with error state
+function getInputClasses(fieldName: string): string {
+  const baseClasses = 'w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 transition-colors'
+  const hasError = fieldErrors[fieldName]
+  
+  if (hasError) {
+    return `${baseClasses} border-red-500 focus:ring-red-500 focus:border-red-500 bg-red-50`
+  }
+  return `${baseClasses} border-gray-300 focus:ring-brand-primary`
+}
+
+// Helper function to get textarea classes with error state
+function getTextareaClasses(fieldName: string): string {
+  return getInputClasses(fieldName)
 }
 
 // Category management for ingredients
@@ -1415,8 +1438,8 @@ async function loadRecipe() {
     form.slug = recipe.slug
     form.servings = recipe.servings || null
     form.cookTimeMinutes = recipe.cookTimeMinutes
-    form.prepTimeMinutes = recipe.prepTimeMinutes || null
-    form.restTimeMinutes = recipe.restTimeMinutes || null
+    form.prepTimeMinutes = recipe.prepTimeMinutes ?? 0
+    form.restTimeMinutes = recipe.restTimeMinutes ?? 0
     form.description = recipe.description || ''
     form.credit = recipe.credit || ''
     form.videoUrl = recipe.videoUrl || ''
@@ -1470,6 +1493,25 @@ async function loadRecipe() {
 
 
 async function handleSubmit() {
+  // Client-side validation
+  Object.keys(fieldErrors).forEach(key => delete fieldErrors[key])
+  
+  let hasErrors = false
+  
+  if (!form.title || !form.title.trim()) {
+    fieldErrors.title = 'Title is required'
+    hasErrors = true
+  }
+  
+  if (!form.slug || !form.slug.trim()) {
+    fieldErrors.slug = 'Slug is required'
+    hasErrors = true
+  }
+
+  if (hasErrors) {
+    return
+  }
+
   try {
     saving.value = true
     error.value = null
@@ -1524,7 +1566,54 @@ async function handleSubmit() {
 
     await navigateTo('/admin/recipes')
   } catch (err: any) {
-    error.value = err.data?.statusMessage || (isEditMode ? 'Failed to update recipe' : 'Failed to create recipe')
+    // Parse field-specific errors from errors object
+    if (err.data?.errors && typeof err.data.errors === 'object') {
+      const topLevelFields = ['title', 'slug', 'description', 'servings', 'cookTimeMinutes', 'prepTimeMinutes', 'restTimeMinutes', 'tags', 'credit', 'videoUrl', 'notes']
+      Object.keys(err.data.errors).forEach(field => {
+        // Only show errors for top-level form fields, ignore nested field errors (ingredients.0.unit, etc.)
+        if (topLevelFields.includes(field) || !field.includes('.')) {
+          fieldErrors[field] = err.data.errors[field]
+        }
+      })
+      // If we have structured field errors, don't show general error message
+      if (Object.keys(fieldErrors).length > 0) {
+        error.value = null
+      } else {
+        error.value = err.data?.statusMessage || (isEditMode ? 'Failed to update recipe' : 'Failed to create recipe')
+      }
+    } else {
+      // For general error messages, parse and set field-specific errors only if the field is actually empty
+      const statusMessage = err.data?.statusMessage || err.message || ''
+      if (statusMessage) {
+        const lowerMessage = statusMessage.toLowerCase()
+        // Only set field errors if the field is actually empty
+        if (lowerMessage.includes('title') && lowerMessage.includes('required')) {
+          if (!form.title || !form.title.trim()) {
+            fieldErrors.title = 'Title is required'
+          }
+        }
+        if (lowerMessage.includes('slug') && lowerMessage.includes('required')) {
+          if (!form.slug || !form.slug.trim()) {
+            fieldErrors.slug = 'Slug is required'
+          }
+        }
+        if (lowerMessage.includes('title and slug are required')) {
+          // Only set errors for fields that are actually empty
+          if (!form.title || !form.title.trim()) {
+            fieldErrors.title = 'Title is required'
+          }
+          if (!form.slug || !form.slug.trim()) {
+            fieldErrors.slug = 'Slug is required'
+          }
+        }
+        if (lowerMessage.includes('cook time') || lowerMessage.includes('cooktime')) {
+          if (!form.cookTimeMinutes || form.cookTimeMinutes < 0) {
+            fieldErrors.cookTimeMinutes = 'Cook time is required'
+          }
+        }
+      }
+      error.value = statusMessage || (isEditMode ? 'Failed to update recipe' : 'Failed to create recipe')
+    }
   } finally {
     saving.value = false
   }
