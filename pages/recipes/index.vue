@@ -19,7 +19,7 @@
       </div>
 
       <div v-if="loading" class="text-center py-12">
-        <p class="text-gray-600">Loading recipes...</p>
+        <Loader />
       </div>
 
       <div v-else-if="error" class="text-center py-12">

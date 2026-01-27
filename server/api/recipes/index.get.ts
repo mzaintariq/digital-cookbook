@@ -11,7 +11,13 @@ export default defineEventHandler(async (event) => {
         createdAt: 'desc',
       },
     })
-    return recipes
+    
+    // Serialize Date objects to strings for proper serialization
+    return recipes.map(recipe => ({
+      ...recipe,
+      createdAt: recipe.createdAt.toISOString(),
+      updatedAt: recipe.updatedAt.toISOString(),
+    }))
   } catch (error) {
     throw createError({
       statusCode: 500,

@@ -7,7 +7,7 @@
       </div>
 
       <div v-if="loading" class="text-center py-12">
-        <p class="text-gray-600">Loading recipe...</p>
+        <Loader />
       </div>
 
       <form ref="recipeFormRef" v-else @submit.prevent="handleSubmit" novalidate>

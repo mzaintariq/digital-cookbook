@@ -5,7 +5,7 @@
         <h1 class="text-2xl sm:text-3xl font-bold text-gray-900">Recipe Management</h1>
         <div class="flex gap-4">
           <NuxtLink to="/admin/recipes/new"
-            class="bg-brand-primary-600 text-white px-3 py-2 sm:px-4 rounded-md hover:bg-brand-primary-700 text-sm sm:text-base whitespace-nowrap">
+            class="bg-brand-primary text-white px-3 py-2 sm:px-4 rounded-md hover:bg-brand-primary-600 text-sm sm:text-base whitespace-nowrap">
             + New Recipe
           </NuxtLink>
         </div>
@@ -29,7 +29,7 @@
                   Delete selected
                 </Button>
                 <button @click="table.toggleAllRowsSelected(false)"
-                  class="text-brand-primary hover:text-brand-primary-700 text-sm">
+                  class="text-brand-primary hover:text-brand-primary text-sm">
                   Clear selection
                 </button>
               </div>
@@ -46,7 +46,7 @@
       </div>
 
       <div v-if="loading" class="text-center py-12">
-        <p class="text-gray-600">Loading recipes...</p>
+        <Loader />
       </div>
 
       <div v-else-if="error" class="text-center py-12">

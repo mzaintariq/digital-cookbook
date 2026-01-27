@@ -30,7 +30,12 @@ export default defineEventHandler(async (event) => {
       })
     }
 
-    return recipe
+    // Serialize Date objects to strings for proper serialization
+    return {
+      ...recipe,
+      createdAt: recipe.createdAt.toISOString(),
+      updatedAt: recipe.updatedAt.toISOString(),
+    }
   } catch (error: any) {
     if (error.statusCode) {
       throw error

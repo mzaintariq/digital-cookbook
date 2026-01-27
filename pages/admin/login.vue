@@ -25,7 +25,7 @@
         <div v-if="error" class="text-red-600 text-sm">{{ error }}</div>
 
         <button type="submit" :disabled="loading"
-          class="w-full bg-brand-primary-600 text-white py-2 px-4 rounded-md hover:bg-brand-primary-700 disabled:bg-gray-400 disabled:cursor-not-allowed">
+          class="w-full bg-brand-primary-600 text-white py-2 px-4 rounded-md hover:bg-brand-primary disabled:bg-gray-400 disabled:cursor-not-allowed">
           {{ loading ? 'Logging in...' : 'Login' }}
         </button>
       </form>
