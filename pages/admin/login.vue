@@ -5,12 +5,12 @@
 
       <form @submit.prevent="handleLogin" class="space-y-4">
         <div>
-          <label for="email" class="block text-sm font-medium text-gray-700 mb-1">
-            Email
+          <label for="username" class="block text-sm font-medium text-gray-700 mb-1">
+            Username
           </label>
-          <input id="email" v-model="form.email" type="email" required
+          <input id="username" v-model="form.username" type="text" required
             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brand-primary"
-            placeholder="admin@example.com" />
+            placeholder="Enter username" />
         </div>
 
         <div>
@@ -38,7 +38,7 @@ definePageMeta({
   layout: 'admin'
 })
 const form = reactive({
-  email: '',
+  username: '',
   password: '',
 })
 

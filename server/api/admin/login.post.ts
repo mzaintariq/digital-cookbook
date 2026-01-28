@@ -4,27 +4,27 @@ import { setCookie } from 'h3'
 export default defineEventHandler(async (event) => {
   try {
     const body = await readBody(event)
-    const { email, password } = body
+    const { username, password } = body
 
-    if (!email || !password) {
+    if (!username || !password) {
       throw createError({
         statusCode: 400,
-        statusMessage: 'Email and password are required',
+        statusMessage: 'Username and password are required',
       })
     }
 
-    const adminEmail = process.env.ADMIN_EMAIL
+    const adminUsername = process.env.ADMIN_USERNAME
     const adminPasswordHash = process.env.ADMIN_PASSWORD_HASH
 
-    if (!adminEmail || !adminPasswordHash) {
+    if (!adminUsername || !adminPasswordHash) {
       throw createError({
         statusCode: 500,
         statusMessage: 'Admin credentials not configured',
       })
     }
 
-    // Verify email
-    if (email !== adminEmail) {
+    // Verify username
+    if (username !== adminUsername) {
       throw createError({
         statusCode: 401,
         statusMessage: 'Invalid credentials',
@@ -41,7 +41,7 @@ export default defineEventHandler(async (event) => {
     }
 
     // Create token
-    const token = await createAdminToken(email)
+    const token = await createAdminToken(username)
 
     // Set cookie
     setCookie(event, 'admin_token', token, {

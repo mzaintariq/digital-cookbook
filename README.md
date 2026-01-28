@@ -40,7 +40,7 @@ Create a `.env` file in the root directory:
 
 ```env
 DATABASE_URL="postgresql://user:password@localhost:5432/cookbook_db"
-ADMIN_EMAIL="admin@example.com"
+ADMIN_USERNAME="admin"
 ADMIN_PASSWORD_HASH="your_bcrypt_hashed_password"
 JWT_SECRET="your-secret-key-change-in-production"
 ```

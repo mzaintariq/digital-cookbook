@@ -40,7 +40,7 @@ openssl rand -base64 32
    In the Vercel project settings, add these environment variables:
    
    - `DATABASE_URL` - Your PostgreSQL connection string from Neon/Supabase
-   - `ADMIN_EMAIL` - Your admin email (e.g., `admin@example.com`)
+   - `ADMIN_USERNAME` - Your admin username
    - `ADMIN_PASSWORD_HASH` - The bcrypt hash you generated
    - `JWT_SECRET` - The random secret you generated
 
@@ -75,7 +75,7 @@ Alternatively, you can run this locally by temporarily setting `DATABASE_URL` to
 | Variable | Description | Example |
 |----------|-------------|---------|
 | `DATABASE_URL` | PostgreSQL connection string | `postgresql://user:pass@host:5432/db` |
-| `ADMIN_EMAIL` | Admin login email | `admin@example.com` |
+| `ADMIN_USERNAME` | Admin login username | `admin` |
 | `ADMIN_PASSWORD_HASH` | Bcrypt hashed password | `$2b$10$...` |
 | `JWT_SECRET` | Secret for JWT tokens (32+ chars) | Random base64 string |
 
