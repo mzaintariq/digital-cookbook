@@ -3,10 +3,12 @@
     <div class="container mx-auto px-4 h-full">
       <div class="flex items-center justify-between h-full">
         <!-- Logo or Recipe Title -->
-        <NuxtLink v-if="!isRecipeEditPage" to="/" class="flex items-center">
-          <div class="w-10 h-10 bg-gray-300 rounded flex items-center justify-center">
-            <span class="text-gray-600 font-bold text-lg">RV</span>
-          </div>
+        <NuxtLink v-if="!isRecipeEditPage" to="/"
+          class="group flex items-center gap-1 text-brand-primary transition-colors duration-200 hover:text-brand-primary-600"
+          aria-label="Digital Cookbook home">
+          <!-- hover:opacity-80" -->
+          <LogoIcon class="h-10 w-10 shrink-0" aria-hidden />
+          <LogoType class="h-8 w-auto max-w-[140px] shrink-0" aria-hidden />
         </NuxtLink>
         <div v-else class="flex items-center gap-3">
           <button @click="handleBack"
@@ -79,6 +81,8 @@ import IconClose from '~/components/icons/IconClose.vue'
 import IconChevronDown from '~/components/icons/IconChevronDown.vue'
 import IconUser from '~/components/icons/IconUser.vue'
 import Button from '~/components/Button.vue'
+import LogoIcon from '~/components/logos/LogoIcon.svg?component'
+import LogoType from '~/components/logos/LogoType.svg?component'
 
 const route = useRoute()
 const isLoggedIn = ref(false)
