@@ -1,43 +1,30 @@
 <template>
-  <header class="bg-white border-b border-gray-200 h-16">
+  <header class="bg-white border-b border-gray-200 h-16 min-h-16 shrink-0">
     <div class="container mx-auto px-4 h-full">
       <div class="flex items-center justify-between h-full">
         <!-- Logo or Recipe Title -->
         <NuxtLink v-if="!isRecipeEditPage" to="/"
           class="group flex items-center gap-1 text-brand-primary transition-colors duration-200 hover:text-brand-primary-600"
           aria-label="Digital Cookbook home">
-          <!-- hover:opacity-80" -->
           <LogoIcon class="h-10 w-10 shrink-0" aria-hidden />
           <LogoType class="h-8 w-auto max-w-[140px] shrink-0" aria-hidden />
         </NuxtLink>
-        <div v-else class="flex items-center gap-3">
+        <div v-else class="flex items-center gap-3 min-w-0 flex-1">
           <button @click="handleBack"
-            class="w-8 h-8 rounded-full bg-gray-200 hover:bg-gray-300 flex items-center justify-center transition-colors">
-            <IconClose class="w-5 h-5 text-gray-700" />
+            class="w-8 h-8 min-w-8 min-h-8 shrink-0 rounded-full bg-gray-200 hover:bg-gray-300 flex items-center justify-center transition-colors">
+            <IconClose class="w-5 h-5 text-gray-700 shrink-0" />
           </button>
-          <span class="text-gray-900 font-semibold text-lg">
+          <span class="text-gray-900 font-semibold text-lg truncate min-w-0">
             {{ saveButtonText === 'Save Recipe' ? 'New Recipe' : (recipeTitle || 'Edit Recipe') }}
           </span>
         </div>
 
-        <!-- Navigation -->
-        <nav class="flex items-center gap-6">
-          <NuxtLink v-if="!isRecipeEditPage" to="/recipes" class="text-gray-700 hover:text-gray-900 font-medium">
+        <!-- Desktop Navigation (hidden on mobile when not edit page) -->
+        <nav v-if="!isRecipeEditPage" class="hidden md:flex items-center gap-6 shrink-0">
+          <NuxtLink to="/recipes" class="text-gray-700 hover:text-gray-900 font-medium">
             Recipes
           </NuxtLink>
-
-          <!-- Recipe Edit Page Actions -->
-          <div v-if="isRecipeEditPage" class="flex items-center gap-3">
-            <Button @click="handleCancel" variant="secondary">
-              Cancel
-            </Button>
-            <Button @click="handleSave" :disabled="isSaving" variant="primary">
-              {{ isSaving ? 'Saving...' : saveButtonText }}
-            </Button>
-          </div>
-
-          <!-- Admin Menu (only show when not on recipe edit page) -->
-          <div v-if="!isRecipeEditPage" class="relative" ref="adminMenuRef">
+          <div class="relative" ref="adminMenuRef">
             <button v-if="isLoggedIn" @click="showDropdown = !showDropdown"
               class="text-gray-700 hover:text-gray-900 font-medium flex items-center gap-2">
               <span>Admin</span>
@@ -46,8 +33,6 @@
             <NuxtLink v-else to="/admin/login" class="text-gray-700 hover:text-gray-900">
               <IconUser class="w-6 h-6" />
             </NuxtLink>
-
-            <!-- Dropdown Menu -->
             <Transition enter-active-class="transition ease-out duration-200"
               enter-from-class="opacity-0 scale-95 -translate-y-1" enter-to-class="opacity-100 scale-100 translate-y-0"
               leave-active-class="transition ease-in duration-150"
@@ -70,8 +55,34 @@
             </Transition>
           </div>
         </nav>
+
+        <!-- Recipe Edit Page Actions (always visible when on edit page) -->
+        <nav v-if="isRecipeEditPage" class="flex items-center gap-3 shrink-0">
+          <Button @click="handleCancel" variant="secondary" class="hidden md:inline-flex">
+            Cancel
+          </Button>
+          <Button @click="handleSave" :disabled="isSaving" variant="primary" class="whitespace-nowrap">
+            <template v-if="isSaving">Saving...</template>
+            <template v-else-if="saveButtonText === 'Update Recipe'">
+              <span class="md:hidden">Update</span>
+              <span class="hidden md:inline">Update Recipe</span>
+            </template>
+            <template v-else>{{ saveButtonText }}</template>
+          </Button>
+        </nav>
+
+        <!-- Mobile hamburger (only when not on recipe edit page) -->
+        <button v-if="!isRecipeEditPage"
+          @click="showMobileMenu = true"
+          class="md:hidden w-10 h-10 flex items-center justify-center text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-full transition-colors"
+          aria-label="Open menu">
+          <IconMenu class="w-6 h-6" />
+        </button>
       </div>
     </div>
+
+    <!-- Mobile menu overlay and panel -->
+    <MobileMenu v-model="showMobileMenu" :is-logged-in="isLoggedIn" @logout="closeMobileMenuAndLogout" />
   </header>
 </template>
 
@@ -79,6 +90,7 @@
 
 import IconClose from '~/components/icons/IconClose.vue'
 import IconChevronDown from '~/components/icons/IconChevronDown.vue'
+import IconMenu from '~/components/icons/IconMenu.vue'
 import IconUser from '~/components/icons/IconUser.vue'
 import Button from '~/components/Button.vue'
 import LogoIcon from '~/components/logos/LogoIcon.svg?component'
@@ -87,6 +99,7 @@ import LogoType from '~/components/logos/LogoType.svg?component'
 const route = useRoute()
 const isLoggedIn = ref(false)
 const showDropdown = ref(false)
+const showMobileMenu = ref(false)
 const adminMenuRef = ref<HTMLElement | null>(null)
 
 // Recipe title from page
@@ -139,10 +152,11 @@ onMounted(() => {
   }) as EventListener)
 })
 
-// Reset saving state when route changes
+// Reset saving state and close mobile menu when route changes
 watch(() => route.path, () => {
   isSaving.value = false
   recipeTitle.value = null
+  showMobileMenu.value = false
 })
 
 // Check login status
@@ -165,6 +179,12 @@ async function handleLogout() {
   } catch (err) {
     console.error('Logout failed:', err)
   }
+}
+
+// Close mobile menu and logout (for mobile menu logout button)
+async function closeMobileMenuAndLogout() {
+  showMobileMenu.value = false
+  await handleLogout()
 }
 
 // Close dropdown when clicking outside

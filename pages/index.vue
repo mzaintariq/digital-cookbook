@@ -1,12 +1,14 @@
 <template>
-  <div class="flex items-center justify-center min-h-[calc(100vh-80px)]">
+  <div class="h-full flex items-center justify-center min-h-0">
     <div class="text-center">
-      <h1 class="text-6xl font-bold text-gray-900 mb-6">Recipe Vault</h1>
+      <h1 class="text-6xl font-bold text-gray-900 mb-6">
+        Recipe Vault
+      </h1>
       <div class="flex items-center justify-center gap-4">
-        <Button @click="navigateTo('/recipes')" variant="secondary" size="md">
+        <Button @click="navigateTo('/recipes')" variant="secondary" size="md" class="w-40">
           Browse
         </Button>
-        <Button v-if="isLoggedIn" @click="navigateTo('/admin/recipes/new')" variant="primary" size="md">
+        <Button v-if="isLoggedIn" @click="navigateTo('/admin/recipes/new')" variant="primary" size="md" class="w-40">
           Add
         </Button>
       </div>
