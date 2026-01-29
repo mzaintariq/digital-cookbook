@@ -634,4 +634,13 @@ input[type="number"]::-webkit-outer-spin-button {
 input[type="number"] {
   -moz-appearance: textfield;
 }
+
+/* Prevent iOS zoom on input focus (iOS zooms when font-size < 16px) */
+@media (max-width: 768px) {
+  :deep(input),
+  :deep(textarea),
+  :deep(select) {
+    font-size: 16px;
+  }
+}
 </style>
