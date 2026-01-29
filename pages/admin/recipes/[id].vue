@@ -204,7 +204,7 @@
                 <template #item="{ element: category }">
                   <div :ref="el => { if (el) ingredientCategoryRefs[category] = el as HTMLElement }" 
                     :class="[
-                      'border rounded-lg p-4 transition-all duration-500',
+                      'border rounded-lg p-4 transition-[background-color,border-color] duration-500',
                       highlightedIngredientCategory === category 
                         ? 'border-brand-primary bg-brand-primary-50 shadow-md' 
                         : 'border-gray-300 bg-white'
@@ -399,7 +399,7 @@
                 <template #item="{ element: category }">
                   <div :ref="el => { if (el) stepCategoryRefs[category] = el as HTMLElement }" 
                     :class="[
-                      'border rounded-lg p-4 transition-all duration-500',
+                      'border rounded-lg p-4 transition-[background-color,border-color] duration-500',
                       highlightedStepCategory === category 
                         ? 'border-brand-primary bg-brand-primary-50 shadow-md' 
                         : 'border-gray-300 bg-white'
@@ -432,6 +432,7 @@
                       ghost-class="sortable-ghost" 
                       chosen-class="sortable-chosen"
                       drag-class="sortable-drag" 
+                      group="steps"
                       class="space-y-3">
                       <template #item="{ element: step, index }">
                         <StepInput
@@ -470,6 +471,7 @@
                   ghost-class="sortable-ghost" 
                   chosen-class="sortable-chosen"
                   drag-class="sortable-drag" 
+                  group="steps"
                   class="space-y-3">
                   <template #item="{ element: step, index }">
                     <StepInput
@@ -521,6 +523,7 @@ import StepInput from '~/components/StepInput.vue'
 import CategoryHeader from '~/components/CategoryHeader.vue'
 import AddCategoryInput from '~/components/AddCategoryInput.vue'
 import TagInput from '~/components/TagInput.vue'
+import { toRef } from 'vue'
 import { useRecipeForm } from '~/composables/useRecipeForm'
 import { useRecipeCategories } from '~/composables/useRecipeCategories'
 import { useRecipeIngredients } from '~/composables/useRecipeIngredients'
@@ -570,8 +573,8 @@ const {
   cancelStepCategoryEdit,
   deleteStepCategory,
 } = useRecipeCategories(
-  computed(() => form.ingredients),
-  computed(() => form.steps)
+  toRef(form, 'ingredients'),
+  toRef(form, 'steps')
 )
 
 // Ingredients composable
@@ -595,7 +598,7 @@ const {
   rebuildStepsPreservingCategoryOrderWithNewList,
   rebuildStepsPreservingCategoryOrderWithNewListForUncategorized,
 } = useRecipeSteps(
-  computed(() => form.steps),
+  toRef(form, 'steps'),
   generateId,
   stepCategories
 )
