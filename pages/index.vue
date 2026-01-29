@@ -15,6 +15,10 @@
 </template>
 
 <script setup lang="ts">
+definePageMeta({
+  layout: 'home',
+})
+
 import Button from '~/components/Button.vue'
 
 const isLoggedIn = ref(false)

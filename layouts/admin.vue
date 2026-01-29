@@ -1,10 +1,9 @@
 <template>
-  <div class="min-h-screen bg-gray-50">
+  <div class="h-screen bg-gray-50 flex flex-col">
     <AppHeader />
-
-    <!-- Page Content -->
-    <main>
+    <main class="flex-1">
       <slot />
     </main>
+    <AppFooter />
   </div>
 </template>
