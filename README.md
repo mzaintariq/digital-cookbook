@@ -1,14 +1,14 @@
-# Recipe Vault — MVP v0.1
+# Recipe Vault — MVP v1
 
-A private, family recipe vault that stores only tried & approved recipes.
+A private, family recipe vault that stores only tried & published recipes.
 
 ## Features
 
 - ✅ Browse approved recipes on the public homepage
 - ✅ View detailed recipe pages with ingredients, steps, and notes
 - ✅ Admin authentication (single admin user)
-- ✅ Admin recipe management (create, edit, delete, approve/unapprove)
-- ✅ Clean, mobile-first UI with Tailwind CSS
+- ✅ Admin recipe management (create, edit, delete, publish/unpublish)
+- ✅ Clean, desktop + mobile UI with Tailwind CSS
 
 ## Tech Stack
 
