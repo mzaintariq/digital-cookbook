@@ -8,11 +8,7 @@
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "prisma generate && nuxt prepare",
-    "seed": "tsx prisma/seed.ts",
     "favicon": "svg-to-ico public/favicon.svg public/favicon.ico"
-  },
-  "prisma": {
-    "seed": "tsx prisma/seed.ts"
   },
   "dependencies": {
     "@prisma/adapter-pg": "^7.2.0",

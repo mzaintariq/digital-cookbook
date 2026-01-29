@@ -4,10 +4,11 @@ A private, family recipe vault that stores only tried & published recipes.
 
 ## Features
 
-- ✅ Browse approved recipes on the public homepage
-- ✅ View detailed recipe pages with ingredients, steps, and notes
+- ✅ Browse published recipes on the public homepage
+- ✅ View detailed recipe pages with ingredients, steps (with categories/sub-steps), and notes
 - ✅ Admin authentication (single admin user)
 - ✅ Admin recipe management (create, edit, delete, publish/unpublish)
+- ✅ Structured ingredients & steps with categories; drag-and-drop reorder in admin (within and between categories)
 - ✅ Clean, desktop + mobile UI with Tailwind CSS
 
 ## Tech Stack
@@ -58,9 +59,6 @@ npx prisma migrate deploy
 
 # Generate Prisma client
 npx prisma generate
-
-# Seed the database with sample recipes
-npm run seed
 ```
 
 4. **Start the development server:**
@@ -83,7 +81,7 @@ The application will be available at `http://localhost:3000`
 - `/admin/login` - Admin login page
 - `/admin/recipes` - Recipe management table
 - `/admin/recipes/new` - Create new recipe
-- `/admin/recipes/[id]/edit` - Edit recipe
+- `/admin/recipes/[id]` - Edit recipe (same page as new when `id` is a recipe UUID)
 
 ## Database Schema
 
@@ -91,24 +89,18 @@ The `Recipe` model includes:
 - `id` (UUID)
 - `title` (string)
 - `slug` (string, unique)
-- `ingredients` (string[])
-- `steps` (string[])
+- `description` (string | null)
+- `ingredients` (JSON — array of objects: quantity, unit, name, category, etc.)
+- `steps` (JSON — array of objects: description, category, subSteps)
 - `cookTimeMinutes` (number)
-- `spiceLevel` (number, 1-5)
+- `prepTimeMinutes`, `restTimeMinutes` (number | null)
+- `servings` (number | null)
 - `tags` (string[])
 - `notes` (string | null)
-- `rating` (number, 1-5)
+- `credit`, `videoUrl` (string | null)
 - `approvedBy` (string)
-- `status` ("draft" | "approved")
+- `status` ("draft" | "publish")
 - `createdAt`, `updatedAt` (DateTime)
-
-## Seed Data
-
-The seed script includes two sample recipes:
-- **Chicken Karahi** (approved)
-- **Daal Chawal** (approved)
-
-Run `npm run seed` to populate the database.
 
 ## Production Deployment
 
@@ -141,14 +133,11 @@ npx prisma migrate dev
 
 # Generate Prisma client
 npx prisma generate
-
-# Seed database
-npm run seed
 ```
 
 ## Notes
 
-- Only approved recipes appear on public pages
+- Only published recipes appear on public pages
 - Admin authentication uses JWT tokens stored in HTTP-only cookies
 - Slug must be unique across all recipes
-- Ingredients and steps are stored as arrays (split by newline in forms)
+- Ingredients and steps are stored as JSON (structured objects with categories, sub-steps, etc.); admin form supports drag-and-drop reordering within and between categories
