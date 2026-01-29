@@ -1,4 +1,4 @@
-import { SignJWT, jwtVerify } from 'jose'
+import { SignJWT, jwtVerify, type JWTPayload } from 'jose'
 import bcrypt from 'bcrypt'
 import { parseCookies } from 'h3'
 
@@ -12,7 +12,8 @@ export interface AdminSession {
 }
 
 export async function createAdminToken(email: string): Promise<string> {
-  const token = await new SignJWT({ email, isAdmin: true } as AdminSession)
+  const payload: JWTPayload = { email, isAdmin: true }
+  const token = await new SignJWT(payload)
     .setProtectedHeader({ alg: 'HS256' })
     .setIssuedAt()
     .setExpirationTime('24h')
@@ -24,8 +25,8 @@ export async function createAdminToken(email: string): Promise<string> {
 export async function verifyAdminToken(token: string): Promise<AdminSession | null> {
   try {
     const { payload } = await jwtVerify(token, secret)
-    if (payload.isAdmin && payload.email) {
-      return payload as AdminSession
+    if (payload.isAdmin && payload.email && typeof payload.email === 'string') {
+      return { email: payload.email, isAdmin: true }
     }
     return null
   } catch {

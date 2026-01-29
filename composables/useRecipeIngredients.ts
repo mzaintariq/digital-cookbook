@@ -17,7 +17,7 @@ export function useRecipeIngredients(
       alternateIngredient: null,
       category: category || null,
     })
-    
+
     if (newCategoryName.value.trim() && !category) {
       const lastIngredient = ingredients.value[ingredients.value.length - 1]
       if (lastIngredient) {
@@ -42,7 +42,7 @@ export function useRecipeIngredients(
     const currentCategoryOrder = categories
     const ingredientsByCat: { [key: string]: Ingredient[] } = {}
     const uncategorized: Ingredient[] = []
-    
+
     ingredients.value.forEach(ing => {
       if (ing.category && ing.category.trim()) {
         const cat = ing.category.trim()
@@ -54,7 +54,7 @@ export function useRecipeIngredients(
         uncategorized.push(ing)
       }
     })
-    
+
     const reordered: Ingredient[] = []
     currentCategoryOrder.forEach(cat => {
       if (ingredientsByCat[cat]) {
@@ -62,7 +62,7 @@ export function useRecipeIngredients(
       }
     })
     reordered.push(...uncategorized)
-    
+
     ingredients.value = reordered
   }
 

@@ -3,36 +3,26 @@
     <label v-if="label" :for="inputId" class="block text-sm font-medium text-gray-700 mb-1">
       {{ label }}
     </label>
-    <div 
-      :class="[
-        'flex flex-wrap items-center gap-2 min-h-[2.5rem] px-3 py-2 border rounded-md focus-within:outline-none focus-within:ring-2 transition-colors',
-        hasError 
-          ? 'border-red-500 focus-within:ring-red-500 focus-within:border-red-500 bg-red-50' 
-          : 'border-gray-300 focus-within:ring-brand-primary'
-      ]"
-      @click="focusInput">
+    <div :class="[
+      'flex flex-wrap items-center gap-2 min-h-[2.5rem] px-3 py-2 border rounded-md focus-within:outline-none focus-within:ring-2 transition-colors',
+      hasError
+        ? 'border-red-500 focus-within:ring-red-500 focus-within:border-red-500 bg-red-50'
+        : 'border-gray-300 focus-within:ring-brand-primary'
+    ]" @click="focusInput">
       <!-- Tag chips -->
-      <div v-for="(tag, index) in tagList" :key="index" 
+      <div v-for="(tag, index) in tagList" :key="index"
         class="flex items-center gap-1 px-2 py-1 bg-brand-primary-100 text-brand-primary-800 rounded text-sm">
         <span>{{ tag }}</span>
-        <button 
-          type="button"
-          @click.stop="removeTag(index)"
+        <button type="button" @click.stop="removeTag(index)"
           class="ml-1 text-brand-primary-800 hover:text-brand-primary-900 focus:outline-none">
           <IconClose class="w-3 h-3" />
         </button>
       </div>
       <!-- Input field -->
-      <input
-        :id="inputId"
-        ref="inputRef"
-        v-model="inputValue"
-        type="text"
+      <input :id="inputId" ref="inputRef" v-model="inputValue" type="text"
         :placeholder="tagList.length === 0 ? placeholder : ''"
-        class="flex-1 min-w-[120px] outline-none bg-transparent text-sm"
-        @keydown="handleKeydown"
-        @input="handleInput"
-      />
+        class="flex-1 min-w-[120px] outline-none bg-transparent text-sm" @keydown="handleKeydown"
+        @input="handleInput" />
     </div>
     <p v-if="errorMessage" class="mt-1 text-sm text-red-600">{{ errorMessage }}</p>
   </div>
@@ -87,7 +77,7 @@ function addTags(newTags: string[]) {
   const tagsToAdd = newTags
     .map(t => t.trim())
     .filter(t => t.length > 0 && !currentTags.includes(t))
-  
+
   if (tagsToAdd.length > 0) {
     const allTags = [...currentTags, ...tagsToAdd]
     emit('update:modelValue', allTags.join(', '))

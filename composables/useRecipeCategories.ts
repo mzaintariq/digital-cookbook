@@ -18,7 +18,7 @@ export function useRecipeCategories(
   const categories = computed(() => {
     const categoryOrder: string[] = []
     const seen = new Set<string>()
-    
+
     ingredients.value.forEach(ing => {
       if (ing.category && ing.category.trim()) {
         const cat = ing.category.trim()
@@ -28,14 +28,14 @@ export function useRecipeCategories(
         }
       }
     })
-    
+
     return categoryOrder
   })
 
   const ingredientsByCategory = computed(() => {
     const grouped: { [key: string]: Ingredient[] } = {}
     const uncategorized: Ingredient[] = []
-    
+
     ingredients.value.forEach(ing => {
       if (ing.category && ing.category.trim()) {
         const cat = ing.category.trim()
@@ -47,7 +47,7 @@ export function useRecipeCategories(
         uncategorized.push(ing)
       }
     })
-    
+
     return { grouped, uncategorized }
   })
 
@@ -55,7 +55,7 @@ export function useRecipeCategories(
   const stepCategories = computed(() => {
     const categoryOrder: string[] = []
     const seen = new Set<string>()
-    
+
     steps.value.forEach(step => {
       if (step.category && step.category.trim()) {
         const cat = step.category.trim()
@@ -65,14 +65,14 @@ export function useRecipeCategories(
         }
       }
     })
-    
+
     return categoryOrder
   })
 
   const stepsByCategory = computed(() => {
     const grouped: { [key: string]: Step[] } = {}
     const uncategorized: Step[] = []
-    
+
     steps.value.forEach(step => {
       if (step.category && step.category.trim()) {
         const cat = step.category.trim()
@@ -84,7 +84,7 @@ export function useRecipeCategories(
         uncategorized.push(step)
       }
     })
-    
+
     return { grouped, uncategorized }
   })
 
@@ -92,7 +92,7 @@ export function useRecipeCategories(
   function updateCategoryOrder(newCategoryOrder: string[]) {
     const ingredientsByCat: { [key: string]: Ingredient[] } = {}
     const uncategorized: Ingredient[] = []
-    
+
     ingredients.value.forEach(ing => {
       if (ing.category && ing.category.trim()) {
         const cat = ing.category.trim()
@@ -104,7 +104,7 @@ export function useRecipeCategories(
         uncategorized.push(ing)
       }
     })
-    
+
     const reordered: Ingredient[] = []
     newCategoryOrder.forEach(cat => {
       if (ingredientsByCat[cat]) {
@@ -112,7 +112,7 @@ export function useRecipeCategories(
       }
     })
     reordered.push(...uncategorized)
-    
+
     ingredients.value = reordered
   }
 
@@ -150,7 +150,7 @@ export function useRecipeCategories(
   function updateStepCategoryOrder(newCategoryOrder: string[]) {
     const stepsByCat: { [key: string]: Step[] } = {}
     const uncategorized: Step[] = []
-    
+
     steps.value.forEach(step => {
       if (step.category && step.category.trim()) {
         const cat = step.category.trim()
@@ -162,7 +162,7 @@ export function useRecipeCategories(
         uncategorized.push(step)
       }
     })
-    
+
     const reordered: Step[] = []
     newCategoryOrder.forEach((cat: string) => {
       if (stepsByCat[cat]) {
@@ -170,7 +170,7 @@ export function useRecipeCategories(
       }
     })
     reordered.push(...uncategorized)
-    
+
     steps.value = reordered
   }
 

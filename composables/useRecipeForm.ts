@@ -61,7 +61,7 @@ export function useRecipeForm(recipeId: string) {
   function getInputClasses(fieldName: string): string {
     const baseClasses = 'w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 transition-colors'
     const hasError = fieldErrors[fieldName]
-    
+
     if (hasError) {
       return `${baseClasses} border-red-500 focus:ring-red-500 focus:border-red-500 bg-red-50`
     }
@@ -153,14 +153,14 @@ export function useRecipeForm(recipeId: string) {
 
   async function handleSubmit() {
     Object.keys(fieldErrors).forEach(key => delete fieldErrors[key])
-    
+
     let hasErrors = false
-    
+
     if (!form.title || !form.title.trim()) {
       fieldErrors.title = 'Title is required'
       hasErrors = true
     }
-    
+
     if (!form.slug || !form.slug.trim()) {
       fieldErrors.slug = 'Slug is required'
       hasErrors = true
@@ -224,8 +224,8 @@ export function useRecipeForm(recipeId: string) {
         const topLevelFields = ['title', 'slug', 'description', 'servings', 'cookTimeMinutes', 'prepTimeMinutes', 'restTimeMinutes', 'tags', 'credit', 'videoUrl', 'notes']
         Object.keys(err.data.errors).forEach(field => {
           if (topLevelFields.includes(field) || !field.includes('.')) {
-            const errorMsg = Array.isArray(err.data.errors[field]) 
-              ? err.data.errors[field][0] 
+            const errorMsg = Array.isArray(err.data.errors[field])
+              ? err.data.errors[field][0]
               : err.data.errors[field]
             fieldErrors[field] = errorMsg
           }
@@ -234,7 +234,7 @@ export function useRecipeForm(recipeId: string) {
       } else if (err.data?.statusMessage) {
         const statusMessage = err.data.statusMessage
         error.value = statusMessage
-        
+
         const lowerMessage = statusMessage.toLowerCase()
         if (lowerMessage.includes('title') && lowerMessage.includes('required')) {
           if (!form.title || !form.title.trim()) {

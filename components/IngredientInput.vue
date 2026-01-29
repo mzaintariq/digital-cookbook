@@ -9,8 +9,7 @@
         <span class="text-xs md:text-sm text-gray-700 mr-1">{{ ingredient.unit }}</span>
         <IconChevronDown class="w-3 h-3 md:w-4 md:h-4 text-gray-400" />
       </div>
-      <select v-model="ingredient.unit"
-        class="absolute inset-y-0 right-0 w-12 md:w-16 opacity-0 cursor-pointer">
+      <select v-model="ingredient.unit" class="absolute inset-y-0 right-0 w-12 md:w-16 opacity-0 cursor-pointer">
         <option value="pcs">pcs</option>
         <option value="cup">cup</option>
         <option value="tbsp">tbsp</option>
@@ -31,8 +30,7 @@
     </div>
     <!-- Alternate size with unit inside -->
     <div v-if="ingredient.detailedSize && !ingredient.toTaste" class="md:col-span-2 relative">
-      <input v-model.number="ingredient.detailedSize.amount" type="number" min="0" step="any"
-        placeholder="15"
+      <input v-model.number="ingredient.detailedSize.amount" type="number" min="0" step="any" placeholder="15"
         class="w-full px-2 py-1.5 pr-20 md:pr-18 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-brand-primary" />
       <div
         class="absolute inset-y-0 right-0 w-16 md:w-16 flex items-center justify-end border-l border-gray-300 pl-2 pr-2 pointer-events-none bg-gray-50 rounded-r border-r border-t border-b border-gray-300">
@@ -48,36 +46,31 @@
         <option value="oz">oz</option>
       </select>
     </div>
-    <input v-model="ingredient.name" type="text" placeholder="eg: Large bell peppers (any color)"
-      :class="[
-        'px-2 py-1.5 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-brand-primary',
-        ingredient.detailedSize
-          ? (ingredient.toTaste ? 'md:col-span-11' : 'md:col-span-8')
-          : (ingredient.toTaste ? 'md:col-span-11' : 'md:col-span-10')
-      ]" />
+    <input v-model="ingredient.name" type="text" placeholder="eg: Large bell peppers (any color)" :class="[
+      'px-2 py-1.5 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-brand-primary',
+      ingredient.detailedSize
+        ? (ingredient.toTaste ? 'md:col-span-11' : 'md:col-span-8')
+        : (ingredient.toTaste ? 'md:col-span-11' : 'md:col-span-10')
+    ]" />
     <div class="md:col-span-12 flex flex-wrap items-center gap-3 md:gap-4 mt-1">
       <label class="flex items-center text-xs text-gray-600 cursor-pointer">
         <span class="mr-2">To taste</span>
-        <button type="button"
-          @click="handleToTasteToggle" :class="[
-            'relative inline-flex h-4 w-7 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-brand-primary focus:ring-offset-2',
-            ingredient.toTaste ? 'bg-brand-primary' : 'bg-gray-300'
-          ]">
+        <button type="button" @click="handleToTasteToggle" :class="[
+          'relative inline-flex h-4 w-7 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-brand-primary focus:ring-offset-2',
+          ingredient.toTaste ? 'bg-brand-primary' : 'bg-gray-300'
+        ]">
           <span :class="[
             'inline-block h-3 w-3 transform rounded-full bg-white transition-transform',
             ingredient.toTaste ? 'translate-x-3.5' : 'translate-x-0.5'
           ]" />
         </button>
       </label>
-      <label v-if="!ingredient.toTaste"
-        class="flex items-center text-xs text-gray-600 cursor-pointer">
+      <label v-if="!ingredient.toTaste" class="flex items-center text-xs text-gray-600 cursor-pointer">
         <span class="mr-2">Alternate size</span>
-        <button type="button"
-          @click="handleDetailedSizeToggle"
-          :class="[
-            'relative inline-flex h-4 w-7 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-brand-primary focus:ring-offset-2',
-            ingredient.detailedSize ? 'bg-brand-primary' : 'bg-gray-300'
-          ]">
+        <button type="button" @click="handleDetailedSizeToggle" :class="[
+          'relative inline-flex h-4 w-7 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-brand-primary focus:ring-offset-2',
+          ingredient.detailedSize ? 'bg-brand-primary' : 'bg-gray-300'
+        ]">
           <span :class="[
             'inline-block h-3 w-3 transform rounded-full bg-white transition-transform',
             ingredient.detailedSize ? 'translate-x-3.5' : 'translate-x-0.5'
@@ -86,12 +79,10 @@
       </label>
       <label class="flex items-center text-xs text-gray-600 cursor-pointer">
         <span class="mr-2">Alternate ingredient</span>
-        <button type="button"
-          @click="handleAlternateIngredientToggle"
-          :class="[
-            'relative inline-flex h-4 w-7 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-brand-primary focus:ring-offset-2',
-            (ingredient.alternateIngredient !== null && ingredient.alternateIngredient !== undefined) ? 'bg-brand-primary' : 'bg-gray-300'
-          ]">
+        <button type="button" @click="handleAlternateIngredientToggle" :class="[
+          'relative inline-flex h-4 w-7 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-brand-primary focus:ring-offset-2',
+          (ingredient.alternateIngredient !== null && ingredient.alternateIngredient !== undefined) ? 'bg-brand-primary' : 'bg-gray-300'
+        ]">
           <span :class="[
             'inline-block h-3 w-3 transform rounded-full bg-white transition-transform',
             (ingredient.alternateIngredient !== null && ingredient.alternateIngredient !== undefined) ? 'translate-x-3.5' : 'translate-x-0.5'
@@ -100,11 +91,9 @@
       </label>
     </div>
     <!-- Alternate Ingredient Text Field -->
-    <div
-      v-if="ingredient.alternateIngredient !== null && ingredient.alternateIngredient !== undefined"
+    <div v-if="ingredient.alternateIngredient !== null && ingredient.alternateIngredient !== undefined"
       class="md:col-span-12 mt-2">
-      <input v-model="ingredient.alternateIngredient" type="text"
-        placeholder="eg: or use butter instead"
+      <input v-model="ingredient.alternateIngredient" type="text" placeholder="eg: or use butter instead"
         class="w-full px-2 py-1.5 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-brand-primary" />
     </div>
   </div>

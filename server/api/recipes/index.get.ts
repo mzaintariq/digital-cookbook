@@ -11,7 +11,7 @@ export default defineEventHandler(async (event) => {
         createdAt: 'desc',
       },
     })
-    
+
     // Serialize Date objects to strings for proper serialization
     return recipes.map(recipe => ({
       ...recipe,

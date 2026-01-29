@@ -104,7 +104,8 @@
 
               <!-- Uncategorized -->
               <div v-if="groupedIngredients.uncategorized.length > 0" class="space-y-2">
-                <h3 v-if="groupedIngredients.categories.length > 0" class="text-sm font-semibold text-gray-600 uppercase tracking-wide border-b border-gray-200 pb-1">
+                <h3 v-if="groupedIngredients.categories.length > 0"
+                  class="text-sm font-semibold text-gray-600 uppercase tracking-wide border-b border-gray-200 pb-1">
                   Other Ingredients
                 </h3>
                 <ul class="list-disc list-outside space-y-2 text-gray-700 pl-4">
@@ -155,7 +156,8 @@
 
                 <!-- Uncategorized -->
                 <div v-if="groupedSteps.uncategorized.length > 0" class="space-y-3">
-                  <h3 v-if="groupedSteps.categories.length > 0" class="text-sm font-semibold text-gray-600 uppercase tracking-wide border-b border-gray-200 pb-1">
+                  <h3 v-if="groupedSteps.categories.length > 0"
+                    class="text-sm font-semibold text-gray-600 uppercase tracking-wide border-b border-gray-200 pb-1">
                     Additional Steps
                   </h3>
                   <ol class="list-decimal list-outside space-y-3 text-gray-700 pl-4">

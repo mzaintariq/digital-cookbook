@@ -7,8 +7,8 @@ const prismaClientSingleton = () => {
   if (!connectionString) {
     throw new Error('DATABASE_URL environment variable is not set')
   }
-  
-  const pool = new Pool({ 
+
+  const pool = new Pool({
     connectionString,
     // Add connection pool settings for serverless
     max: 1, // Limit connections in serverless

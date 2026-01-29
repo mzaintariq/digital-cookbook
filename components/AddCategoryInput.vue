@@ -4,8 +4,7 @@
       + Add Category
     </Button>
     <div v-else class="flex gap-2">
-      <input v-model="localValue" type="text" :placeholder="placeholder"
-        @keyup.enter="handleAdd"
+      <input v-model="localValue" type="text" :placeholder="placeholder" @keyup.enter="handleAdd"
         @keyup.esc="handleCancel"
         class="px-2 py-1.5 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-brand-primary"
         autofocus />

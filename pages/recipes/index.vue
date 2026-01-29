@@ -9,12 +9,8 @@
           <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
             <IconSearch class="w-5 h-5 text-gray-400" />
           </div>
-          <input
-            v-model="searchTerm"
-            type="text"
-            placeholder="Search recipes by name, tags, or description..."
-            class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-brand-primary focus:border-brand-primary sm:text-sm"
-          />
+          <input v-model="searchTerm" type="text" placeholder="Search recipes by name, tags, or description..."
+            class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-brand-primary focus:border-brand-primary sm:text-sm" />
         </div>
       </div>
 
@@ -83,18 +79,18 @@ const searchTerm = ref('')
 function totalTime(recipe: Recipe): string {
   const prep = recipe.prepTimeMinutes ?? 0
   const totalMinutes = recipe.cookTimeMinutes + prep
-  
+
   if (totalMinutes < 60) {
     return `${totalMinutes} min`
   }
-  
+
   const hours = Math.floor(totalMinutes / 60)
   const minutes = totalMinutes % 60
-  
+
   if (minutes === 0) {
     return `${hours}hr`
   }
-  
+
   return `${hours}hr ${minutes}min`
 }
 
@@ -109,7 +105,7 @@ const filteredRecipes = computed(() => {
     const titleMatch = recipe.title.toLowerCase().includes(term)
     const descriptionMatch = recipe.description?.toLowerCase().includes(term) ?? false
     const tagsMatch = recipe.tags.some(tag => tag.toLowerCase().includes(term))
-    
+
     return titleMatch || descriptionMatch || tagsMatch
   })
 })

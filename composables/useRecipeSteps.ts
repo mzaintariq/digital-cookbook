@@ -38,7 +38,7 @@ export function useRecipeSteps(
     const currentCategoryOrder = stepCategories.value
     const stepsByCat: { [key: string]: Step[] } = {}
     const uncategorized: Step[] = []
-    
+
     steps.value.forEach(step => {
       if (step.category && step.category.trim()) {
         const cat = step.category.trim()
@@ -50,7 +50,7 @@ export function useRecipeSteps(
         uncategorized.push(step)
       }
     })
-    
+
     const reordered: Step[] = []
     currentCategoryOrder.forEach((cat: string) => {
       if (stepsByCat[cat]) {
@@ -58,7 +58,7 @@ export function useRecipeSteps(
       }
     })
     reordered.push(...uncategorized)
-    
+
     steps.value = reordered
   }
 
@@ -66,7 +66,7 @@ export function useRecipeSteps(
     const currentCategoryOrder = stepCategories.value
     const stepsByCat: { [key: string]: Step[] } = {}
     const uncategorized: Step[] = []
-    
+
     steps.value.forEach(step => {
       const stepCat = step.category && step.category.trim()
       if (stepCat && stepCat !== category) {
@@ -78,9 +78,9 @@ export function useRecipeSteps(
         uncategorized.push(step)
       }
     })
-    
+
     stepsByCat[category] = newList
-    
+
     const reordered: Step[] = []
     currentCategoryOrder.forEach((cat: string) => {
       if (stepsByCat[cat]) {
@@ -88,14 +88,14 @@ export function useRecipeSteps(
       }
     })
     reordered.push(...uncategorized)
-    
+
     steps.value = reordered
   }
 
   function rebuildStepsPreservingCategoryOrderWithNewListForUncategorized(newList: Step[]) {
     const currentCategoryOrder = stepCategories.value
     const stepsByCat: { [key: string]: Step[] } = {}
-    
+
     steps.value.forEach(step => {
       const stepCat = step.category && step.category.trim()
       if (stepCat) {
@@ -105,7 +105,7 @@ export function useRecipeSteps(
         stepsByCat[stepCat].push(step)
       }
     })
-    
+
     const reordered: Step[] = []
     currentCategoryOrder.forEach((cat: string) => {
       if (stepsByCat[cat]) {
@@ -113,7 +113,7 @@ export function useRecipeSteps(
       }
     })
     reordered.push(...newList)
-    
+
     steps.value = reordered
   }
 

@@ -5,36 +5,27 @@
     </div>
     <div class="flex-1 space-y-2">
       <div class="flex items-start gap-2">
-        <span class="text-sm font-medium text-gray-700 pt-2 flex-shrink-0">{{ String(index + 1).padStart(2, '0') }}</span>
-        <textarea v-model="step.description" rows="2"
-          placeholder="eg: Preheat your oven to 375°F (190°C)..."
+        <span class="text-sm font-medium text-gray-700 pt-2 flex-shrink-0">{{ String(index + 1).padStart(2, '0')
+          }}</span>
+        <textarea v-model="step.description" rows="2" placeholder="eg: Preheat your oven to 375°F (190°C)..."
           class="flex-1 px-3 py-2 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-brand-primary" />
-        <button type="button" @click="$emit('remove')"
-          class="pt-2 text-red-500 hover:text-red-700 flex-shrink-0">
+        <button type="button" @click="$emit('remove')" class="pt-2 text-red-500 hover:text-red-700 flex-shrink-0">
           <IconTrash class="w-5 h-5" />
         </button>
       </div>
-      
+
       <!-- Sub-steps -->
       <div v-if="step.subSteps && step.subSteps.length > 0" class="ml-6 space-y-2">
-        <draggable 
-          v-model="step.subSteps"
-          item-key="id"
-          handle=".drag-handle"
-          :animation="200"
-          :force-fallback="true"
-          ghost-class="sortable-ghost"
-          chosen-class="sortable-chosen"
-          drag-class="sortable-drag"
-          class="space-y-2">
+        <draggable v-model="step.subSteps" item-key="id" handle=".drag-handle" :animation="200" :force-fallback="true"
+          ghost-class="sortable-ghost" chosen-class="sortable-chosen" drag-class="sortable-drag" class="space-y-2">
           <template #item="{ element: subStep, index: subIndex }">
             <div class="flex items-start gap-2 p-2 border border-gray-200 rounded bg-white">
               <div class="drag-handle cursor-move pt-1 text-gray-400 hover:text-gray-600 flex-shrink-0">
                 <IconDragHandle class="w-4 h-4" />
               </div>
-              <span class="text-xs font-medium text-gray-600 pt-1 flex-shrink-0">{{ String.fromCharCode(97 + subIndex) }}</span>
-              <textarea v-model="subStep.description" rows="1"
-                placeholder="Sub-step description..."
+              <span class="text-xs font-medium text-gray-600 pt-1 flex-shrink-0">{{ String.fromCharCode(97 + subIndex)
+                }}</span>
+              <textarea v-model="subStep.description" rows="1" placeholder="Sub-step description..."
                 class="flex-1 px-2 py-1 text-xs border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-brand-primary" />
               <button type="button" @click="$emit('remove-sub-step', subIndex)"
                 class="pt-1 text-red-500 hover:text-red-700 flex-shrink-0">
@@ -44,7 +35,7 @@
           </template>
         </draggable>
       </div>
-      
+
       <!-- Add Sub-step button -->
       <button type="button" @click="$emit('add-sub-step')"
         class="ml-6 text-xs text-gray-500 hover:text-gray-700 flex items-center gap-1">

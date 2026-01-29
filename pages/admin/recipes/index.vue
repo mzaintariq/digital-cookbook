@@ -21,7 +21,7 @@
               class="bg-gray-50 border border-gray-200 rounded-md px-4 py-3 flex items-center justify-between w-full">
               <span class="text-sm text-gray-700">{{ selectedRows.length }} recipe{{
                 selectedRows.length > 1 ? "s" : ""
-                }}
+              }}
                 selected</span>
               <div class="flex items-center gap-4">
                 <Button @click="deleteSelected" variant="delete" size="sm" class="flex items-center gap-2">
@@ -82,17 +82,15 @@
                   : null
                 ">
                 <template v-if="header.id === 'select-col'">
-                  <Checkbox
-                    :checked="table.getIsAllRowsSelected()"
-                    :indeterminate="table.getIsSomeRowsSelected()"
-                    @change="table.getToggleAllRowsSelectedHandler()?.($event as any)"
-                  />
+                  <Checkbox :checked="table.getIsAllRowsSelected()" :indeterminate="table.getIsSomeRowsSelected()"
+                    @change="table.getToggleAllRowsSelectedHandler()?.($event as any)" />
                 </template>
                 <template v-else-if="header.id === 'actions-col'">
                   <div class="relative flex items-center justify-end" data-column-visibility-container>
-                    <button @click.stop="toggleColumnVisibilityDropdown()" class="hidden md:table-cell p-1 hover:bg-gray-100 rounded"
-                      data-column-visibility-button>
-                      <IconColumns class="shrink-0 transition-all flex items-center justify-center cursor-pointer w-5 h-5" />
+                    <button @click.stop="toggleColumnVisibilityDropdown()"
+                      class="hidden md:table-cell p-1 hover:bg-gray-100 rounded" data-column-visibility-button>
+                      <IconColumns
+                        class="shrink-0 transition-all flex items-center justify-center cursor-pointer w-5 h-5" />
                     </button>
                     <Transition enter-active-class="transition ease-out duration-200"
                       enter-from-class="opacity-0 scale-95 -translate-y-1"
@@ -188,11 +186,8 @@
                 },
               ]">
                 <template v-if="cell.column.id === 'select-col'">
-                  <Checkbox
-                    :checked="row.getIsSelected()"
-                    :disabled="!row.getCanSelect()"
-                    @change="row.getToggleSelectedHandler()?.($event as any)"
-                  />
+                  <Checkbox :checked="row.getIsSelected()" :disabled="!row.getCanSelect()"
+                    @change="row.getToggleSelectedHandler()?.($event as any)" />
                 </template>
                 <template v-else-if="cell.column.id === 'actions-col'">
                   <div class="flex justify-end pr-2">

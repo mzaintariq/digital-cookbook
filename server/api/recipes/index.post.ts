@@ -14,7 +14,7 @@ export default defineEventHandler(async (event) => {
     }
 
     const body = await readBody(event)
-    
+
     // Validate required fields
     if (!body.title || !body.slug) {
       throw createError({
@@ -42,7 +42,7 @@ export default defineEventHandler(async (event) => {
         ...(ing.category && ing.category.trim() && { category: ing.category.trim() })
       })).filter((ing: Ingredient) => ing.name.trim())
     }
-    
+
     // Handle steps (array of structured objects)
     let steps: Step[] = []
     if (Array.isArray(body.steps)) {

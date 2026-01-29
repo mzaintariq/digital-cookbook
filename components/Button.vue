@@ -1,10 +1,5 @@
 <template>
-  <button
-    :type="type"
-    :disabled="disabled"
-    :class="mergedClasses"
-    @click="$emit('click', $event)"
-  >
+  <button :type="type" :disabled="disabled" :class="mergedClasses" @click="$emit('click', $event)">
     <slot />
   </button>
 </template>

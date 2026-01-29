@@ -28,7 +28,8 @@
             <button v-if="isLoggedIn" @click="showDropdown = !showDropdown"
               class="text-gray-700 hover:text-gray-900 font-medium flex items-center gap-2">
               <span>Admin</span>
-              <IconChevronDown class="w-4 h-4 transition-transform duration-200 ease-in-out" :class="{ 'rotate-180': showDropdown }" />
+              <IconChevronDown class="w-4 h-4 transition-transform duration-200 ease-in-out"
+                :class="{ 'rotate-180': showDropdown }" />
             </button>
             <NuxtLink v-else to="/admin/login" class="text-gray-700 hover:text-gray-900">
               <IconUser class="w-6 h-6" />
@@ -72,8 +73,7 @@
         </nav>
 
         <!-- Mobile hamburger (only when not on recipe edit page) -->
-        <button v-if="!isRecipeEditPage"
-          @click="showMobileMenu = true"
+        <button v-if="!isRecipeEditPage" @click="showMobileMenu = true"
           class="md:hidden w-10 h-10 flex items-center justify-center text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-full transition-colors"
           aria-label="Open menu">
           <IconMenu class="w-6 h-6" />
