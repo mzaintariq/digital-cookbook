@@ -167,8 +167,8 @@
 
             <!-- Ingredients Section -->
             <div>
-              <div class="flex items-center justify-between mb-3">
-                <label class="block text-sm font-medium text-gray-700">Ingredients</label>
+              <div class="flex items-center justify-between mb-3" :class="{ 'max-md:justify-end': showAddCategory }">
+                <label class="block text-sm font-medium text-gray-700" :class="{ 'max-md:hidden': showAddCategory }">Ingredients</label>
                 <AddCategoryInput :show-input="showAddCategory" :value="newCategoryName" @show="showAddCategory = true"
                   @update:value="newCategoryName = $event" @add="addCategory"
                   @cancel="showAddCategory = false; newCategoryName = ''" />
@@ -322,8 +322,8 @@
 
             <!-- Directions Section -->
             <div>
-              <div class="flex items-center justify-between mb-3">
-                <label class="block text-sm font-medium text-gray-700">Directions</label>
+              <div class="flex items-center justify-between mb-3" :class="{ 'max-md:justify-end': showAddStepCategory }">
+                <label class="block text-sm font-medium text-gray-700" :class="{ 'max-md:hidden': showAddStepCategory }">Directions</label>
                 <AddCategoryInput :show-input="showAddStepCategory" :value="newStepCategoryName"
                   @show="showAddStepCategory = true" @update:value="newStepCategoryName = $event" @add="addStepCategory"
                   @cancel="showAddStepCategory = false; newStepCategoryName = ''" />
