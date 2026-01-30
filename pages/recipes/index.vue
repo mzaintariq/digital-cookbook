@@ -56,7 +56,7 @@
               </div>
               <div v-if="recipe.servings != null" class="flex items-center gap-2">
                 <IconUsers class="w-4 h-4 text-gray-400 flex-shrink-0" />
-                <span>{{ recipe.servings }} {{ recipe.servings === 1 ? 'serving' : 'servings' }}</span>
+                <span>Serves: {{ recipe.servings }}</span>
               </div>
             </div>
 
