@@ -33,7 +33,7 @@ const sizeClasses = {
 }
 
 const variantClasses = {
-  primary: 'bg-brand-primary text-white hover:bg-brand-primary-600 disabled:bg-gray-400 disabled:cursor-not-allowed',
+  primary: 'border border-transparent bg-brand-primary text-white hover:bg-brand-primary-600 disabled:bg-gray-400 disabled:cursor-not-allowed',
   secondary: 'bg-gray-200 text-gray-700 hover:bg-gray-300',
   'reverse-primary': 'border border-brand-primary text-brand-primary hover:bg-brand-primary hover:text-white',
   dashed: 'border border-dashed border-gray-300 text-gray-600 hover:bg-gray-50',
