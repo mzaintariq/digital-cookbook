@@ -9,7 +9,7 @@
           <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
             <IconSearch class="w-5 h-5 text-gray-400" />
           </div>
-          <input v-model="searchTerm" type="text" placeholder="Search recipes by name, tags, or description..."
+          <input v-model="searchTerm" type="text" placeholder="Search recipes"
             class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-brand-primary focus:border-brand-primary sm:text-sm" />
         </div>
       </div>
@@ -34,12 +34,29 @@
         <div v-for="recipe in filteredRecipes" :key="recipe.id"
           class="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow p-6 relative">
           <NuxtLink :to="`/recipes/${recipe.slug}`" class="block">
-            <h2 class="text-xl font-semibold text-gray-900 mb-2">{{ recipe.title }}</h2>
+            <div class="flex items-center justify-between mb-2">
+              <h2 class="text-xl font-bold text-gray-900">{{ recipe.title }}</h2>
+              <!-- Edit Icon (only when logged in) -->
+              <NuxtLink v-if="isLoggedIn" :to="`/admin/recipes/${recipe.id}`" @click.stop
+                class="text-gray-400 hover:text-brand-primary transition-colors"
+                title="Edit Recipe">
+                <IconEdit class="w-5 h-5" />
+              </NuxtLink>
+            </div>
+            <h3 class="text-sm font-normal text-gray-500 mb-2">{{ recipe?.description }}</h3>
 
-            <div class="flex items-center gap-4 text-sm text-gray-600 mb-3">
+            <div class="flex flex-wrap items-center gap-4 text-sm text-gray-600 mb-3">
               <div class="flex items-center gap-2">
                 <IconClock class="w-4 h-4 text-gray-400 flex-shrink-0" />
                 <span>{{ totalTime(recipe) }}</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <IconPlus class="w-4 h-4 text-gray-400 flex-shrink-0" />
+                <span>{{ recipe.ingredients.length }} {{ recipe.ingredients.length === 1 ? 'ingredient' : 'ingredients' }}</span>
+              </div>
+              <div v-if="recipe.servings != null" class="flex items-center gap-2">
+                <IconUsers class="w-4 h-4 text-gray-400 flex-shrink-0" />
+                <span>{{ recipe.servings }} {{ recipe.servings === 1 ? 'serving' : 'servings' }}</span>
               </div>
             </div>
 
@@ -48,14 +65,6 @@
                 {{ tag }}
               </span>
             </div>
-
-          </NuxtLink>
-
-          <!-- Edit Icon (only when logged in) -->
-          <NuxtLink v-if="isLoggedIn" :to="`/admin/recipes/${recipe.id}`" @click.stop
-            class="absolute top-4 right-4 p-2 text-gray-400 hover:text-brand-primary transition-colors"
-            title="Edit Recipe">
-            <IconEdit class="w-5 h-5" />
           </NuxtLink>
         </div>
       </div>
@@ -69,6 +78,8 @@ import type { Recipe } from '~/types/recipe'
 import IconEdit from '~/components/icons/IconEdit.vue'
 import IconSearch from '~/components/icons/IconSearch.vue'
 import IconClock from '~/components/icons/IconClock.vue'
+import IconPlus from '~/components/icons/IconPlus.vue'
+import IconUsers from '~/components/icons/IconUsers.vue'
 
 const recipes = ref<Recipe[]>([])
 const loading = ref(true)
