@@ -11,7 +11,7 @@
 
       <div v-else-if="recipe" class="relative mx-auto px-2 md:px-4 max-w-7xl">
         <!-- Header Section -->
-        <div class="mb-8">
+        <div class="mb-4 md:mb-8">
           <!-- Category Tag -->
           <div v-if="recipe.tags.length > 0" class="mb-4">
             <span
@@ -22,11 +22,11 @@
 
           <!-- Title and Edit Icon -->
           <div class="flex items-center gap-3 mb-3 flex-row md:flex-wrap justify-between w-full">
-            <h1 class="text-2xl md:text3xl lg:text-5xl font-bold text-text-dark leading-tight">{{ recipe.title }}</h1>
+            <h1 class="text-2xl md:text3xl lg:text-5xl font-bold text-ink-800 leading-tight">{{ recipe.title }}</h1>
 
             <!-- Edit Icon (only when logged in) -->
             <NuxtLink v-if="isLoggedIn" :to="`/admin/recipes/${recipe.id}`"
-              class="text-text-dark hover:text-brand-primary transition-colors flex-shrink-0" title="Edit Recipe">
+              class="text-ink-800 hover:text-brand-primary transition-colors flex-shrink-0" title="Edit Recipe">
               <IconEdit class="w-5 h-5 lg:w-6 lg:h-6" />
             </NuxtLink>
           </div>
@@ -37,42 +37,35 @@
           </p>
 
           <div class="bg-paper-100 p-4 rounded-lg shadow-md pl-4 lg:pl-8 mr-auto w-full lg:w-fit">
-            <div class="flex flex-wrap items-center gap-4 lg:gap-6">
+            <div class="flex flex-nowrap md:flex-wrap items-start md:items-center justify-between md:justify-start gap-3 md:gap-4 lg:gap-6">
               <!-- Prep Time -->
-              <div class="flex items-center gap-2">
-                <IconClock class="w-5 h-5 text-ink-500 flex-shrink-0" />
-                <div class="flex items-center gap-2">
-                  <div class="text-brand-primary text-xs font-medium uppercase tracking-wide">Prep</div>
-                  <div class="text-text-dark text-sm">
-                    {{ recipe.prepTimeMinutes != null ? `${recipe.prepTimeMinutes} min` : 'N/A' }}
-                  </div>
+              <div class="flex items-start gap-1.5 md:gap-2 flex-shrink-0">
+                <IconClock class="w-5 h-5 md:w-5 md:h-5 text-ink-500 flex-shrink-0 mt-0.5 md:mt-0" />
+                <div class="flex flex-col md:flex-row md:items-center md:gap-2 min-w-0">
+                  <span class="text-brand-primary text-xs font-medium uppercase tracking-wide">Prep</span>
+                  <span class="text-ink-800 text-md md:text-sm">{{ recipe.prepTimeMinutes != null ? `${recipe.prepTimeMinutes} min` : 'N/A' }}</span>
                 </div>
               </div>
 
               <!-- Cook Time -->
-              <div class="flex items-center gap-2">
-                <IconClock class="w-5 h-5 text-ink-500 flex-shrink-0" />
-                <div class="flex items-center gap-2">
-                  <div class="text-brand-primary text-xs font-medium uppercase tracking-wide">Cook</div>
-                  <div class="text-text-dark text-sm">
-                    {{ recipe.cookTimeMinutes }} min
-                  </div>
+              <div class="flex items-start gap-1.5 md:gap-2 flex-shrink-0">
+                <IconClock class="w-5 h-5 md:w-5 md:h-5 text-ink-500 flex-shrink-0 mt-0.5 md:mt-0" />
+                <div class="flex flex-col md:flex-row md:items-center md:gap-2 min-w-0">
+                  <span class="text-brand-primary text-xs font-medium uppercase tracking-wide">Cook</span>
+                  <span class="text-ink-800 text-md md:text-sm">{{ recipe.cookTimeMinutes }} min</span>
                 </div>
               </div>
 
               <!-- Serves -->
-              <div class="flex items-center gap-2">
-                <IconUsers class="w-5 h-5 text-ink-500 flex-shrink-0" />
-                <div class="flex items-center gap-2">
-                  <div class="text-brand-primary text-xs font-medium uppercase tracking-wide">Serves</div>
-                  <div class="text-text-dark text-sm">
-                    {{ recipe.servings ? `${recipe.servings} ${recipe.servings === 1 ? 'person' : 'people'}` : 'N/A' }}
-                  </div>
+              <div class="flex items-start gap-1.5 md:gap-2 flex-shrink-0">
+                <IconUsers class="w-5 h-5 md:w-5 md:h-5 text-ink-500 flex-shrink-0 mt-0.5 md:mt-0" />
+                <div class="flex flex-col md:flex-row md:items-center md:gap-2 min-w-0">
+                  <span class="text-brand-primary text-xs font-medium uppercase tracking-wide">Serves</span>
+                  <span class="text-ink-800 text-md md:text-sm">{{ recipe.servings ? `${recipe.servings} ${recipe.servings === 1 ? 'person' : 'people'}` : 'N/A' }}</span>
                 </div>
               </div>
             </div>
           </div>
-
         </div>
 
         <!-- Main Content: Ingredients, Directions, Notes -->
