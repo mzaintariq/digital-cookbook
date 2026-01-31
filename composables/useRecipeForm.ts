@@ -63,9 +63,9 @@ export function useRecipeForm(recipeId: string) {
     const hasError = fieldErrors[fieldName]
 
     if (hasError) {
-      return `${baseClasses} border-red-500 focus:ring-red-500 focus:border-red-500 bg-red-50`
+      return `${baseClasses} border-error-600 focus:ring-error-600 focus:border-error-600 bg-error-50`
     }
-    return `${baseClasses} border-gray-300 focus:ring-brand-primary`
+    return `${baseClasses} border-paper-400 focus:ring-brand-primary`
   }
 
   function getTextareaClasses(fieldName: string): string {

@@ -33,11 +33,11 @@ const sizeClasses = {
 }
 
 const variantClasses = {
-  primary: 'border border-transparent bg-brand-primary text-white hover:bg-brand-primary-600 disabled:bg-gray-400 disabled:cursor-not-allowed',
-  secondary: 'bg-gray-200 text-gray-700 hover:bg-gray-300',
-  'reverse-primary': 'border border-brand-primary text-brand-primary hover:bg-brand-primary hover:text-white',
-  dashed: 'border border-dashed border-gray-300 text-gray-600 hover:bg-gray-50',
-  delete: 'bg-white border border-red-300 text-red-600 hover:bg-red-50'
+  primary: 'border border-transparent bg-brand-primary text-paper-50 hover:bg-brand-primary-600 disabled:bg-paper-400 disabled:cursor-not-allowed',
+  secondary: 'bg-paper-200 text-ink-800 hover:bg-paper-300',
+  'reverse-primary': 'border border-brand-primary text-brand-primary hover:bg-brand-primary hover:text-paper-50',
+  dashed: 'border border-dashed border-paper-400 text-ink-700 hover:bg-paper-50',
+  delete: 'bg-white border border-error-300 text-error-600 hover:bg-error-50'
 }
 
 const baseClasses = computed(() => [

@@ -45,11 +45,11 @@ const checkboxClasses = computed(() => [
   'shrink-0 rounded border-2 transition-colors focus:outline-none focus:ring-2 focus:ring-brand-primary focus:ring-offset-1 flex items-center justify-center',
   sizeClasses[props.size],
   props.disabled
-    ? 'cursor-not-allowed opacity-50 bg-gray-100 border-gray-300'
+    ? 'cursor-not-allowed opacity-50 bg-paper-100 border-paper-400'
     : 'cursor-pointer',
   isIndeterminate.value || props.checked
-    ? 'bg-brand-primary border-brand-primary text-white'
-    : 'bg-transparent border-gray-300 text-transparent hover:border-brand-primary',
+    ? 'bg-brand-primary border-brand-primary text-paper-50'
+    : 'bg-transparent border-paper-400 text-transparent hover:border-brand-primary',
 ].filter(Boolean).join(' '))
 
 const iconSize = computed(() => iconSizes[props.size])

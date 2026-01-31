@@ -1,11 +1,11 @@
 <template>
-  <div class="min-h-screen bg-gray-50">
+  <div class="min-h-screen bg-paper-50">
     <div class="container mx-auto px-4 py-8">
       <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-        <h1 class="text-2xl sm:text-3xl font-bold text-gray-900">Recipe Management</h1>
+        <h1 class="text-2xl sm:text-3xl font-bold text-ink-900">Recipe Management</h1>
         <div class="flex gap-4">
           <NuxtLink to="/admin/recipes/new"
-            class="bg-brand-primary text-white px-3 py-2 sm:px-4 rounded-md hover:bg-brand-primary-600 text-sm sm:text-base whitespace-nowrap">
+            class="bg-brand-primary text-paper-50 px-3 py-2 sm:px-4 rounded-md hover:bg-brand-primary-600 text-sm sm:text-base whitespace-nowrap">
             + New Recipe
           </NuxtLink>
         </div>
@@ -18,8 +18,8 @@
           leave-from-class="opacity-100 translate-x-0" leave-to-class="opacity-0 translate-x-2" mode="out-in">
           <div v-if="selectedRows.length > 0" key="bulk-actions" class="h-full flex items-center">
             <div
-              class="bg-gray-50 border border-gray-200 rounded-md px-4 py-3 flex items-center justify-between w-full">
-              <span class="text-sm text-gray-700">{{ selectedRows.length }} recipe{{
+              class="bg-paper-50 border border-paper-300 rounded-md px-4 py-3 flex items-center justify-between w-full">
+              <span class="text-sm text-ink-800">{{ selectedRows.length }} recipe{{
                 selectedRows.length > 1 ? "s" : ""
               }}
                 selected</span>
@@ -38,8 +38,8 @@
           <div v-else key="search" class="h-full flex items-center">
             <div class="relative max-w-md w-full">
               <input v-model="searchTerm" type="text" placeholder="Search recipes..."
-                class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-transparent" />
-              <IconSearch class="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                class="w-full pl-10 pr-4 py-2 border border-paper-400 rounded-md focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-transparent" />
+              <IconSearch class="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-ink-500" />
             </div>
           </div>
         </Transition>
@@ -50,19 +50,19 @@
       </div>
 
       <div v-else-if="error" class="text-center py-12">
-        <p class="text-red-600">{{ error }}</p>
+        <p class="text-error-600">{{ error }}</p>
       </div>
 
       <div v-else class="bg-white rounded-lg shadow-md relative">
         <!-- <div class="overflow-x-auto"> -->
-        <table class="min-w-full divide-y divide-gray-200">
-          <thead class="bg-gray-50">
+        <table class="min-w-full divide-y divide-paper-300">
+          <thead class="bg-paper-50">
             <tr v-for="headerGroup in table.getHeaderGroups()" :key="headerGroup.id">
               <th v-for="(header, index) in headerGroup.headers" :key="header.id" :class="[
-                'pl-4 pr-2 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider',
-                index > 0 && headerGroup.headers[index - 1]?.id !== 'select-col' ? 'border-l border-gray-200' : '',
+                'pl-4 pr-2 py-2 text-left text-xs font-medium text-ink-600 uppercase tracking-wider',
+                index > 0 && headerGroup.headers[index - 1]?.id !== 'select-col' ? 'border-l border-paper-300' : '',
                 header.column.getCanSort()
-                  ? 'cursor-pointer hover:bg-gray-100 select-none'
+                  ? 'cursor-pointer hover:bg-paper-100 select-none'
                   : '',
                 // Mobile: hide select, slug, description, ingredients, time, dates, status
                 header.id === 'select-col' ? 'hidden md:table-cell pl-4 pr-2 w-12' : '',
@@ -88,7 +88,7 @@
                 <template v-else-if="header.id === 'actions-col'">
                   <div class="relative flex items-center justify-end" data-column-visibility-container>
                     <button @click.stop="toggleColumnVisibilityDropdown()"
-                      class="hidden md:table-cell p-1 hover:bg-gray-100 rounded" data-column-visibility-button>
+                      class="hidden md:table-cell p-1 hover:bg-paper-100 rounded" data-column-visibility-button>
                       <IconColumns
                         class="shrink-0 transition-all flex items-center justify-center cursor-pointer w-5 h-5" />
                     </button>
@@ -99,7 +99,7 @@
                       leave-from-class="opacity-100 scale-100 translate-y-0"
                       leave-to-class="opacity-0 scale-95 -translate-y-1">
                       <div v-if="showColumnVisibilityDropdown"
-                        class="absolute right-0 top-full mt-1 w-56 bg-white rounded-md shadow-lg border border-gray-200 py-2 z-[1002]"
+                        class="absolute right-0 top-full mt-1 w-56 bg-white rounded-md shadow-lg border border-paper-300 py-2 z-[1002]"
                         @click.stop>
                         <label v-for="column in table
                           .getAllColumns()
@@ -108,13 +108,13 @@
                               col.id !== 'select-col' &&
                               col.id !== 'actions-col'
                           )" :key="column.id"
-                          class="flex items-center justify-between px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 cursor-pointer">
+                          class="flex items-center justify-between px-4 py-2.5 text-sm text-ink-800 hover:bg-paper-50 cursor-pointer">
                           <span>{{ column.columnDef.header || column.id }}</span>
                           <button type="button" @click="column.toggleVisibility()" :class="[
                             'relative inline-flex h-5 w-9 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-brand-primary focus:ring-offset-2',
                             column.getIsVisible()
                               ? 'bg-brand-primary'
-                              : 'bg-gray-300',
+                              : 'bg-paper-300',
                           ]" role="switch" :aria-checked="column.getIsVisible()">
                             <span :class="[
                               'pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out',
@@ -124,9 +124,9 @@
                             ]" />
                           </button>
                         </label>
-                        <div class="border-t border-gray-200 mt-1 pt-2">
+                        <div class="border-t border-paper-300 mt-1 pt-2">
                           <button @click="resetColumnVisibility"
-                            class="w-full text-left px-4 py-2 text-sm text-brand-primary hover:bg-gray-50">
+                            class="w-full text-left px-4 py-2 text-sm text-brand-primary hover:bg-paper-50">
                             Reset to defaults
                           </button>
                         </div>
@@ -144,27 +144,27 @@
                     header.id !== 'actions-col'
                   " class="flex flex-col">
                     <IconChevronUp class="w-3 h-3" :class="header.column.getIsSorted() === 'asc'
-                      ? 'text-gray-900'
-                      : 'text-gray-300'
+                      ? 'text-ink-900'
+                      : 'text-ink-300'
                       " />
                     <IconChevronDown class="w-3 h-3 -mt-0.5" :class="header.column.getIsSorted() === 'desc'
-                      ? 'text-gray-900'
-                      : 'text-gray-300'
+                      ? 'text-ink-900'
+                      : 'text-ink-300'
                       " />
                   </span>
                 </div>
               </th>
             </tr>
           </thead>
-          <tbody class="bg-white divide-y divide-gray-200">
+          <tbody class="bg-white divide-y divide-paper-300">
             <tr v-for="row in table.getRowModel().rows" :key="row.id" :data-selected="row.getIsSelected()" :class="{
               'bg-brand-primary-50': row.getIsSelected(),
-              'hover:bg-gray-50 transition-colors': true,
+              'hover:bg-paper-50 transition-colors': true,
             }">
               <td v-for="(cell, cellIndex) in row.getVisibleCells()" :key="cell.id" class="px-4 py-4 text-sm" :class="[
                 {
-                  'font-medium text-gray-900': cell.column.id === 'title',
-                  'text-gray-500':
+                  'font-medium text-ink-900': cell.column.id === 'title',
+                  'text-ink-600':
                     cell.column.id !== 'title' &&
                     cell.column.id !== 'actions-col' &&
                     cell.column.id !== 'status',
@@ -193,9 +193,9 @@
                   <div class="flex justify-end pr-2">
                     <div class="relative w-6" data-dropdown>
                       <button data-dropdown-button @click.stop="toggleActionsDropdown(row.original.id)"
-                        class="cursor-pointer p-0.5 hover:bg-gray-100 rounded flex items-center justify-center"
+                        class="cursor-pointer p-0.5 hover:bg-paper-100 rounded flex items-center justify-center"
                         aria-label="actions-btn">
-                        <IconMoreVertical class="w-4 h-4 text-gray-500" />
+                        <IconMoreVertical class="w-4 h-4 text-ink-600" />
                       </button>
                       <Transition enter-active-class="transition ease-out duration-200"
                         enter-from-class="opacity-0 scale-95 -translate-y-1"
@@ -204,15 +204,15 @@
                         leave-from-class="opacity-100 scale-100 translate-y-0"
                         leave-to-class="opacity-0 scale-95 -translate-y-1">
                         <div v-if="openDropdownId === row.original.id" data-dropdown
-                          class="absolute right-0 top-full mt-1 w-32 bg-white rounded-md shadow-lg border border-gray-200 py-1 z-[1002]">
+                          class="absolute right-0 top-full mt-1 w-32 bg-white rounded-md shadow-lg border border-paper-300 py-1 z-[1002]">
                           <NuxtLink :to="`/admin/recipes/${row.original.id}`"
-                            class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" @click="closeDropdown">
+                            class="block px-4 py-2 text-sm text-ink-800 hover:bg-paper-100" @click="closeDropdown">
                             Edit
                           </NuxtLink>
                           <button @click="
                             deleteRecipe(row.original.id);
                           closeDropdown();
-                          " class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                          " class="block w-full text-left px-4 py-2 text-sm text-ink-800 hover:bg-paper-100">
                             Delete
                           </button>
                         </div>
@@ -231,10 +231,10 @@
                     <span :class="[
                       'w-2 h-2 rounded-full',
                       row.original.status === 'publish'
-                        ? 'bg-green-500'
-                        : 'bg-orange-400',
+                        ? 'bg-success-600'
+                        : 'bg-warning-500',
                     ]"></span>
-                    <span :class="['text-gray-600']">
+                    <span :class="['text-ink-700']">
                       {{
                         row.original.status === "publish"
                           ? "Published"

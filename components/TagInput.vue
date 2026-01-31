@@ -1,13 +1,13 @@
 <template>
   <div>
-    <label v-if="label" :for="inputId" class="block text-sm font-medium text-gray-700 mb-1">
+    <label v-if="label" :for="inputId" class="block text-sm font-medium text-ink-800 mb-1">
       {{ label }}
     </label>
     <div :class="[
       'flex flex-wrap items-center gap-2 min-h-[2.5rem] px-3 py-2 border rounded-md focus-within:outline-none focus-within:ring-2 transition-colors',
       hasError
-        ? 'border-red-500 focus-within:ring-red-500 focus-within:border-red-500 bg-red-50'
-        : 'border-gray-300 focus-within:ring-brand-primary'
+        ? 'border-error-600 focus-within:ring-error-600 focus-within:border-error-600 bg-error-50'
+        : 'border-paper-400 focus-within:ring-brand-primary'
     ]" @click="focusInput">
       <!-- Tag chips -->
       <div v-for="(tag, index) in tagList" :key="index"
@@ -24,7 +24,7 @@
         class="flex-1 min-w-[120px] outline-none bg-transparent text-sm" @keydown="handleKeydown"
         @input="handleInput" />
     </div>
-    <p v-if="errorMessage" class="mt-1 text-sm text-red-600">{{ errorMessage }}</p>
+    <p v-if="errorMessage" class="mt-1 text-sm text-error-600">{{ errorMessage }}</p>
   </div>
 </template>
 
