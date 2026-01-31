@@ -67,7 +67,7 @@
                   form.published ? 'bg-brand-primary' : 'bg-paper-300'
                 ]">
                   <span :class="[
-                    'inline-block h-3 w-3 transform rounded-full bg-white transition-transform',
+                    'inline-block h-3 w-3 transform rounded-full bg-paper-50 transition-transform',
                     form.published ? 'translate-x-3.5' : 'translate-x-0.5'
                   ]" />
                 </button>
@@ -184,7 +184,7 @@
                     'border rounded-lg p-4 transition-[background-color,border-color] duration-500',
                     highlightedIngredientCategory === category
                       ? 'border-brand-primary bg-brand-primary-50 shadow-md'
-                      : 'border-paper-400 bg-white'
+                      : 'border-paper-400 bg-paper-50'
                   ]">
                     <CategoryHeader :category="category" :is-editing="editingCategory === category"
                       :edit-value="newCategoryName" drag-handle-class="category-drag-handle"
@@ -339,7 +339,7 @@
                     'border rounded-lg p-4 transition-[background-color,border-color] duration-500',
                     highlightedStepCategory === category
                       ? 'border-brand-primary bg-brand-primary-50 shadow-md'
-                      : 'border-paper-400 bg-white'
+                      : 'border-paper-400 bg-paper-50'
                   ]">
                     <CategoryHeader :category="category" :is-editing="editingStepCategory === category"
                       :edit-value="newStepCategoryName" drag-handle-class="step-category-drag-handle"

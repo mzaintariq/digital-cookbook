@@ -37,7 +37,7 @@ const variantClasses = {
   secondary: 'bg-paper-200 text-ink-800 hover:bg-paper-300',
   'reverse-primary': 'border border-brand-primary text-brand-primary hover:bg-brand-primary hover:text-paper-50',
   dashed: 'border border-dashed border-paper-400 text-ink-700 hover:bg-paper-50',
-  delete: 'bg-white border border-error-300 text-error-600 hover:bg-error-50'
+  delete: 'bg-paper-50 border border-error-300 text-error-600 hover:bg-error-50'
 }
 
 const baseClasses = computed(() => [

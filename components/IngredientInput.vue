@@ -60,7 +60,7 @@
           ingredient.toTaste ? 'bg-brand-primary' : 'bg-paper-300'
         ]">
           <span :class="[
-            'inline-block h-3 w-3 transform rounded-full bg-white transition-transform',
+            'inline-block h-3 w-3 transform rounded-full bg-paper-50 transition-transform',
             ingredient.toTaste ? 'translate-x-3.5' : 'translate-x-0.5'
           ]" />
         </button>
@@ -72,7 +72,7 @@
           ingredient.detailedSize ? 'bg-brand-primary' : 'bg-paper-300'
         ]">
           <span :class="[
-            'inline-block h-3 w-3 transform rounded-full bg-white transition-transform',
+            'inline-block h-3 w-3 transform rounded-full bg-paper-50 transition-transform',
             ingredient.detailedSize ? 'translate-x-3.5' : 'translate-x-0.5'
           ]" />
         </button>
@@ -84,7 +84,7 @@
           (ingredient.alternateIngredient !== null && ingredient.alternateIngredient !== undefined) ? 'bg-brand-primary' : 'bg-paper-300'
         ]">
           <span :class="[
-            'inline-block h-3 w-3 transform rounded-full bg-white transition-transform',
+            'inline-block h-3 w-3 transform rounded-full bg-paper-50 transition-transform',
             (ingredient.alternateIngredient !== null && ingredient.alternateIngredient !== undefined) ? 'translate-x-3.5' : 'translate-x-0.5'
           ]" />
         </button>

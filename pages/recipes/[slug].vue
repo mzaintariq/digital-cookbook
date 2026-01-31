@@ -80,7 +80,7 @@
         <!-- Desktop: Ingredients and steps side by side with flexbox -->
         <div class="flex flex-col lg:flex-row gap-6">
           <!-- Ingredients Card -->
-          <div class="order-1 lg:flex-shrink-0 lg:w-64 xl:w-72 bg-white rounded-lg shadow-md p-6">
+          <div class="order-1 lg:flex-shrink-0 lg:w-64 xl:w-72 bg-paper-50 rounded-lg shadow-md p-6">
             <h2 class="text-2xl font-semibold text-ink-900 mb-4">Ingredients</h2>
 
             <!-- Grouped by Category -->

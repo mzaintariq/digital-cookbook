@@ -19,7 +19,7 @@
         <draggable v-model="step.subSteps" item-key="id" handle=".drag-handle" :animation="200" :force-fallback="true"
           ghost-class="sortable-ghost" chosen-class="sortable-chosen" drag-class="sortable-drag" class="space-y-2">
           <template #item="{ element: subStep, index: subIndex }">
-            <div class="flex items-start gap-2 p-2 border border-paper-300 rounded bg-white">
+            <div class="flex items-start gap-2 p-2 border border-paper-300 rounded bg-paper-50">
               <div class="drag-handle cursor-move pt-1 text-ink-500 hover:text-ink-700 flex-shrink-0">
                 <IconDragHandle class="w-4 h-4" />
               </div>

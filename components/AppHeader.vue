@@ -1,5 +1,5 @@
 <template>
-  <header class="bg-white border-b border-paper-300 h-16 min-h-16 shrink-0">
+  <header class="bg-paper-50 border-b border-paper-300 h-16 min-h-16 shrink-0">
     <div class="container mx-auto px-4 h-full">
       <div class="flex items-center justify-between h-full">
         <!-- Logo or Recipe Title -->
@@ -39,7 +39,7 @@
               leave-active-class="transition ease-in duration-150"
               leave-from-class="opacity-100 scale-100 translate-y-0" leave-to-class="opacity-0 scale-95 -translate-y-1">
               <div v-if="showDropdown && isLoggedIn"
-                class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg border border-paper-300 py-1 z-50">
+                class="absolute right-0 mt-2 w-48 bg-paper-50 rounded-md shadow-lg border border-paper-300 py-1 z-50">
                 <NuxtLink to="/admin/recipes/new" class="block px-4 py-2 text-sm text-ink-800 hover:bg-paper-100"
                   @click="showDropdown = false">
                   Add Recipe

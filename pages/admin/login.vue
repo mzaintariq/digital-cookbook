@@ -1,6 +1,6 @@
 <template>
   <div class="min-h-full flex items-center justify-center py-20 px-4">
-    <div class="max-w-md w-full bg-white rounded-lg shadow-md p-8">
+    <div class="max-w-md w-full bg-paper-50 rounded-lg shadow-md p-8">
       <h1 class="text-3xl font-bold text-ink-900 mb-6 text-center">Admin Login</h1>
 
       <form @submit.prevent="handleLogin" class="space-y-4">

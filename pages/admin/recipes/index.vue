@@ -53,7 +53,7 @@
         <p class="text-error-600">{{ error }}</p>
       </div>
 
-      <div v-else class="bg-white rounded-lg shadow-md relative">
+      <div v-else class="bg-paper-50 rounded-lg shadow-md relative">
         <!-- <div class="overflow-x-auto"> -->
         <table class="min-w-full divide-y divide-paper-300">
           <thead class="bg-paper-50">
@@ -99,7 +99,7 @@
                       leave-from-class="opacity-100 scale-100 translate-y-0"
                       leave-to-class="opacity-0 scale-95 -translate-y-1">
                       <div v-if="showColumnVisibilityDropdown"
-                        class="absolute right-0 top-full mt-1 w-56 bg-white rounded-md shadow-lg border border-paper-300 py-2 z-[1002]"
+                        class="absolute right-0 top-full mt-1 w-56 bg-paper-50 rounded-md shadow-lg border border-paper-300 py-2 z-[1002]"
                         @click.stop>
                         <label v-for="column in table
                           .getAllColumns()
@@ -117,7 +117,7 @@
                               : 'bg-paper-300',
                           ]" role="switch" :aria-checked="column.getIsVisible()">
                             <span :class="[
-                              'pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out',
+                              'pointer-events-none inline-block h-4 w-4 transform rounded-full bg-paper-50 shadow ring-0 transition duration-200 ease-in-out',
                               column.getIsVisible()
                                 ? 'translate-x-4'
                                 : 'translate-x-0',
@@ -156,7 +156,7 @@
               </th>
             </tr>
           </thead>
-          <tbody class="bg-white divide-y divide-paper-300">
+          <tbody class="bg-paper-50 divide-y divide-paper-300">
             <tr v-for="row in table.getRowModel().rows" :key="row.id" :data-selected="row.getIsSelected()" :class="{
               'bg-brand-primary-50': row.getIsSelected(),
               'hover:bg-paper-50 transition-colors': true,
@@ -204,7 +204,7 @@
                         leave-from-class="opacity-100 scale-100 translate-y-0"
                         leave-to-class="opacity-0 scale-95 -translate-y-1">
                         <div v-if="openDropdownId === row.original.id" data-dropdown
-                          class="absolute right-0 top-full mt-1 w-32 bg-white rounded-md shadow-lg border border-paper-300 py-1 z-[1002]">
+                          class="absolute right-0 top-full mt-1 w-32 bg-paper-50 rounded-md shadow-lg border border-paper-300 py-1 z-[1002]">
                           <NuxtLink :to="`/admin/recipes/${row.original.id}`"
                             class="block px-4 py-2 text-sm text-ink-800 hover:bg-paper-100" @click="closeDropdown">
                             Edit

@@ -5,7 +5,7 @@
       leave-from-class="opacity-100" leave-to-class="opacity-0">
       <div v-if="modelValue" class="fixed inset-0 z-40 md:hidden" @click="$emit('update:modelValue', false)">
         <div class="absolute inset-0 bg-black/50" aria-hidden="true" />
-        <div class="absolute top-0 right-0 bottom-0 w-full max-w-xs bg-white shadow-xl flex flex-col" @click.stop>
+        <div class="absolute top-0 right-0 bottom-0 w-full max-w-xs bg-paper-50 shadow-xl flex flex-col" @click.stop>
           <div class="flex items-center justify-between h-16 px-4 border-b border-paper-300">
             <span class="text-sm font-medium text-ink-600">Menu</span>
             <button @click="$emit('update:modelValue', false)"
