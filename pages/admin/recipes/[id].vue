@@ -162,7 +162,7 @@
           </div>
 
           <!-- Right Column: Recipe Detail -->
-          <div class="lg:col-span-3 space-y-6">
+          <div class="lg:col-span-3 space-y-6 min-w-0">
             <h2 class="text-l font-semibold text-ink-900 mb-4">RECIPE DETAIL</h2>
 
             <!-- Ingredients Section -->
@@ -336,7 +336,7 @@
                 drag-class="sortable-drag" class="space-y-4">
                 <template #item="{ element: category }">
                   <div :ref="el => { if (el) stepCategoryRefs[category] = el as HTMLElement }" :class="[
-                    'border rounded-lg p-4 transition-[background-color,border-color] duration-500',
+                    'border rounded-lg p-4 transition-[background-color,border-color] duration-500 min-w-0 overflow-hidden',
                     highlightedStepCategory === category
                       ? 'border-brand-primary bg-brand-primary-50 shadow-md'
                       : 'border-paper-400 bg-paper-50'
@@ -373,7 +373,7 @@
               </draggable>
 
               <!-- Uncategorized Steps Section -->
-              <div class="mt-4 space-y-3">
+              <div class="mt-4 space-y-3 min-w-0 overflow-hidden">
                 <draggable v-if="stepsByCategory.uncategorized.length > 0" :model-value="stepsByCategory.uncategorized"
                   @update:model-value="(newList: Step[]) => {
                     newList.forEach((step: Step) => {
