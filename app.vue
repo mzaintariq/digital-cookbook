@@ -4,4 +4,3 @@
     <NotificationToast />
   </NuxtLayout>
 </template>
-
