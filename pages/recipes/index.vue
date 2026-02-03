@@ -57,7 +57,7 @@
                 <span>{{ recipe.ingredients.length }} {{ recipe.ingredients.length === 1 ? 'ingredient' : 'ingredients' }}</span>
               </div>
               <div v-if="recipe.servings != null" class="flex items-center gap-2">
-                <IconUsers class="w-4 h-4 text-ink-500 flex-shrink-0" />
+                <IconServings class="w-4 h-4 text-ink-500 flex-shrink-0" />
                 <span>Serves: {{ recipe.servings }}</span>
               </div>
             </div>
@@ -81,7 +81,7 @@ import IconEdit from '~/components/icons/IconEdit.vue'
 import IconSearch from '~/components/icons/IconSearch.vue'
 import IconClock from '~/components/icons/IconClock.vue'
 import IconPlus from '~/components/icons/IconPlus.vue'
-import IconUsers from '~/components/icons/IconUsers.vue'
+import IconServings from '~/components/icons/IconServings.vue'
 
 const recipes = ref<Recipe[]>([])
 const loading = ref(true)

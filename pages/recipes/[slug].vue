@@ -58,7 +58,7 @@
 
               <!-- Serves -->
               <div class="flex items-start gap-1.5 md:gap-2 flex-shrink-0">
-                <IconUsers class="w-5 h-5 md:w-5 md:h-5 text-ink-500 flex-shrink-0 mt-0.5 md:mt-0" />
+                <IconServings class="w-5 h-5 md:w-5 md:h-5 text-ink-500 flex-shrink-0 mt-0.5 md:mt-0" />
                 <div class="flex flex-col md:flex-row md:items-center md:gap-2 min-w-0">
                   <span class="text-brand-primary text-xs font-medium uppercase tracking-wide">Serves</span>
                   <span class="text-ink-800 text-md md:text-sm">{{ recipe.servings ? `${recipe.servings} ${recipe.servings === 1 ? 'person' : 'people'}` : 'N/A' }}</span>
@@ -210,7 +210,7 @@
 import type { Recipe, Ingredient, Step, SubStep } from '~/types/recipe'
 import IconEdit from '~/components/icons/IconEdit.vue'
 import IconClock from '~/components/icons/IconClock.vue'
-import IconUsers from '~/components/icons/IconUsers.vue'
+import IconServings from '~/components/icons/IconServings.vue'
 
 const route = useRoute()
 const recipe = ref<Recipe | null>(null)
