@@ -415,10 +415,6 @@
 </template>
 
 <script setup lang="ts">
-definePageMeta({
-  layout: 'admin'
-})
-
 import draggable from 'vuedraggable'
 import IconTrash from '~/components/icons/IconTrash.vue'
 import IconPlus from '~/components/icons/IconPlus.vue'

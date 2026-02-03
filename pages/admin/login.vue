@@ -34,9 +34,6 @@
 </template>
 
 <script setup lang="ts">
-definePageMeta({
-  layout: 'admin'
-})
 const form = reactive({
   username: '',
   password: '',

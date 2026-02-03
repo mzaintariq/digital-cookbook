@@ -264,11 +264,6 @@ import {
   createColumnHelper,
   type ColumnDef,
 } from "@tanstack/vue-table";
-
-definePageMeta({
-  layout: "admin",
-});
-
 import type { Recipe } from '~/types/recipe'
 import IconTrash from '~/components/icons/IconTrash.vue'
 import IconSearch from '~/components/icons/IconSearch.vue'
