@@ -1,8 +1,9 @@
 <template>
-  <svg :class="iconClass" :width="size" :height="size" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-    stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-    <path d="M4 6h16M4 12h16M4 18h16" />
-  </svg>
+    <svg :class="iconClass" :width="size" :height="size" viewBox="0 0 24 24" fill="none"
+        xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+        stroke-linejoin="round" aria-hidden="true">
+        <path d="M3 12H21M3 6H21M3 18H21" />
+    </svg>
 </template>
 
 <script setup>

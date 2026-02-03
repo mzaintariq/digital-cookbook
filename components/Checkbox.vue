@@ -37,7 +37,7 @@ const sizeClasses = {
 }
 
 const iconSizes = {
-  default: 10, // 0.625rem = 10px
+  default: 16, // 0.625rem = 10px
   small: 12 // 0.75rem = 12px
 }
 
