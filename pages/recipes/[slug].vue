@@ -22,7 +22,7 @@
 
           <!-- Title and Edit Icon -->
           <div class="flex items-center gap-3 mb-3 flex-row md:flex-wrap justify-between w-full">
-            <h1 class="text-2xl md:text3xl lg:text-5xl font-bold text-ink-800 leading-tight">{{ recipe.title }}</h1>
+            <h1 class="text-4xl md:text4xl lg:text-5xl font-bold text-ink-800 leading-tight">{{ recipe.title }}</h1>
 
             <!-- Edit Icon (only when logged in) -->
             <NuxtLink v-if="isLoggedIn" :to="`/admin/recipes/${recipe.id}`"
@@ -36,7 +36,7 @@
             {{ recipe.description }}
           </p>
 
-          <div class="bg-paper-100 p-4 rounded-lg shadow-md pl-4 lg:pl-8 mr-auto w-full lg:w-fit">
+          <div class="bg-paper-50 p-4 rounded-lg border border-brand-primary shadow-md pl-4 lg:pl-8 mr-auto w-full lg:w-fit">
             <div class="flex flex-nowrap md:flex-wrap items-start md:items-center justify-between md:justify-start gap-3 md:gap-4 lg:gap-6">
               <!-- Prep Time -->
               <div class="flex items-start gap-1.5 md:gap-2 flex-shrink-0">
@@ -73,20 +73,57 @@
         <!-- Desktop: Ingredients and steps side by side with flexbox -->
         <div class="flex flex-col lg:flex-row gap-6">
           <!-- Ingredients Card -->
-          <div class="order-1 lg:flex-shrink-0 lg:w-64 xl:w-72 bg-paper-50 rounded-lg shadow-md p-6">
+          <div class="order-1 lg:flex-shrink-0 lg:w-80 bg-paper-50 rounded-lg border border-brand-primary shadow-md p-6">
             <h2 class="text-2xl font-semibold text-ink-900 mb-4">Ingredients</h2>
+
+            <!-- Serving size adjuster: scale ingredient quantities -->
+            <div class="mb-4">
+              <div class="w-full inline-flex overflow-hidden rounded-lg border border-paper-300 bg-paper-50">
+                <div
+                  v-for="(opt, i) in scaleOptions"
+                  :key="opt.value"
+                  class="flex-1"
+                >
+                  <input
+                    :id="`serving-size-${opt.value}-${recipe?.id ?? 'recipe'}`"
+                    v-model="scaleFactor"
+                    type="radio"
+                    :name="`serving-size-adjuster-${recipe?.id ?? 'recipe'}`"
+                    :value="opt.value"
+                    class="sr-only"
+                  >
+
+                  <label
+                    :for="`serving-size-${opt.value}-${recipe?.id ?? 'recipe'}`"
+                    class="flex w-full items-center justify-center py-2 text-sm font-medium cursor-pointer transition-colors select-none
+                          border-r border-paper-300 last:border-r-0"
+                    :class="scaleFactor === opt.value
+                      ? 'bg-brand-primary-50 text-brand-primary-700'
+                      : 'bg-transparent text-ink-600 hover:bg-paper-100'"
+                  >
+                    <span>{{ opt.label }}</span>
+                    <IconClose class="w-4 h-4" />
+                  </label>
+                </div>
+              </div>
+            </div>
 
             <!-- Grouped by Category -->
             <div v-if="groupedIngredients.categories.length > 0 || groupedIngredients.uncategorized.length > 0"
               class="space-y-6">
               <!-- Each Category -->
               <div v-for="category in groupedIngredients.categories" :key="category.name" class="space-y-2">
-                <h3 class="text-sm font-semibold text-ink-700 uppercase tracking-wide border-b border-paper-300 pb-1">
-                  {{ category.name }}
+                <h3 class="text-sm font-bold text-brand-primary-600 uppercase tracking-wide pb-1">
+                  {{ category.name }}:
                 </h3>
-                <ul class="list-disc list-outside space-y-2 text-ink-800 pl-4">
-                  <li v-for="(ingredient, idx) in category.ingredients" :key="idx" class="whitespace-pre-line">
-                    {{ ingredient }}
+                <ul class="space-y-2">
+                  <li
+                    v-for="(ingredient, idx) in category.ingredients"
+                    :key="idx"
+                    class="flex items-center gap-3 text-brand-primary-600"
+                  >
+                    <span class="h-2.5 w-2.5 rounded-full bg-brand-primary shrink-0"></span>
+                    <span class="whitespace-pre-line leading-relaxed">{{ ingredient }}</span>
                   </li>
                 </ul>
               </div>
@@ -94,13 +131,17 @@
               <!-- Uncategorized -->
               <div v-if="groupedIngredients.uncategorized.length > 0" class="space-y-2">
                 <h3 v-if="groupedIngredients.categories.length > 0"
-                  class="text-sm font-semibold text-ink-700 uppercase tracking-wide border-b border-paper-300 pb-1">
-                  Other Ingredients
+                  class="text-sm font-bold text-brand-primary-600 uppercase tracking-wide pb-1">
+                  Other Ingredients:
                 </h3>
-                <ul class="list-disc list-outside space-y-2 text-ink-800 pl-4">
-                  <li v-for="(ingredient, idx) in groupedIngredients.uncategorized" :key="idx"
-                    class="whitespace-pre-line">
-                    {{ ingredient }}
+                <ul class="space-y-2">
+                  <li
+                    v-for="(ingredient, idx) in groupedIngredients.uncategorized"
+                    :key="idx"
+                    class="flex items-center gap-3 text-brand-primary-600"
+                  >
+                    <span class="h-2.5 w-2.5 rounded-full bg-brand-primary shrink-0"></span>
+                    <span class="whitespace-pre-line leading-relaxed">{{ ingredient }}</span>
                   </li>
                 </ul>
               </div>
@@ -124,16 +165,16 @@
               <div v-if="groupedSteps.categories.length > 0 || groupedSteps.uncategorized.length > 0" class="space-y-6">
                 <!-- Each Category -->
                 <div v-for="category in groupedSteps.categories" :key="category.name" class="space-y-3">
-                  <h3 class="text-sm font-semibold text-ink-700 uppercase tracking-wide border-b border-paper-300 pb-1">
-                    {{ category.name }}
+                  <h3 class="text-sm font-bold text-brand-primary-600 uppercase tracking-wide pb-1">
+                    {{ category.name }}:
                   </h3>
-                  <ol class="list-decimal list-outside space-y-3 text-ink-800 pl-4">
+                  <ol class="list-decimal list-outside space-y-3 text-brand-primary-600 pl-8 [&_li::marker]:text-brand-primary">
                     <li v-for="(step, idx) in category.steps" :key="idx" class="pl-2">
                       <div class="space-y-2">
                         <div>{{ step.description }}</div>
                         <!-- Sub-steps -->
                         <ol v-if="step.subSteps && step.subSteps.length > 0"
-                          class="list-[lower-alpha] list-outside space-y-1 text-ink-700 ml-4 mt-1">
+                          class="list-[lower-alpha] list-outside space-y-1 text-brand-primary ml-4 mt-1">
                           <li v-for="(subStep, subIdx) in step.subSteps" :key="subIdx" class="pl-2">
                             {{ subStep.description }}
                           </li>
@@ -146,16 +187,16 @@
                 <!-- Uncategorized -->
                 <div v-if="groupedSteps.uncategorized.length > 0" class="space-y-3">
                   <h3 v-if="groupedSteps.categories.length > 0"
-                    class="text-sm font-semibold text-ink-700 uppercase tracking-wide border-b border-paper-300 pb-1">
-                    Additional Steps
+                    class="text-sm font-bold text-brand-primary-600 uppercase tracking-wide pb-1">
+                    Additional Steps:
                   </h3>
-                  <ol class="list-decimal list-outside space-y-3 text-ink-800 pl-4">
+                  <ol class="list-decimal list-outside space-y-3 text-brand-primary-600 pl-8 [&_li::marker]:text-brand-primary">
                     <li v-for="(step, idx) in groupedSteps.uncategorized" :key="idx" class="pl-2">
                       <div class="space-y-2">
                         <div>{{ step.description }}</div>
                         <!-- Sub-steps -->
                         <ol v-if="step.subSteps && step.subSteps.length > 0"
-                          class="list-[lower-alpha] list-outside space-y-1 text-ink-700 ml-4 mt-1">
+                          class="list-[lower-alpha] list-outside space-y-1 text-brand-primary ml-4 mt-1">
                           <li v-for="(subStep, subIdx) in step.subSteps" :key="subIdx" class="pl-2">
                             {{ subStep.description }}
                           </li>
@@ -175,16 +216,15 @@
             </div>
 
             <!-- Notes -->
-            <div v-if="recipe.notes" class="p-4 bg-paper-50 rounded-lg">
-              <h3 class="font-semibold text-ink-900 mb-2">Notes</h3>
-              <p class="text-ink-800 whitespace-pre-line">{{ recipe.notes }}</p>
+            <div v-if="recipe.notes" class=" bg-paper-50 rounded-lg">
+              <h3 class="text-sm font-bold text-brand-primary-600 uppercase tracking-wide mb-2">*Notes:</h3>
+              <p class="text-brand-primary-600 whitespace-pre-line pl-4">{{ recipe.notes }}</p>
             </div>
 
             <!-- Video URL -->
-            <div v-if="recipe.videoUrl" class="p-4 bg-paper-50 rounded-lg">
-              <h3 class="font-semibold text-ink-900 mb-2">Video</h3>
+            <div v-if="recipe.videoUrl" class="flex items-center gap-2 bg-paper-50 rounded-lg">
               <a :href="recipe.videoUrl" target="_blank" rel="noopener noreferrer"
-                class="text-brand-primary hover:text-brand-primary-800 underline">
+                class="text-sm font-semibold text-brand-primary hover:text-brand-primary-800 underline">
                 Watch Video
               </a>
             </div>
@@ -211,12 +251,15 @@ import type { Recipe, Ingredient, Step, SubStep } from '~/types/recipe'
 import IconEdit from '~/components/icons/IconEdit.vue'
 import IconClock from '~/components/icons/IconClock.vue'
 import IconServings from '~/components/icons/IconServings.vue'
+import IconClose from '~/components/icons/IconClose.vue'
 
 const route = useRoute()
 const recipe = ref<Recipe | null>(null)
 const loading = ref(true)
 const error = ref<string | null>(null)
 const isLoggedIn = ref(false)
+const scaleFactor = ref(1)
+let loginCheckIntervalId: ReturnType<typeof setInterval>
 
 // Check login status
 async function checkLoginStatus() {
@@ -291,25 +334,30 @@ function formatQuantity(quantity: number, unit: string): string {
 // Units that should have no space between number and unit
 const noSpaceUnits = ['g', 'kg', 'ml', 'l', 'oz']
 
-// Format a single ingredient
-function formatIngredient(ing: Ingredient): string {
-  // If "to taste" is checked, show name with "(to taste)" at the end
+const scaleOptions = [
+  { value: 0.5, label: '½' },
+  { value: 1, label: '1' },
+  { value: 2, label: '2' },
+  { value: 3, label: '3' },
+]
+
+function formatIngredient(ing: Ingredient, scale: number = 1): string {
   if (ing.toTaste) {
     let result = `${ing.name} (to taste)`
-    // Add alternate ingredient if present
     if (ing.alternateIngredient) {
       result += `\n(or ${ing.alternateIngredient})`
     }
     return result
   }
 
-  const formattedQty = formatQuantity(ing.quantity, ing.unit)
+  const qty = ing.quantity * scale
+  const formattedQty = formatQuantity(qty, ing.unit)
   const unitLower = ing.unit.toLowerCase()
 
-  // Format alternate size if present
+  // Format alternate size if present (also scaled)
   let altSize = ''
   if (ing.detailedSize) {
-    const altQty = formatQuantity(ing.detailedSize.amount, ing.detailedSize.unit)
+    const altQty = formatQuantity(ing.detailedSize.amount * scale, ing.detailedSize.unit)
     const altUnitLower = ing.detailedSize.unit.toLowerCase()
     const altUnitFormatted = noSpaceUnits.includes(altUnitLower)
       ? altUnitLower
@@ -343,7 +391,7 @@ function formatIngredient(ing: Ingredient): string {
 
 const formattedIngredients = computed(() => {
   if (!recipe.value) return []
-  return recipe.value.ingredients.map((ing: Ingredient) => formatIngredient(ing))
+  return recipe.value.ingredients.map((ing: Ingredient) => formatIngredient(ing, scaleFactor.value))
 })
 
 // Group ingredients by category, preserving order from ingredients array
@@ -357,7 +405,7 @@ const groupedIngredients = computed(() => {
 
   // Iterate through ingredients in order to preserve category order
   recipe.value.ingredients.forEach((ing: Ingredient) => {
-    const formatted = formatIngredient(ing)
+    const formatted = formatIngredient(ing, scaleFactor.value)
     const category = ing.category ? ing.category.trim() : null
 
     if (category) {
@@ -431,6 +479,10 @@ onMounted(async () => {
   }
 
   // Refresh login status periodically
-  setInterval(checkLoginStatus, 5000)
+  loginCheckIntervalId = setInterval(checkLoginStatus, 5000)
+})
+
+onUnmounted(() => {
+  clearInterval(loginCheckIntervalId)
 })
 </script>
