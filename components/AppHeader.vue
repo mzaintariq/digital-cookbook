@@ -101,6 +101,7 @@ const isLoggedIn = ref(false)
 const showDropdown = ref(false)
 const showMobileMenu = ref(false)
 const adminMenuRef = ref<HTMLElement | null>(null)
+let loginCheckIntervalId: ReturnType<typeof setInterval>
 
 // Recipe title from page
 const recipeTitle = ref<string | null>(null)
@@ -197,13 +198,14 @@ function handleClickOutside(event: MouseEvent) {
 onMounted(() => {
   checkLoginStatus()
   // Refresh login status periodically
-  setInterval(checkLoginStatus, 5000)
+  loginCheckIntervalId = setInterval(checkLoginStatus, 5000)
 
   // Listen for clicks outside
   document.addEventListener('click', handleClickOutside)
 })
 
 onUnmounted(() => {
+  clearInterval(loginCheckIntervalId)
   document.removeEventListener('click', handleClickOutside)
 })
 </script>

@@ -29,6 +29,7 @@ import LogoTypeBoth from '~/components/logos/LogoTypeBothReverse.svg?component'
 import LogoTypeBothCentered from '~/components/logos/LogoTypeBothCentered.svg?component'
 
 const isLoggedIn = ref(false)
+let loginCheckIntervalId: ReturnType<typeof setInterval>
 
 async function checkLoginStatus() {
   try {
@@ -39,9 +40,12 @@ async function checkLoginStatus() {
   }
 }
 
-onMounted(() => {
-  checkLoginStatus()
-  // Refresh login status periodically
-  setInterval(checkLoginStatus, 5000)
+onMounted(async () => {
+  await checkLoginStatus()
+  loginCheckIntervalId = setInterval(checkLoginStatus, 5000)
+})
+
+onUnmounted(() => {
+  clearInterval(loginCheckIntervalId)
 })
 </script>

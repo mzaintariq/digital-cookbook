@@ -123,6 +123,8 @@ const filteredRecipes = computed(() => {
   })
 })
 
+let loginCheckIntervalId: ReturnType<typeof setInterval>
+
 // Check login status
 async function checkLoginStatus() {
   try {
@@ -151,6 +153,10 @@ onMounted(async () => {
   }
 
   // Refresh login status periodically
-  setInterval(checkLoginStatus, 5000)
+  loginCheckIntervalId = setInterval(checkLoginStatus, 5000)
+})
+
+onUnmounted(() => {
+  clearInterval(loginCheckIntervalId)
 })
 </script>

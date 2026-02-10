@@ -3,7 +3,7 @@
     <div class="flex items-center gap-2 flex-1">
       <div v-if="!isEditing" :class="dragHandleClass"
         class="cursor-move text-ink-500 hover:text-ink-700 flex-shrink-0">
-        <IconDragHandle class="w-4 h-4" />
+        <IconDragHandle class="w-5 h-5" />
       </div>
       <input v-if="isEditing" v-model="localEditValue" type="text" @keyup.enter="handleSave" @keyup.esc="handleCancel"
         @blur="handleSave"
