@@ -14,6 +14,7 @@ export function extForMime(mime: string): string | null {
 
 export function isAllowedImageMime(mime: string): boolean {
   const m = mime.toLowerCase().split(';')[0]?.trim()
+  if (!m) return false
   return ALLOWED_MIME.has(m)
 }
 
