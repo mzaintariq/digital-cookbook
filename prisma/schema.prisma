@@ -10,12 +10,12 @@ datasource db {
 }
 
 model Recipe {
-  id              String   @id @default(uuid())
+  id              String        @id @default(uuid())
   title           String
-  slug            String   @unique
+  slug            String        @unique
   description     String?
-  ingredients     Json     // Array of structured ingredient objects
-  steps           Json     // Array of structured step objects with category and subSteps
+  ingredients     Json          // Array of structured ingredient objects
+  steps           Json          // Array of structured step objects with category and subSteps
   cookTimeMinutes Int
   prepTimeMinutes Int?
   restTimeMinutes Int?
@@ -25,9 +25,22 @@ model Recipe {
   credit          String?
   videoUrl        String?
   approvedBy      String
-  status          String   @default("draft") // "draft" | "publish"
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  status          String        @default("draft") // "draft" | "publish"
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  images          RecipeImage[]
 
   @@map("recipes")
+}
+
+model RecipeImage {
+  id            String  @id @default(uuid())
+  recipeId      String
+  storagePath   String
+  sortOrder     Int     @default(0)
+  isThumbnail   Boolean @default(false)
+  recipe        Recipe  @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+
+  @@index([recipeId])
+  @@map("recipe_images")
 }

@@ -1,4 +1,5 @@
 import prisma from '../../utils/prisma'
+import { serializePublicRecipe } from '../../utils/recipeSerialization'
 
 export default defineEventHandler(async (event) => {
   try {
@@ -10,14 +11,15 @@ export default defineEventHandler(async (event) => {
       orderBy: {
         createdAt: 'desc',
       },
+      include: {
+        images: {
+          where: { isThumbnail: true },
+          take: 1,
+        },
+      },
     })
 
-    // Serialize Date objects to strings for proper serialization
-    return recipes.map(recipe => ({
-      ...recipe,
-      createdAt: recipe.createdAt.toISOString(),
-      updatedAt: recipe.updatedAt.toISOString(),
-    }))
+    return recipes.map((recipe) => serializePublicRecipe(recipe))
   } catch (error) {
     throw createError({
       statusCode: 500,

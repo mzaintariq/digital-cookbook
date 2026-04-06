@@ -1,5 +1,6 @@
 import prisma from '../../utils/prisma'
 import { getAdminSession } from '../../utils/auth'
+import { serializeAdminRecipe } from '../../utils/recipeSerialization'
 
 export default defineEventHandler(async (event) => {
   try {
@@ -17,14 +18,14 @@ export default defineEventHandler(async (event) => {
       orderBy: {
         createdAt: 'desc',
       },
+      include: {
+        images: {
+          orderBy: { sortOrder: 'asc' },
+        },
+      },
     })
 
-    // Serialize Date objects to strings for proper serialization
-    return recipes.map(recipe => ({
-      ...recipe,
-      createdAt: recipe.createdAt.toISOString(),
-      updatedAt: recipe.updatedAt.toISOString(),
-    }))
+    return recipes.map((recipe) => serializeAdminRecipe(recipe))
   } catch (error: any) {
     if (error.statusCode) {
       throw error

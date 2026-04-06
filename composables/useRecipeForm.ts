@@ -1,4 +1,12 @@
-import type { Recipe, Ingredient, Step, SubStep } from '~/types/recipe'
+import { computed, reactive, ref, watch, toValue, type MaybeRefOrGetter } from 'vue'
+import type { Recipe, Ingredient, Step, SubStep, RecipeImageDto } from '~/types/recipe'
+
+export interface RecipeFormImage {
+  storagePath: string
+  url: string
+  sortOrder: number
+  isThumbnail: boolean
+}
 
 export interface RecipeForm {
   title: string
@@ -15,10 +23,12 @@ export interface RecipeForm {
   published: boolean
   ingredients: Ingredient[]
   steps: Step[]
+  images: RecipeFormImage[]
 }
 
-export function useRecipeForm(recipeId: string) {
-  const isEditMode = recipeId !== 'new'
+export function useRecipeForm(recipeIdSource: MaybeRefOrGetter<string>) {
+  const recipeId = computed(() => toValue(recipeIdSource))
+  const isEditMode = computed(() => recipeId.value !== 'new')
   const slugManuallyChanged = ref(false)
 
   const form = reactive<RecipeForm>({
@@ -36,9 +46,10 @@ export function useRecipeForm(recipeId: string) {
     published: false,
     ingredients: [],
     steps: [],
+    images: [],
   })
 
-  const loading = ref(isEditMode)
+  const loading = ref(recipeId.value !== 'new')
   const saving = ref(false)
   const error = ref<string | null>(null)
   const fieldErrors = reactive<Record<string, string>>({})
@@ -74,7 +85,7 @@ export function useRecipeForm(recipeId: string) {
 
   // Watch form.title and auto-generate slug if not manually changed
   watch(() => form.title, (newTitle) => {
-    if (process.client && isEditMode) {
+    if (process.client && isEditMode.value) {
       window.dispatchEvent(new CustomEvent('recipe-title-update', {
         detail: { title: newTitle || null }
       }))
@@ -85,12 +96,20 @@ export function useRecipeForm(recipeId: string) {
     }
   }, { immediate: true })
 
+  watch(recipeId, async (newId, oldId) => {
+    if (oldId === 'new' && newId !== 'new') {
+      loading.value = true
+      error.value = null
+      await loadRecipe()
+    }
+  })
+
   async function loadRecipe() {
-    if (!isEditMode) return
+    if (!isEditMode.value) return
 
     try {
       const recipes = await $fetch<Recipe[]>('/api/admin/recipes')
-      const recipe = recipes.find((r: Recipe) => r.id === recipeId)
+      const recipe = recipes.find((r: Recipe) => r.id === recipeId.value)
 
       if (!recipe) {
         error.value = 'Recipe not found'
@@ -111,6 +130,19 @@ export function useRecipeForm(recipeId: string) {
       form.published = recipe.status === 'publish'
 
       slugManuallyChanged.value = true
+
+      if (Array.isArray(recipe.images) && recipe.images.length > 0) {
+        form.images = [...recipe.images]
+          .sort((a: RecipeImageDto, b: RecipeImageDto) => a.sortOrder - b.sortOrder)
+          .map((img: RecipeImageDto) => ({
+            storagePath: img.storagePath,
+            url: img.url,
+            sortOrder: img.sortOrder,
+            isThumbnail: img.isThumbnail,
+          }))
+      } else {
+        form.images = []
+      }
 
       if (Array.isArray(recipe.ingredients)) {
         form.ingredients = recipe.ingredients.map((ing: Ingredient) => ({
@@ -166,6 +198,14 @@ export function useRecipeForm(recipeId: string) {
       hasErrors = true
     }
 
+    if (form.images.length > 0) {
+      const thumbs = form.images.filter((i) => i.isThumbnail)
+      if (thumbs.length !== 1) {
+        error.value = 'Select exactly one image as the thumbnail.'
+        hasErrors = true
+      }
+    }
+
     if (hasErrors) {
       return
     }
@@ -178,8 +218,15 @@ export function useRecipeForm(recipeId: string) {
         form.slug = generateSlug(form.title)
       }
 
+      const imagesPayload = form.images.map((img, index) => ({
+        storagePath: img.storagePath,
+        sortOrder: index,
+        isThumbnail: img.isThumbnail,
+      }))
+
       const submitData = {
         ...form,
+        images: imagesPayload,
         ingredients: form.ingredients.map(ing => ({
           quantity: ing.quantity,
           unit: ing.unit,
@@ -198,21 +245,29 @@ export function useRecipeForm(recipeId: string) {
         tags: form.tags.split(',').map(t => t.trim()).filter(t => t),
       }
 
-      if (isEditMode) {
-        await $fetch(`/api/admin/recipes/${recipeId}`, {
+      if (isEditMode.value) {
+        await $fetch(`/api/admin/recipes/${recipeId.value}`, {
           method: 'PUT',
           body: submitData,
         })
       } else {
-        await $fetch('/api/recipes', {
+        const created = await $fetch<Recipe>('/api/recipes', {
           method: 'POST',
           body: submitData,
         })
+        if (process.client) {
+          window.dispatchEvent(new CustomEvent('recipe-saved', {
+            detail: { message: 'Recipe created successfully!' },
+          }))
+          await new Promise(resolve => setTimeout(resolve, 400))
+        }
+        await navigateTo(`/admin/recipes/${created.id}`)
+        return
       }
 
       if (process.client) {
         window.dispatchEvent(new CustomEvent('recipe-saved', {
-          detail: { message: isEditMode ? 'Recipe updated successfully!' : 'Recipe created successfully!' }
+          detail: { message: 'Recipe updated successfully!' },
         }))
 
         await new Promise(resolve => setTimeout(resolve, 500))
@@ -262,6 +317,70 @@ export function useRecipeForm(recipeId: string) {
     }
   }
 
+  const imageUploading = ref(false)
+  const imageUploadError = ref<string | null>(null)
+
+  function syncThumbnailDefaults() {
+    if (form.images.length === 0) return
+    if (!form.images.some((i) => i.isThumbnail)) {
+      const first = form.images[0]
+      if (first) first.isThumbnail = true
+    }
+  }
+
+  function setRecipeFormThumbnail(index: number) {
+    form.images.forEach((img, i) => {
+      img.isThumbnail = i === index
+    })
+  }
+
+  function removeRecipeFormImage(index: number) {
+    form.images.splice(index, 1)
+    syncThumbnailDefaults()
+  }
+
+  function reorderRecipeFormImages(newList: RecipeFormImage[]) {
+    newList.forEach((img, i) => {
+      img.sortOrder = i
+    })
+    form.images = newList
+  }
+
+  async function uploadRecipeImage(file: File) {
+    imageUploadError.value = null
+    if (!isEditMode.value) {
+      imageUploadError.value = 'Save the recipe first, then add images.'
+      return
+    }
+    if (form.images.length >= 5) {
+      imageUploadError.value = 'Maximum 5 images per recipe.'
+      return
+    }
+    imageUploading.value = true
+    try {
+      const fd = new FormData()
+      fd.append('recipeId', recipeId.value)
+      fd.append('file', file)
+      const res = await $fetch<{ storagePath: string, url: string }>('/api/admin/recipes/upload-image', {
+        method: 'POST',
+        body: fd,
+      })
+      const isFirst = form.images.length === 0
+      form.images.push({
+        storagePath: res.storagePath,
+        url: res.url,
+        sortOrder: form.images.length,
+        isThumbnail: isFirst,
+      })
+      syncThumbnailDefaults()
+    } catch (err: any) {
+      imageUploadError.value =
+        err.data?.statusMessage || err.message || 'Failed to upload image'
+    } finally {
+      imageUploading.value = false
+    }
+  }
+
   return {
     form,
     loading,
@@ -277,5 +396,11 @@ export function useRecipeForm(recipeId: string) {
     getTextareaClasses,
     loadRecipe,
     handleSubmit,
+    imageUploading,
+    imageUploadError,
+    setRecipeFormThumbnail,
+    removeRecipeFormImage,
+    reorderRecipeFormImages,
+    uploadRecipeImage,
   }
 }

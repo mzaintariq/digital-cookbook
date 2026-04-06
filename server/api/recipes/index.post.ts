@@ -1,5 +1,7 @@
 import prisma from '../../utils/prisma'
 import { getAdminSession } from '../../utils/auth'
+import { assertValidRecipeImagesPayload } from '../../utils/recipeImagesSync'
+import { serializeAdminRecipe } from '../../utils/recipeSerialization'
 import type { Ingredient, Step, SubStep } from '~/types/recipe'
 
 export default defineEventHandler(async (event) => {
@@ -66,32 +68,52 @@ export default defineEventHandler(async (event) => {
         ? body.tags.split(',').map((tag: string) => tag.trim()).filter((tag: string) => tag)
         : []
 
-    const recipe = await prisma.recipe.create({
-      data: {
-        title: body.title,
-        slug: body.slug,
-        description: body.description || null,
-        credit: body.credit || null,
-        videoUrl: body.videoUrl || null,
-        ingredients: ingredients as any, // Store as JSON
-        steps: steps as any, // Store as JSON
-        cookTimeMinutes: parseInt(body.cookTimeMinutes) || 0,
-        prepTimeMinutes: body.prepTimeMinutes ? parseInt(body.prepTimeMinutes) : null,
-        restTimeMinutes: body.restTimeMinutes ? parseInt(body.restTimeMinutes) : null,
-        servings: body.servings ? parseInt(body.servings) : null,
-        tags: tags,
-        notes: body.notes || null,
-        approvedBy: body.published ? session.email : 'System',
-        status: body.published ? 'publish' : 'draft',
-      },
+    const imagesPayload = 'images' in body ? body.images : undefined
+
+    const created = await prisma.$transaction(async (tx) => {
+      const recipe = await tx.recipe.create({
+        data: {
+          title: body.title,
+          slug: body.slug,
+          description: body.description || null,
+          credit: body.credit || null,
+          videoUrl: body.videoUrl || null,
+          ingredients: ingredients as any, // Store as JSON
+          steps: steps as any, // Store as JSON
+          cookTimeMinutes: parseInt(body.cookTimeMinutes) || 0,
+          prepTimeMinutes: body.prepTimeMinutes ? parseInt(body.prepTimeMinutes) : null,
+          restTimeMinutes: body.restTimeMinutes ? parseInt(body.restTimeMinutes) : null,
+          servings: body.servings ? parseInt(body.servings) : null,
+          tags: tags,
+          notes: body.notes || null,
+          approvedBy: body.published ? session.email : 'System',
+          status: body.published ? 'publish' : 'draft',
+        },
+      })
+
+      if (imagesPayload !== undefined) {
+        const normalized = assertValidRecipeImagesPayload(imagesPayload, recipe.id)
+        if (normalized.length > 0) {
+          await tx.recipeImage.createMany({
+            data: normalized.map((row) => ({
+              recipeId: recipe.id,
+              storagePath: row.storagePath,
+              sortOrder: row.sortOrder,
+              isThumbnail: row.isThumbnail,
+            })),
+          })
+        }
+      }
+
+      return recipe
     })
 
-    // Serialize Date objects to strings for proper serialization
-    return {
-      ...recipe,
-      createdAt: recipe.createdAt.toISOString(),
-      updatedAt: recipe.updatedAt.toISOString(),
-    }
+    const full = await prisma.recipe.findUniqueOrThrow({
+      where: { id: created.id },
+      include: { images: { orderBy: { sortOrder: 'asc' } } },
+    })
+
+    return serializeAdminRecipe(full)
   } catch (error: any) {
     if (error.statusCode) {
       throw error

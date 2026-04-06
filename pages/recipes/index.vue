@@ -34,8 +34,17 @@
 
       <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <div v-for="recipe in filteredRecipes" :key="recipe.id"
-          class="bg-paper-50 rounded-lg shadow-md hover:shadow-lg transition-shadow p-6 relative">
+          class="bg-paper-50 rounded-lg shadow-md hover:shadow-lg transition-shadow overflow-hidden relative">
           <NuxtLink :to="`/recipes/${recipe.slug}`" class="block">
+            <div v-if="recipe.thumbnailUrl" class="aspect-[4/3] w-full bg-paper-200">
+              <img
+                :src="recipe.thumbnailUrl"
+                :alt="recipe.title"
+                class="w-full h-full object-cover"
+                loading="lazy"
+              />
+            </div>
+            <div class="p-6">
             <div class="flex items-center justify-between mb-2">
               <h2 class="text-xl font-bold text-ink-900">{{ recipe.title }}</h2>
               <!-- Edit Icon (only when logged in) -->
@@ -66,6 +75,7 @@
               <span v-for="tag in recipe.tags" :key="tag" class="px-2 py-1 bg-paper-100 text-ink-800 text-xs rounded">
                 {{ tag }}
               </span>
+            </div>
             </div>
           </NuxtLink>
         </div>

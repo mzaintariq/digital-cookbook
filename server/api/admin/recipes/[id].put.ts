@@ -1,5 +1,7 @@
 import prisma from '../../../utils/prisma'
 import { getAdminSession } from '../../../utils/auth'
+import { assertValidRecipeImagesPayload, replaceRecipeImagesForRecipe } from '../../../utils/recipeImagesSync'
+import { serializeAdminRecipe } from '../../../utils/recipeSerialization'
 import type { Ingredient, Step, SubStep } from '~/types/recipe'
 
 export default defineEventHandler(async (event) => {
@@ -66,7 +68,7 @@ export default defineEventHandler(async (event) => {
         ? body.tags.split(',').map((tag: string) => tag.trim()).filter((tag: string) => tag)
         : []
 
-    const recipe = await prisma.recipe.update({
+    await prisma.recipe.update({
       where: { id },
       data: {
         title: body.title,
@@ -87,12 +89,17 @@ export default defineEventHandler(async (event) => {
       },
     })
 
-    // Serialize Date objects to strings for proper serialization
-    return {
-      ...recipe,
-      createdAt: recipe.createdAt.toISOString(),
-      updatedAt: recipe.updatedAt.toISOString(),
+    if ('images' in body && body.images !== undefined) {
+      const normalized = assertValidRecipeImagesPayload(body.images, id)
+      await replaceRecipeImagesForRecipe(id, normalized)
     }
+
+    const full = await prisma.recipe.findUniqueOrThrow({
+      where: { id },
+      include: { images: { orderBy: { sortOrder: 'asc' } } },
+    })
+
+    return serializeAdminRecipe(full)
   } catch (error: any) {
     if (error.statusCode) {
       throw error

@@ -1,4 +1,5 @@
 import prisma from '../../utils/prisma'
+import { serializePublicRecipe } from '../../utils/recipeSerialization'
 
 export default defineEventHandler(async (event) => {
   try {
@@ -13,6 +14,12 @@ export default defineEventHandler(async (event) => {
 
     const recipe = await prisma.recipe.findUnique({
       where: { slug },
+      include: {
+        images: {
+          where: { isThumbnail: true },
+          take: 1,
+        },
+      },
     })
 
     if (!recipe) {
@@ -30,12 +37,7 @@ export default defineEventHandler(async (event) => {
       })
     }
 
-    // Serialize Date objects to strings for proper serialization
-    return {
-      ...recipe,
-      createdAt: recipe.createdAt.toISOString(),
-      updatedAt: recipe.updatedAt.toISOString(),
-    }
+    return serializePublicRecipe(recipe)
   } catch (error: any) {
     if (error.statusCode) {
       throw error

@@ -24,6 +24,14 @@ export interface Step {
   subSteps?: SubStep[]
 }
 
+export interface RecipeImageDto {
+  id: string
+  storagePath: string
+  sortOrder: number
+  isThumbnail: boolean
+  url: string
+}
+
 export interface Recipe {
   id: string
   title: string
@@ -43,4 +51,8 @@ export interface Recipe {
   status: string
   createdAt: string | Date
   updatedAt: string | Date
+  /** Admin API and serialized create/update responses */
+  images?: RecipeImageDto[]
+  /** Public list and detail API */
+  thumbnailUrl?: string | null
 }

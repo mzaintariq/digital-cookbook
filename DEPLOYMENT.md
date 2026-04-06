@@ -43,6 +43,10 @@ openssl rand -base64 32
    - `ADMIN_USERNAME` - Your admin username
    - `ADMIN_PASSWORD_HASH` - The bcrypt hash you generated
    - `JWT_SECRET` - The random secret you generated
+   - `SUPABASE_URL` - From Supabase **Project Settings → API** (Project URL)
+   - `SUPABASE_SERVICE_ROLE_KEY` - From the same page (service_role secret; used only on the server for uploads)
+   
+   **Recipe images:** In the Supabase project, open **Storage**, create a **public** bucket named `recipe-images`. Without this bucket and the two Supabase env vars, recipe image upload is disabled.
 
 4. **Deploy:**
    - Click "Deploy"
@@ -78,6 +82,10 @@ Alternatively, you can run this locally by temporarily setting `DATABASE_URL` to
 | `ADMIN_USERNAME` | Admin login username | `admin` |
 | `ADMIN_PASSWORD_HASH` | Bcrypt hashed password | `$2b$10$...` |
 | `JWT_SECRET` | Secret for JWT tokens (32+ chars) | Random base64 string |
+| `SUPABASE_URL` | Supabase project URL | `https://xxx.supabase.co` |
+| `SUPABASE_SERVICE_ROLE_KEY` | Supabase service role key (server-only) | From API settings |
+
+**Supabase Storage:** Create a public bucket `recipe-images` in the Supabase dashboard. The app uploads to paths `{recipeId}/{uuid}.{ext}` inside that bucket.
 
 ## Troubleshooting
 

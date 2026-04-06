@@ -16,14 +16,80 @@
           <div class="lg:col-span-1 space-y-6">
             <h2 class="text-l font-semibold text-ink-900 mb-4">RECIPE GENERAL INFORMATION</h2>
 
-            <!-- Photo Upload Placeholder -->
+            <!-- Recipe images (max 5, one thumbnail) -->
             <div>
-              <label class="block text-sm font-medium text-ink-800 mb-2">Upload Photo</label>
-              <div class="border-2 border-dashed border-paper-400 rounded-lg p-8 text-center bg-paper-50">
-                <p class="text-brand-primary font-medium mb-1">Upload Photo</p>
-                <p class="text-sm text-ink-600">PNG or JPEG (max. 10MB)</p>
-                <p class="text-xs text-ink-500 mt-2">Coming soon</p>
-              </div>
+              <label class="block text-sm font-medium text-ink-800 mb-2">Recipe images</label>
+              <p class="text-xs text-ink-600 mb-2">
+                Up to 5 images. Choose one thumbnail for the recipe list. JPEG, PNG, or WebP, max 10MB each.
+              </p>
+              <p v-if="!isEditMode" class="text-sm text-ink-700 mb-3 rounded-md bg-paper-100 px-3 py-2">
+                Save the recipe once. You will return to this page to upload images.
+              </p>
+              <p v-if="imageUploadError" class="text-sm text-error-600 mb-2">{{ imageUploadError }}</p>
+
+              <draggable
+                v-if="form.images.length > 0"
+                :model-value="form.images"
+                item-key="storagePath"
+                handle=".recipe-image-drag-handle"
+                :animation="200"
+                :force-fallback="true"
+                ghost-class="sortable-ghost"
+                chosen-class="sortable-chosen"
+                drag-class="sortable-drag"
+                class="space-y-2 mb-3"
+                @update:model-value="reorderRecipeFormImages"
+              >
+                <template #item="{ element: img, index }">
+                  <div class="flex items-center gap-2 sm:gap-3 p-2 border border-paper-300 rounded-lg bg-paper-50">
+                    <div class="recipe-image-drag-handle cursor-move pt-1 text-ink-500 hover:text-ink-700 shrink-0">
+                      <IconDragHandle class="w-5 h-5" />
+                    </div>
+                    <img
+                      :src="img.url"
+                      alt=""
+                      class="w-14 h-14 sm:w-16 sm:h-16 object-cover rounded shrink-0"
+                    />
+                    <label class="flex items-center gap-2 text-sm text-ink-800 shrink-0 cursor-pointer">
+                      <input
+                        type="radio"
+                        name="recipe-thumbnail"
+                        class="text-brand-primary focus:ring-brand-primary"
+                        :checked="img.isThumbnail"
+                        @change="setRecipeFormThumbnail(index)"
+                      />
+                      <span>Thumbnail</span>
+                    </label>
+                    <button
+                      type="button"
+                      class="ml-auto text-error-500 hover:text-error-700 p-1 shrink-0"
+                      title="Remove image"
+                      @click="removeRecipeFormImage(index)"
+                    >
+                      <IconTrash class="w-5 h-5" />
+                    </button>
+                  </div>
+                </template>
+              </draggable>
+
+              <input
+                ref="recipeImageFileInputRef"
+                type="file"
+                accept="image/jpeg,image/png,image/webp"
+                class="sr-only"
+                @change="onRecipeImageFileSelected"
+              />
+              <Button
+                type="button"
+                variant="dashed"
+                size="sm"
+                class="w-full flex justify-center items-center gap-2"
+                :disabled="!isEditMode || form.images.length >= 5 || imageUploading"
+                @click="recipeImageFileInputRef?.click()"
+              >
+                <IconPlus class="w-4 h-4" />
+                {{ imageUploading ? 'Uploading…' : 'Add image' }}
+              </Button>
             </div>
 
             <!-- Recipe Name -->
@@ -425,7 +491,7 @@ import StepInput from '~/components/StepInput.vue'
 import CategoryHeader from '~/components/CategoryHeader.vue'
 import AddCategoryInput from '~/components/AddCategoryInput.vue'
 import TagInput from '~/components/TagInput.vue'
-import { toRef } from 'vue'
+import { computed, toRef } from 'vue'
 import { useRecipeForm } from '~/composables/useRecipeForm'
 import { useRecipeCategories } from '~/composables/useRecipeCategories'
 import { useRecipeIngredients } from '~/composables/useRecipeIngredients'
@@ -433,7 +499,10 @@ import { useRecipeSteps } from '~/composables/useRecipeSteps'
 import type { Ingredient, Step } from '~/types/recipe'
 
 const route = useRoute()
-const recipeId = route.params.id as string
+const recipeId = computed(() => {
+  const raw = route.params.id
+  return (Array.isArray(raw) ? raw[0] : raw) as string
+})
 
 // Form composable
 const {
@@ -450,7 +519,24 @@ const {
   getTextareaClasses,
   loadRecipe,
   handleSubmit,
+  imageUploading,
+  imageUploadError,
+  setRecipeFormThumbnail,
+  removeRecipeFormImage,
+  reorderRecipeFormImages,
+  uploadRecipeImage,
 } = useRecipeForm(recipeId)
+
+const recipeImageFileInputRef = ref<HTMLInputElement | null>(null)
+
+async function onRecipeImageFileSelected(e: Event) {
+  const input = e.target as HTMLInputElement
+  const file = input.files?.[0]
+  input.value = ''
+  if (file) {
+    await uploadRecipeImage(file)
+  }
+}
 
 // Categories composable
 const {

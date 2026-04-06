@@ -1,5 +1,6 @@
 import prisma from '../../../utils/prisma'
 import { getAdminSession } from '../../../utils/auth'
+import { removeRecipeImageObjectsFromStorage } from '../../../utils/supabaseAdmin'
 
 export default defineEventHandler(async (event) => {
   try {
@@ -20,9 +21,19 @@ export default defineEventHandler(async (event) => {
       })
     }
 
+    const images = await prisma.recipeImage.findMany({
+      where: { recipeId: id },
+      select: { storagePath: true },
+    })
+
     await prisma.recipe.delete({
       where: { id },
     })
+
+    const paths = images.map((i) => i.storagePath)
+    if (paths.length > 0) {
+      await removeRecipeImageObjectsFromStorage(paths)
+    }
 
     return { success: true }
   } catch (error: any) {
