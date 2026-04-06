@@ -36,7 +36,7 @@ const variantClasses = {
   primary: 'border border-transparent bg-brand-primary text-paper-50 hover:bg-brand-primary-600 disabled:bg-paper-400 disabled:cursor-not-allowed',
   secondary: 'bg-paper-200 text-ink-800 hover:bg-paper-300',
   'reverse-primary': 'border border-brand-primary text-brand-primary hover:bg-brand-primary hover:text-paper-50',
-  dashed: 'border border-dashed border-paper-400 text-ink-700 hover:bg-paper-50 hover:border-brand-primary-400 hover:text-brand-primary',
+  dashed: 'border border-dashed border-paper-400 text-ink-700 enabled:hover:bg-paper-50 enabled:hover:border-brand-primary-400 enabled:hover:text-brand-primary',
   delete: 'bg-paper-50 border border-error-300 text-error-600 hover:bg-error-50'
 }
 

@@ -18,12 +18,12 @@
 
             <!-- Recipe images (max 5, one thumbnail) -->
             <div>
-              <label class="block text-sm font-medium text-ink-800 mb-2">Recipe images</label>
+              <label class="block text-sm font-medium text-ink-800 mb-1">Recipe images</label>
               <p class="text-xs text-ink-600 mb-2">
-                Up to 5 images. Choose one thumbnail for the recipe list. JPEG, PNG, or WebP, max 10MB each.
+                Upload up to 5 photos. Pick 1 as the thumbnail for your recipe list. JPG, PNG, or WebP (max 10MB each).
               </p>
               <p v-if="!isEditMode" class="text-sm text-ink-700 mb-3 rounded-md bg-paper-100 px-3 py-2">
-                Save the recipe once. You will return to this page to upload images.
+                Save the recipe first. After it’s saved, you can come back here to upload images.
               </p>
               <p v-if="imageUploadError" class="text-sm text-error-600 mb-2">{{ imageUploadError }}</p>
 
@@ -37,40 +37,80 @@
                 ghost-class="sortable-ghost"
                 chosen-class="sortable-chosen"
                 drag-class="sortable-drag"
-                class="space-y-2 mb-3"
+                class="grid grid-cols-3 gap-2 mb-3"
                 @update:model-value="reorderRecipeFormImages"
               >
                 <template #item="{ element: img, index }">
-                  <div class="flex items-center gap-2 sm:gap-3 p-2 border border-paper-300 rounded-lg bg-paper-50">
-                    <div class="recipe-image-drag-handle cursor-move pt-1 text-ink-500 hover:text-ink-700 shrink-0">
-                      <IconDragHandle class="w-5 h-5" />
-                    </div>
-                    <img
-                      :src="img.url"
-                      alt=""
-                      class="w-14 h-14 sm:w-16 sm:h-16 object-cover rounded shrink-0"
-                    />
-                    <label class="flex items-center gap-2 text-sm text-ink-800 shrink-0 cursor-pointer">
-                      <input
-                        type="radio"
-                        name="recipe-thumbnail"
-                        class="text-brand-primary focus:ring-brand-primary"
-                        :checked="img.isThumbnail"
-                        @change="setRecipeFormThumbnail(index)"
-                      />
-                      <span>Thumbnail</span>
-                    </label>
-                    <button
-                      type="button"
-                      class="ml-auto text-error-500 hover:text-error-700 p-1 shrink-0"
-                      title="Remove image"
-                      @click="removeRecipeFormImage(index)"
+                  <div
+                    class="relative rounded-lg border border-paper-300 bg-paper-50 shadow-sm"
+                  >
+                    <div
+                      class="recipe-image-drag-handle relative aspect-square w-full cursor-grab active:cursor-grabbing overflow-hidden rounded-lg"
                     >
-                      <IconTrash class="w-5 h-5" />
-                    </button>
+                      <img
+                        :src="img.url"
+                        alt=""
+                        class="absolute inset-0 w-full h-full object-cover select-none pointer-events-none"
+                        draggable="false"
+                      />
+                      <div
+                        v-if="img.isThumbnail"
+                        class="absolute bottom-1.5 right-1.5 pointer-events-none rounded px-1.5 py-0.5 bg-brand-primary text-paper-50 font-mono text-[10px] sm:text-xs font-normal uppercase tracking-wide leading-tight shadow-sm"
+                      >
+                        Thumbnail
+                      </div>
+                    </div>
+                    <div class="absolute top-1 right-1 z-[2]">
+                      <button
+                        type="button"
+                        data-dropdown-button
+                        class="cursor-pointer p-0.5 rounded flex items-center justify-center bg-paper-50/90 hover:bg-paper-100 border border-paper-200 shadow-sm"
+                        aria-label="Image options"
+                        @click.stop="toggleRecipeImageMenu(img.storagePath, $event)"
+                      >
+                        <IconMoreVertical class="w-4 h-4 text-ink-700" />
+                      </button>
+                    </div>
                   </div>
                 </template>
               </draggable>
+
+              <Teleport to="body">
+                <Transition
+                  enter-active-class="transition ease-out duration-200"
+                  enter-from-class="opacity-0 scale-95 -translate-y-1"
+                  enter-to-class="opacity-100 scale-100 translate-y-0"
+                  leave-active-class="transition ease-in duration-150"
+                  leave-from-class="opacity-100 scale-100 translate-y-0"
+                  leave-to-class="opacity-0 scale-95 -translate-y-1"
+                >
+                  <div
+                    v-if="recipeImageMenuPlacement && openRecipeImageMenuPath"
+                    data-dropdown
+                    class="fixed z-[1002] w-36 bg-paper-50 rounded-md shadow-lg border border-paper-300 py-1"
+                    :style="{
+                      top: `${recipeImageMenuPlacement.top}px`,
+                      left: `${recipeImageMenuPlacement.left}px`,
+                    }"
+                  >
+                    <button
+                      type="button"
+                      class="block w-full text-left px-4 py-2 text-sm text-ink-800 hover:bg-paper-100 disabled:opacity-45 disabled:pointer-events-none disabled:hover:bg-transparent"
+                      :disabled="recipeImageMenuTarget?.isThumbnail"
+                      @click="makeRecipeImageThumbnailFromMenu"
+                    >
+                      Make thumbnail
+                    </button>
+                    <button
+                      type="button"
+                      class="block w-full text-left px-4 py-2 text-sm text-error-600 hover:bg-paper-100"
+                      @click="removeRecipeImageFromMenuByPath"
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </Transition>
+              </Teleport>
 
               <input
                 ref="recipeImageFileInputRef"
@@ -484,14 +524,14 @@
 import draggable from 'vuedraggable'
 import IconTrash from '~/components/icons/IconTrash.vue'
 import IconPlus from '~/components/icons/IconPlus.vue'
-import IconDragHandle from '~/components/icons/IconDragHandle.vue'
+import IconMoreVertical from '~/components/icons/IconMoreVertical.vue'
 import Button from '~/components/Button.vue'
 import IngredientInput from '~/components/IngredientInput.vue'
 import StepInput from '~/components/StepInput.vue'
 import CategoryHeader from '~/components/CategoryHeader.vue'
 import AddCategoryInput from '~/components/AddCategoryInput.vue'
 import TagInput from '~/components/TagInput.vue'
-import { computed, toRef } from 'vue'
+import { computed, onUnmounted, toRef } from 'vue'
 import { useRecipeForm } from '~/composables/useRecipeForm'
 import { useRecipeCategories } from '~/composables/useRecipeCategories'
 import { useRecipeIngredients } from '~/composables/useRecipeIngredients'
@@ -528,6 +568,79 @@ const {
 } = useRecipeForm(recipeId)
 
 const recipeImageFileInputRef = ref<HTMLInputElement | null>(null)
+const openRecipeImageMenuPath = ref<string | null>(null)
+const recipeImageMenuPlacement = ref<{ top: number; left: number } | null>(null)
+
+const RECIPE_IMAGE_MENU_WIDTH = 144
+const RECIPE_IMAGE_MENU_HEIGHT = 88
+const RECIPE_IMAGE_MENU_MARGIN = 8
+
+const recipeImageMenuTarget = computed(() => {
+  const p = openRecipeImageMenuPath.value
+  if (!p) return null
+  return form.images.find((i) => i.storagePath === p) ?? null
+})
+
+const recipeImageMenuActionIndex = computed(() => {
+  const p = openRecipeImageMenuPath.value
+  if (!p) return -1
+  return form.images.findIndex((i) => i.storagePath === p)
+})
+
+function clampRecipeImageMenuPosition(rect: DOMRect) {
+  const vw = typeof window !== 'undefined' ? window.innerWidth : 400
+  const vh = typeof window !== 'undefined' ? window.innerHeight : 800
+  const m = RECIPE_IMAGE_MENU_MARGIN
+  let left = rect.right - RECIPE_IMAGE_MENU_WIDTH
+  left = Math.min(Math.max(left, m), vw - RECIPE_IMAGE_MENU_WIDTH - m)
+  let top = rect.bottom + 4
+  if (top + RECIPE_IMAGE_MENU_HEIGHT > vh - m) {
+    top = rect.top - RECIPE_IMAGE_MENU_HEIGHT - 4
+  }
+  top = Math.min(Math.max(top, m), vh - RECIPE_IMAGE_MENU_HEIGHT - m)
+  return { top, left }
+}
+
+function toggleRecipeImageMenu(storagePath: string, event: MouseEvent) {
+  if (openRecipeImageMenuPath.value === storagePath) {
+    closeRecipeImageMenu()
+    return
+  }
+  const btn = event.currentTarget as HTMLElement
+  const pos = clampRecipeImageMenuPosition(btn.getBoundingClientRect())
+  recipeImageMenuPlacement.value = pos
+  openRecipeImageMenuPath.value = storagePath
+}
+
+function closeRecipeImageMenu() {
+  openRecipeImageMenuPath.value = null
+  recipeImageMenuPlacement.value = null
+}
+
+function makeRecipeImageThumbnailFromMenu() {
+  const i = recipeImageMenuActionIndex.value
+  if (i < 0) return
+  setRecipeFormThumbnail(i)
+  closeRecipeImageMenu()
+}
+
+function removeRecipeImageFromMenuByPath() {
+  const i = recipeImageMenuActionIndex.value
+  if (i < 0) return
+  removeRecipeFormImage(i)
+  closeRecipeImageMenu()
+}
+
+function handleRecipeImageMenuClickOutside(event: MouseEvent) {
+  const target = event.target as HTMLElement
+  if (!target.closest('[data-dropdown]') && !target.closest('[data-dropdown-button]')) {
+    closeRecipeImageMenu()
+  }
+}
+
+function closeRecipeImageMenuOnScroll() {
+  if (openRecipeImageMenuPath.value) closeRecipeImageMenu()
+}
 
 async function onRecipeImageFileSelected(e: Event) {
   const input = e.target as HTMLInputElement
@@ -682,6 +795,18 @@ onMounted(async () => {
       id: generateId(),
       description: '',
     })
+  }
+
+  if (process.client) {
+    document.addEventListener('click', handleRecipeImageMenuClickOutside)
+    window.addEventListener('scroll', closeRecipeImageMenuOnScroll, true)
+  }
+})
+
+onUnmounted(() => {
+  if (process.client) {
+    document.removeEventListener('click', handleRecipeImageMenuClickOutside)
+    window.removeEventListener('scroll', closeRecipeImageMenuOnScroll, true)
   }
 })
 </script>
