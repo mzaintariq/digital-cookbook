@@ -61,7 +61,7 @@
                 <IconServings class="w-5 h-5 md:w-5 md:h-5 text-ink-500 flex-shrink-0 mt-0.5 md:mt-0" />
                 <div class="flex flex-col md:flex-row md:items-center md:gap-2 min-w-0">
                   <span class="text-brand-primary text-xs font-medium uppercase tracking-wide">Serves</span>
-                  <span class="text-ink-800 text-md md:text-sm">{{ recipe.servings ? `${recipe.servings} ${recipe.servings === 1 ? 'person' : 'people'}` : 'N/A' }}</span>
+                  <span class="text-ink-800 text-md md:text-sm">{{ servingsLabel }}</span>
                 </div>
               </div>
             </div>
@@ -340,6 +340,19 @@ const scaleOptions = [
   { value: 2, label: '2' },
   { value: 3, label: '3' },
 ]
+
+/** Base recipe servings × ingredient scale (½, 1×, 2×, 3×). */
+const servingsLabel = computed(() => {
+  const base = recipe.value?.servings
+  if (!base) return 'N/A'
+  const n = Math.round(base * scaleFactor.value * 1000) / 1000
+  const countStr =
+    Number.isInteger(n) || Math.abs(n - Math.round(n)) < 1e-6
+      ? String(Math.round(n))
+      : n.toFixed(2).replace(/\.?0+$/, '')
+  const noun = Math.abs(n - 1) < 1e-6 ? 'person' : 'people'
+  return `${countStr} ${noun}`
+})
 
 function formatIngredient(ing: Ingredient, scale: number = 1): string {
   if (ing.toTaste) {
