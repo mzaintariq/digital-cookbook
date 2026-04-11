@@ -524,6 +524,7 @@
 import draggable from 'vuedraggable'
 import IconTrash from '~/components/icons/IconTrash.vue'
 import IconPlus from '~/components/icons/IconPlus.vue'
+import IconDragHandle from '~/components/icons/IconDragHandle.vue'
 import IconMoreVertical from '~/components/icons/IconMoreVertical.vue'
 import Button from '~/components/Button.vue'
 import IngredientInput from '~/components/IngredientInput.vue'
