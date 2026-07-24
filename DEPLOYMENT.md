@@ -34,7 +34,7 @@ openssl rand -base64 32
    - Go to [vercel.com](https://vercel.com)
    - Click "Add New Project"
    - Import your repository
-   - Vercel will auto-detect Nuxt 3 (uses `vercel.json`)
+   - Vercel will auto-detect Nuxt 4 (uses `vercel.json`)
 
 3. **Set Environment Variables:**
    In the Vercel project settings, add these environment variables:
@@ -42,7 +42,7 @@ openssl rand -base64 32
    - `DATABASE_URL` - Your PostgreSQL connection string from Neon/Supabase
    - `ADMIN_USERNAME` - Your admin username
    - `ADMIN_PASSWORD_HASH` - The bcrypt hash you generated
-   - `JWT_SECRET` - The random secret you generated
+   - `JWT_SECRET` - Required; use the long random secret you generated (at least 32 characters recommended)
    - `SUPABASE_URL` - From Supabase **Project Settings → API** (Project URL)
    - `SUPABASE_SERVICE_ROLE_KEY` - From the same page (service_role secret; used only on the server for uploads)
    
@@ -109,4 +109,3 @@ Alternatively, you can run this locally by temporarily setting `DATABASE_URL` to
 - Set up a custom domain in Vercel settings
 - Configure automatic deployments from your main branch
 - Set up database backups on your PostgreSQL provider
-

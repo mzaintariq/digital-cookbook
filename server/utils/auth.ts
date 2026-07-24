@@ -1,10 +1,19 @@
 import { SignJWT, jwtVerify, type JWTPayload } from 'jose'
 import bcrypt from 'bcrypt'
-import { parseCookies } from 'h3'
+import { createError, parseCookies } from 'h3'
 
-const secret = new TextEncoder().encode(
-  process.env.JWT_SECRET || 'your-secret-key-change-in-production'
-)
+function getJwtSecret(): Uint8Array {
+  const secret = process.env.JWT_SECRET
+
+  if (!secret?.trim()) {
+    throw createError({
+      statusCode: 500,
+      statusMessage: 'JWT authentication is not configured',
+    })
+  }
+
+  return new TextEncoder().encode(secret)
+}
 
 export interface AdminSession {
   email: string
@@ -17,12 +26,14 @@ export async function createAdminToken(email: string): Promise<string> {
     .setProtectedHeader({ alg: 'HS256' })
     .setIssuedAt()
     .setExpirationTime('24h')
-    .sign(secret)
+    .sign(getJwtSecret())
 
   return token
 }
 
 export async function verifyAdminToken(token: string): Promise<AdminSession | null> {
+  const secret = getJwtSecret()
+
   try {
     const { payload } = await jwtVerify(token, secret)
     if (payload.isAdmin && payload.email && typeof payload.email === 'string') {
@@ -51,4 +62,3 @@ export async function getAdminSession(event: any): Promise<AdminSession | null> 
   if (!token) return null
   return verifyAdminToken(token)
 }
-

@@ -13,7 +13,7 @@ A private, family recipe vault that stores only tried & published recipes.
 
 ## Tech Stack
 
-- **Frontend + Backend**: Nuxt 3 (Vue 3, Composition API)
+- **Frontend + Backend**: Nuxt 4 (Vue 3, Composition API)
 - **Language**: TypeScript
 - **Database**: PostgreSQL
 - **ORM**: Prisma
@@ -43,12 +43,18 @@ Create a `.env` file in the root directory:
 DATABASE_URL="postgresql://user:password@localhost:5432/cookbook_db"
 ADMIN_USERNAME="admin"
 ADMIN_PASSWORD_HASH="your_bcrypt_hashed_password"
-JWT_SECRET="your-secret-key-change-in-production"
+JWT_SECRET="replace-with-a-long-random-secret"
 ```
 
 **To generate a password hash:**
 ```bash
 node -e "const bcrypt = require('bcrypt'); bcrypt.hash('your-password', 10).then(hash => console.log(hash))"
+```
+
+`JWT_SECRET` is required. Use a long random value of at least 32 characters:
+
+```bash
+openssl rand -base64 32
 ```
 
 3. **Set up the database:**
