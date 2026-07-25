@@ -1,16 +1,16 @@
 <template>
-  <div class="flex items-center justify-between mb-3 pb-2 border-b border-paper-300 h-8">
+  <div class="flex items-center justify-between mb-3 pb-2 border-b border-paper-300 dark:border-paper-800 h-8">
     <div class="flex items-center gap-2 flex-1">
       <div v-if="!isEditing" :class="dragHandleClass"
-        class="cursor-move text-ink-500 hover:text-ink-700 flex-shrink-0">
+        class="cursor-move text-ink-500 dark:text-paper-400 hover:text-ink-700 dark:hover:text-paper-200 flex-shrink-0">
         <IconDragHandle class="w-5 h-5" />
       </div>
       <input v-if="isEditing" v-model="localEditValue" type="text" @keyup.enter="handleSave" @keyup.esc="handleCancel"
         @blur="handleSave"
         class="px-2 py-1 text-sm font-semibold border border-brand-primary rounded focus:outline-none focus:ring-1 focus:ring-brand-primary"
         autofocus />
-      <h3 v-else class="text-sm font-semibold text-ink-900 uppercase">{{ category }}</h3>
-      <button type="button" v-if="!isEditing" @click="$emit('edit')" class="text-xs text-ink-600 hover:text-ink-800">
+      <h3 v-else class="text-sm font-semibold text-ink-900 dark:text-paper-50 uppercase">{{ category }}</h3>
+      <button type="button" v-if="!isEditing" @click="$emit('edit')" class="text-xs text-ink-600 dark:text-paper-300 hover:text-ink-800 dark:hover:text-paper-100">
         <IconEdit class="w-4 h-4" />
       </button>
       <button type="button" v-else @click="handleSave" class="text-xs text-brand-primary hover:text-brand-primary-600">

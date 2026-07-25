@@ -1,8 +1,8 @@
 <template>
-  <div class="min-h-screen bg-paper-50">
+  <div class="min-h-screen bg-paper-50 dark:bg-paper-900">
     <!-- <div class="container mx-auto px-4 py-8 max-w-7xl"> -->
     <div class="container mx-auto px-4 py-8 w-full">
-      <div v-if="error" class="mb-4 p-3 bg-error-50 border border-error-200 rounded-md">
+      <div v-if="error" class="mb-4 p-3 bg-error-50 dark:bg-error-950 border border-error-200 dark:border-error-800 rounded-md">
         <p class="text-error-600 text-sm">{{ error }}</p>
       </div>
 
@@ -14,15 +14,15 @@
         <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
           <!-- Left Column: Recipe General Information -->
           <div class="lg:col-span-1 space-y-6">
-            <h2 class="text-l font-semibold text-ink-900 mb-4">RECIPE GENERAL INFORMATION</h2>
+            <h2 class="text-l font-semibold text-ink-900 dark:text-paper-50 mb-4">RECIPE GENERAL INFORMATION</h2>
 
             <!-- Recipe images (max 5, one thumbnail) -->
             <div>
-              <label class="block text-sm font-medium text-ink-800 mb-1">Recipe images</label>
-              <p class="text-xs text-ink-600 mb-2">
+              <label class="block text-sm font-medium text-ink-800 dark:text-paper-100 mb-1">Recipe images</label>
+              <p class="text-xs text-ink-600 dark:text-paper-300 mb-2">
                 Upload up to 5 photos. Pick 1 as the thumbnail for your recipe list. JPG, PNG, or WebP (max 10MB each).
               </p>
-              <p v-if="!isEditMode" class="text-sm text-ink-700 mb-3 rounded-md bg-paper-100 px-3 py-2">
+              <p v-if="!isEditMode" class="text-sm text-ink-700 dark:text-paper-200 mb-3 rounded-md bg-paper-100 dark:bg-paper-800 px-3 py-2">
                 Save the recipe first. After it’s saved, you can come back here to upload images.
               </p>
               <p v-if="imageUploadError" class="text-sm text-error-600 mb-2">{{ imageUploadError }}</p>
@@ -42,7 +42,7 @@
               >
                 <template #item="{ element: img, index }">
                   <div
-                    class="relative rounded-lg border border-paper-300 bg-paper-50 shadow-sm"
+                    class="relative rounded-lg border border-paper-300 dark:border-paper-800 bg-paper-50 dark:bg-paper-900 shadow-sm"
                   >
                     <div
                       class="recipe-image-drag-handle relative aspect-square w-full cursor-grab active:cursor-grabbing overflow-hidden rounded-lg"
@@ -64,11 +64,11 @@
                       <button
                         type="button"
                         data-dropdown-button
-                        class="cursor-pointer p-0.5 rounded flex items-center justify-center bg-paper-50/90 hover:bg-paper-100 border border-paper-200 shadow-sm"
+                        class="cursor-pointer p-0.5 rounded flex items-center justify-center bg-paper-50/90 dark:bg-paper-900/90 hover:bg-paper-100 dark:hover:bg-paper-800 border border-paper-200 dark:border-paper-800 shadow-sm"
                         aria-label="Image options"
                         @click.stop="toggleRecipeImageMenu(img.storagePath, $event)"
                       >
-                        <IconMoreVertical class="w-4 h-4 text-ink-700" />
+                        <IconMoreVertical class="w-4 h-4 text-ink-700 dark:text-paper-200" />
                       </button>
                     </div>
                   </div>
@@ -87,7 +87,7 @@
                   <div
                     v-if="recipeImageMenuPlacement && openRecipeImageMenuPath"
                     data-dropdown
-                    class="fixed z-[1002] w-36 bg-paper-50 rounded-md shadow-lg border border-paper-300 py-1"
+                    class="fixed z-[1002] w-36 bg-paper-50 dark:bg-paper-900 rounded-md shadow-lg border border-paper-300 dark:border-paper-800 py-1"
                     :style="{
                       top: `${recipeImageMenuPlacement.top}px`,
                       left: `${recipeImageMenuPlacement.left}px`,
@@ -95,7 +95,7 @@
                   >
                     <button
                       type="button"
-                      class="block w-full text-left px-4 py-2 text-sm text-ink-800 hover:bg-paper-100 disabled:opacity-45 disabled:pointer-events-none disabled:hover:bg-transparent"
+                      class="block w-full text-left px-4 py-2 text-sm text-ink-800 dark:text-paper-100 hover:bg-paper-100 dark:hover:bg-paper-800 disabled:opacity-45 disabled:pointer-events-none disabled:hover:bg-transparent"
                       :disabled="recipeImageMenuTarget?.isThumbnail"
                       @click="makeRecipeImageThumbnailFromMenu"
                     >
@@ -103,7 +103,7 @@
                     </button>
                     <button
                       type="button"
-                      class="block w-full text-left px-4 py-2 text-sm text-error-600 hover:bg-paper-100"
+                      class="block w-full text-left px-4 py-2 text-sm text-error-600 hover:bg-paper-100 dark:hover:bg-paper-800"
                       @click="removeRecipeImageFromMenuByPath"
                     >
                       Delete
@@ -134,8 +134,8 @@
 
             <!-- Recipe Name -->
             <div>
-              <label for="title" class="flex items-center gap-1 text-sm font-medium text-ink-800 mb-1">
-                Recipe name <span class="text-ink-600 text-xs font-normal">(required)</span>
+              <label for="title" class="flex items-center gap-1 text-sm font-medium text-ink-800 dark:text-paper-100 mb-1">
+                Recipe name <span class="text-ink-600 dark:text-paper-300 text-xs font-normal">(required)</span>
               </label>
               <input id="title" v-model="form.title" type="text" required placeholder="eg: Savory Stuffed Bell Peppers"
                 :class="getInputClasses('title')" @input="delete fieldErrors.title" />
@@ -144,7 +144,7 @@
 
             <!-- Description -->
             <div>
-              <label for="description" class="block text-sm font-medium text-ink-800 mb-1">
+              <label for="description" class="block text-sm font-medium text-ink-800 dark:text-paper-100 mb-1">
                 Description
               </label>
               <textarea id="description" v-model="form.description" rows="3"
@@ -155,8 +155,8 @@
 
             <!-- Slug -->
             <div>
-              <label for="slug" class="flex items-center gap-1 text-sm font-medium text-ink-800 mb-1">
-                Slug <span class="text-ink-600 text-xs font-normal">(required)</span>
+              <label for="slug" class="flex items-center gap-1 text-sm font-medium text-ink-800 dark:text-paper-100 mb-1">
+                Slug <span class="text-ink-600 dark:text-paper-300 text-xs font-normal">(required)</span>
               </label>
               <input id="slug" v-model="form.slug" type="text" required placeholder="eg: savory-stuffed-bell-peppers"
                 @input="slugManuallyChanged = true; delete fieldErrors.slug" :class="getInputClasses('slug')" />
@@ -165,40 +165,40 @@
 
             <!-- Set Recipe As (Publish/Draft) -->
             <div>
-              <label class="block text-sm font-medium text-ink-800 mb-2">Status</label>
+              <label class="block text-sm font-medium text-ink-800 dark:text-paper-100 mb-2">Status</label>
               <div class="flex items-center gap-3">
-                <span class="text-sm text-ink-700">Published</span>
+                <span class="text-sm text-ink-700 dark:text-paper-200">Published</span>
                 <button type="button" @click="form.published = !form.published" :class="[
                   'relative inline-flex h-4 w-7 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-brand-primary focus:ring-offset-2',
-                  form.published ? 'bg-brand-primary' : 'bg-paper-300'
+                  form.published ? 'bg-brand-primary' : 'bg-paper-300 dark:bg-paper-700'
                 ]">
                   <span :class="[
-                    'inline-block h-3 w-3 transform rounded-full bg-paper-50 transition-transform',
+                    'inline-block h-3 w-3 transform rounded-full bg-paper-50 dark:bg-paper-900 transition-transform',
                     form.published ? 'translate-x-3.5' : 'translate-x-0.5'
                   ]" />
                 </button>
-                <span class="text-xs text-ink-600">{{ form.published ? 'Visible to everyone' : 'Saved as draft'
+                <span class="text-xs text-ink-600 dark:text-paper-300">{{ form.published ? 'Visible to everyone' : 'Saved as draft'
                 }}</span>
               </div>
             </div>
 
             <!-- Number of Servings -->
             <div>
-              <label for="servings" class="block text-sm font-medium text-ink-800 mb-1">
+              <label for="servings" class="block text-sm font-medium text-ink-800 dark:text-paper-100 mb-1">
                 Number of serving
               </label>
               <div class="relative">
                 <input id="servings" v-model.number="form.servings" type="number" min="1" placeholder="eg: 4 or 5"
-                  class="w-full px-3 py-2 pr-20 border border-paper-400 rounded-md focus:outline-none focus:ring-2 focus:ring-brand-primary" />
+                  class="w-full px-3 py-2 pr-20 border border-paper-400 dark:border-paper-700 rounded-md focus:outline-none focus:ring-2 focus:ring-brand-primary" />
                 <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                  <span class="text-ink-800 text-sm">person</span>
+                  <span class="text-ink-800 dark:text-paper-100 text-sm">person</span>
                 </div>
               </div>
             </div>
 
             <!-- Cook Time -->
             <div>
-              <label for="cookTimeMinutes" class="block text-sm font-medium text-ink-800 mb-1">
+              <label for="cookTimeMinutes" class="block text-sm font-medium text-ink-800 dark:text-paper-100 mb-1">
                 Cook duration
               </label>
               <div class="relative">
@@ -207,35 +207,35 @@
                 <p v-if="fieldErrors.cookTimeMinutes" class="mt-1 text-sm text-error-600">{{ fieldErrors.cookTimeMinutes
                   }}</p>
                 <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                  <span class="text-ink-800 text-sm">minute</span>
+                  <span class="text-ink-800 dark:text-paper-100 text-sm">minute</span>
                 </div>
               </div>
             </div>
 
             <!-- Prep Time -->
             <div>
-              <label for="prepTimeMinutes" class="block text-sm font-medium text-ink-800 mb-1">
+              <label for="prepTimeMinutes" class="block text-sm font-medium text-ink-800 dark:text-paper-100 mb-1">
                 Prep duration
               </label>
               <div class="relative">
                 <input id="prepTimeMinutes" v-model.number="form.prepTimeMinutes" type="number" min="0"
-                  class="w-full px-3 py-2 pr-20 border border-paper-400 rounded-md focus:outline-none focus:ring-2 focus:ring-brand-primary" />
+                  class="w-full px-3 py-2 pr-20 border border-paper-400 dark:border-paper-700 rounded-md focus:outline-none focus:ring-2 focus:ring-brand-primary" />
                 <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                  <span class="text-ink-800 text-sm">minute</span>
+                  <span class="text-ink-800 dark:text-paper-100 text-sm">minute</span>
                 </div>
               </div>
             </div>
 
             <!-- Rest Time -->
             <div>
-              <label for="restTimeMinutes" class="block text-sm font-medium text-ink-800 mb-1">
+              <label for="restTimeMinutes" class="block text-sm font-medium text-ink-800 dark:text-paper-100 mb-1">
                 Rest duration
               </label>
               <div class="relative">
                 <input id="restTimeMinutes" v-model.number="form.restTimeMinutes" type="number" min="0"
-                  class="w-full px-3 py-2 pr-20 border border-paper-400 rounded-md focus:outline-none focus:ring-2 focus:ring-brand-primary" />
+                  class="w-full px-3 py-2 pr-20 border border-paper-400 dark:border-paper-700 rounded-md focus:outline-none focus:ring-2 focus:ring-brand-primary" />
                 <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                  <span class="text-ink-800 text-sm">minute</span>
+                  <span class="text-ink-800 dark:text-paper-100 text-sm">minute</span>
                 </div>
               </div>
             </div>
@@ -247,7 +247,7 @@
 
             <!-- Credit -->
             <div>
-              <label for="credit" class="block text-sm font-medium text-ink-800 mb-1">
+              <label for="credit" class="block text-sm font-medium text-ink-800 dark:text-paper-100 mb-1">
                 Credit
               </label>
               <input id="credit" v-model="form.credit" type="text" placeholder="eg: Recipe by Zain"
@@ -257,7 +257,7 @@
 
             <!-- Video URL -->
             <div>
-              <label for="videoUrl" class="block text-sm font-medium text-ink-800 mb-1">
+              <label for="videoUrl" class="block text-sm font-medium text-ink-800 dark:text-paper-100 mb-1">
                 Video URL
               </label>
               <input id="videoUrl" v-model="form.videoUrl" type="url"
@@ -269,12 +269,12 @@
 
           <!-- Right Column: Recipe Detail -->
           <div class="lg:col-span-3 space-y-6 min-w-0">
-            <h2 class="text-l font-semibold text-ink-900 mb-4">RECIPE DETAIL</h2>
+            <h2 class="text-l font-semibold text-ink-900 dark:text-paper-50 mb-4">RECIPE DETAIL</h2>
 
             <!-- Ingredients Section -->
             <div>
               <div class="flex items-center justify-between mb-3" :class="{ 'max-md:justify-end': showAddCategory }">
-                <label class="block text-sm font-medium text-ink-800" :class="{ 'max-md:hidden': showAddCategory }">Ingredients</label>
+                <label class="block text-sm font-medium text-ink-800 dark:text-paper-100" :class="{ 'max-md:hidden': showAddCategory }">Ingredients</label>
                 <AddCategoryInput :show-input="showAddCategory" :value="newCategoryName" @show="showAddCategory = true"
                   @update:value="newCategoryName = $event" @add="addCategory"
                   @cancel="showAddCategory = false; newCategoryName = ''" />
@@ -289,8 +289,8 @@
                   <div :ref="el => { if (el) ingredientCategoryRefs[category] = el as HTMLElement }" :class="[
                     'border rounded-lg p-4 transition-[background-color,border-color] duration-500',
                     highlightedIngredientCategory === category
-                      ? 'border-brand-primary bg-brand-primary-50 shadow-md'
-                      : 'border-paper-400 bg-paper-50'
+                      ? 'border-brand-primary bg-brand-primary-50 dark:bg-brand-primary-950 shadow-md'
+                      : 'border-paper-400 dark:border-paper-700 bg-paper-50 dark:bg-paper-900'
                   ]">
                     <CategoryHeader :category="category" :is-editing="editingCategory === category"
                       :edit-value="newCategoryName" drag-handle-class="category-drag-handle"
@@ -341,8 +341,8 @@
                       ghost-class="sortable-ghost" chosen-class="sortable-chosen" drag-class="sortable-drag"
                       group="ingredients" class="space-y-2">
                       <template #item="{ element: ingredient }">
-                        <div class="flex items-start gap-2 p-3 border border-paper-300 rounded-lg bg-paper-50">
-                          <div class="drag-handle cursor-move pt-2 text-ink-500 hover:text-ink-700 flex-shrink-0">
+                        <div class="flex items-start gap-2 p-3 border border-paper-300 dark:border-paper-800 rounded-lg bg-paper-50 dark:bg-paper-900">
+                          <div class="drag-handle cursor-move pt-2 text-ink-500 dark:text-paper-400 hover:text-ink-700 dark:hover:text-paper-200 flex-shrink-0">
                             <IconDragHandle class="w-5 h-5" />
                           </div>
                           <IngredientInput :ingredient="ingredient" @to-taste-change="handleToTasteChange" />
@@ -403,8 +403,8 @@
                   ghost-class="sortable-ghost" chosen-class="sortable-chosen" drag-class="sortable-drag"
                   group="ingredients" class="space-y-3">
                   <template #item="{ element: ingredient }">
-                    <div class="flex items-start gap-2 p-3 border border-paper-300 rounded-lg bg-paper-50">
-                      <div class="drag-handle cursor-move pt-2 text-ink-500 hover:text-ink-700 flex-shrink-0">
+                    <div class="flex items-start gap-2 p-3 border border-paper-300 dark:border-paper-800 rounded-lg bg-paper-50 dark:bg-paper-900">
+                      <div class="drag-handle cursor-move pt-2 text-ink-500 dark:text-paper-400 hover:text-ink-700 dark:hover:text-paper-200 flex-shrink-0">
                         <IconDragHandle class="w-5 h-5" />
                       </div>
                       <IngredientInput :ingredient="ingredient" @to-taste-change="handleToTasteChange" />
@@ -429,7 +429,7 @@
             <!-- Directions Section -->
             <div>
               <div class="flex items-center justify-between mb-3" :class="{ 'max-md:justify-end': showAddStepCategory }">
-                <label class="block text-sm font-medium text-ink-800" :class="{ 'max-md:hidden': showAddStepCategory }">Directions</label>
+                <label class="block text-sm font-medium text-ink-800 dark:text-paper-100" :class="{ 'max-md:hidden': showAddStepCategory }">Directions</label>
                 <AddCategoryInput :show-input="showAddStepCategory" :value="newStepCategoryName"
                   @show="showAddStepCategory = true" @update:value="newStepCategoryName = $event" @add="addStepCategory"
                   @cancel="showAddStepCategory = false; newStepCategoryName = ''" />
@@ -444,8 +444,8 @@
                   <div :ref="el => { if (el) stepCategoryRefs[category] = el as HTMLElement }" :class="[
                     'border rounded-lg p-4 transition-[background-color,border-color] duration-500 min-w-0 overflow-hidden',
                     highlightedStepCategory === category
-                      ? 'border-brand-primary bg-brand-primary-50 shadow-md'
-                      : 'border-paper-400 bg-paper-50'
+                      ? 'border-brand-primary bg-brand-primary-50 dark:bg-brand-primary-950 shadow-md'
+                      : 'border-paper-400 dark:border-paper-700 bg-paper-50 dark:bg-paper-900'
                   ]">
                     <CategoryHeader :category="category" :is-editing="editingStepCategory === category"
                       :edit-value="newStepCategoryName" drag-handle-class="step-category-drag-handle"
@@ -506,7 +506,7 @@
 
             <!-- Notes Section -->
             <div>
-              <label for="notes" class="block text-sm font-medium text-ink-800 mb-2">
+              <label for="notes" class="block text-sm font-medium text-ink-800 dark:text-paper-100 mb-2">
                 Notes
               </label>
               <textarea id="notes" v-model="form.notes" rows="4" placeholder="Additional notes, tips, or variations..."

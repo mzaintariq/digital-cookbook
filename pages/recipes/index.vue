@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="container mx-auto px-4 py-8">
-      <h1 class="text-4xl font-bold text-ink-900 mb-2 md:mb-8">Recipes</h1>
+      <h1 class="text-4xl font-bold text-ink-900 dark:text-paper-50 mb-2 md:mb-8">Recipes</h1>
       <!-- badeen-display-regular -->
       <!-- zaika | ذائقہ -->
 
@@ -9,10 +9,10 @@
       <div class="mb-8">
         <div class="relative max-w-md">
           <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-            <IconSearch class="w-5 h-5 text-ink-500" />
+            <IconSearch class="w-5 h-5 text-ink-500 dark:text-paper-400" />
           </div>
           <input v-model="searchTerm" type="text" placeholder="Search recipes"
-            class="block w-full pl-10 pr-3 py-2 border border-paper-400 rounded-lg leading-5 bg-paper-50 placeholder-ink-600 focus:outline-none focus:placeholder-ink-500 focus:ring-1 focus:ring-brand-primary focus:border-brand-primary sm:text-sm" />
+            class="block w-full pl-10 pr-3 py-2 border border-paper-400 dark:border-paper-700 rounded-lg leading-5 bg-paper-50 dark:bg-paper-900 placeholder-ink-600 dark:placeholder-paper-400 focus:outline-none focus:placeholder-ink-500 dark:focus:placeholder-paper-400 focus:ring-1 focus:ring-brand-primary focus:border-brand-primary sm:text-sm" />
         </div>
       </div>
 
@@ -25,18 +25,18 @@
       </div>
 
       <div v-else-if="recipes.length === 0" class="text-center py-12">
-        <p class="text-ink-700">No recipes available yet.</p>
+        <p class="text-ink-700 dark:text-paper-200">No recipes available yet.</p>
       </div>
 
       <div v-else-if="filteredRecipes.length === 0" class="text-center py-12">
-        <p class="text-ink-700">No recipes match your search.</p>
+        <p class="text-ink-700 dark:text-paper-200">No recipes match your search.</p>
       </div>
 
       <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <div v-for="recipe in filteredRecipes" :key="recipe.id"
-          class="bg-paper-50 rounded-lg shadow-md hover:shadow-lg transition-shadow overflow-hidden relative">
+          class="bg-paper-50 dark:bg-paper-900 rounded-lg shadow-md hover:shadow-lg transition-shadow overflow-hidden relative">
           <NuxtLink :to="`/recipes/${recipe.slug}`" class="block">
-            <div v-if="recipe.thumbnailUrl" class="aspect-[4/3] w-full bg-paper-200">
+            <div v-if="recipe.thumbnailUrl" class="aspect-[4/3] w-full bg-paper-200 dark:bg-paper-800">
               <img
                 :src="recipe.thumbnailUrl"
                 :alt="recipe.title"
@@ -46,33 +46,33 @@
             </div>
             <div class="p-6">
             <div class="flex items-center justify-between mb-2">
-              <h2 class="text-xl font-bold text-ink-900">{{ recipe.title }}</h2>
+              <h2 class="text-xl font-bold text-ink-900 dark:text-paper-50">{{ recipe.title }}</h2>
               <!-- Edit Icon (only when logged in) -->
               <NuxtLink v-if="isLoggedIn" :to="`/admin/recipes/${recipe.id}`" @click.stop
-                class="text-ink-500 hover:text-brand-primary transition-colors"
+                class="text-ink-500 dark:text-paper-400 hover:text-brand-primary transition-colors"
                 title="Edit Recipe">
                 <IconEdit class="w-5 h-5" />
               </NuxtLink>
             </div>
-            <h3 class="text-sm font-normal text-ink-600 mb-2">{{ recipe?.description }}</h3>
+            <h3 class="text-sm font-normal text-ink-600 dark:text-paper-300 mb-2">{{ recipe?.description }}</h3>
 
-            <div class="flex flex-wrap items-center gap-4 text-sm text-ink-700 mb-3">
+            <div class="flex flex-wrap items-center gap-4 text-sm text-ink-700 dark:text-paper-200 mb-3">
               <div class="flex items-center gap-2">
-                <IconClock class="w-4 h-4 text-ink-500 flex-shrink-0" />
+                <IconClock class="w-4 h-4 text-ink-500 dark:text-paper-400 flex-shrink-0" />
                 <span>{{ totalTime(recipe) }}</span>
               </div>
               <div class="flex items-center gap-2">
-                <IconPlus class="w-4 h-4 text-ink-500 flex-shrink-0" />
+                <IconPlus class="w-4 h-4 text-ink-500 dark:text-paper-400 flex-shrink-0" />
                 <span>{{ recipe.ingredients.length }} {{ recipe.ingredients.length === 1 ? 'ingredient' : 'ingredients' }}</span>
               </div>
               <div v-if="recipe.servings != null" class="flex items-center gap-2">
-                <IconServings class="w-4 h-4 text-ink-500 flex-shrink-0" />
+                <IconServings class="w-4 h-4 text-ink-500 dark:text-paper-400 flex-shrink-0" />
                 <span>Serves: {{ recipe.servings }}</span>
               </div>
             </div>
 
             <div v-if="recipe.tags.length > 0" class="flex flex-wrap gap-2 mb-3">
-              <span v-for="tag in recipe.tags" :key="tag" class="px-2 py-1 bg-paper-100 text-ink-800 text-xs rounded">
+              <span v-for="tag in recipe.tags" :key="tag" class="px-2 py-1 bg-paper-100 dark:bg-paper-800 text-ink-800 dark:text-paper-100 text-xs rounded">
                 {{ tag }}
               </span>
             </div>

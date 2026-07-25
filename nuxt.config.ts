@@ -25,8 +25,13 @@ export default defineNuxtConfig({
   app: {
     head: {
       meta: [
-        { name: 'theme-color', content: '#FAFAF7' },
         { name: 'viewport', content: 'width=device-width, initial-scale=1, viewport-fit=cover' },
+      ],
+      script: [
+        {
+          id: 'cookbook-theme-init',
+          innerHTML: `(function(){var t;try{var s=localStorage.getItem('cookbook-theme');if(s==='light'||s==='dark')t=s}catch(e){}if(!t)t=window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';var r=document.documentElement;r.classList.toggle('dark',t==='dark');r.style.colorScheme=t;var m=document.querySelector('meta[name="theme-color"]');if(!m){m=document.createElement('meta');m.name='theme-color';document.head.appendChild(m)}m.content=t==='dark'?'#111312':'#FAFAF7'})()`,
+        },
       ],
       link: [
         { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg', sizes: 'any' },

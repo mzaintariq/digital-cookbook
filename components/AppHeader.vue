@@ -1,5 +1,5 @@
 <template>
-  <header class="bg-paper-50 border-b border-paper-300 h-16 min-h-16 shrink-0">
+  <header class="bg-paper-50 dark:bg-paper-950 border-b border-paper-300 dark:border-paper-800 h-16 min-h-16 shrink-0">
     <div class="container mx-auto px-4 h-full">
       <div class="flex items-center justify-between h-full">
         <!-- Logo or Recipe Title -->
@@ -11,27 +11,28 @@
         </NuxtLink>
         <div v-else class="flex items-center gap-3 min-w-0 flex-1">
           <button @click="handleBack"
-            class="w-8 h-8 min-w-8 min-h-8 shrink-0 rounded-full bg-paper-200 hover:bg-paper-300 flex items-center justify-center transition-colors">
-            <IconClose class="w-5 h-5 text-ink-800 shrink-0" />
+            class="w-8 h-8 min-w-8 min-h-8 shrink-0 rounded-full bg-paper-200 dark:bg-paper-800 hover:bg-paper-300 dark:hover:bg-paper-700 flex items-center justify-center transition-colors">
+            <IconClose class="w-5 h-5 text-ink-800 dark:text-paper-100 shrink-0" />
           </button>
-          <span class="text-ink-900 font-semibold text-lg truncate min-w-0">
+          <span class="text-ink-900 dark:text-paper-50 font-semibold text-lg truncate min-w-0">
             {{ saveButtonText === 'Save Recipe' ? 'New Recipe' : (recipeTitle || 'Edit Recipe') }}
           </span>
         </div>
 
         <!-- Desktop Navigation (hidden on mobile when not edit page) -->
-        <nav v-if="!isRecipeEditPage" class="hidden md:flex items-center gap-6 shrink-0">
-          <NuxtLink to="/recipes" class="text-ink-800 hover:text-ink-900 font-medium">
+        <nav v-if="!isRecipeEditPage" class="hidden md:flex items-center gap-4 shrink-0">
+          <NuxtLink to="/recipes" class="text-ink-800 dark:text-paper-100 hover:text-ink-900 dark:hover:text-paper-50 font-medium">
             Recipes
           </NuxtLink>
+          <ThemeToggle />
           <div class="relative" ref="adminMenuRef">
             <button v-if="isLoggedIn" @click="showDropdown = !showDropdown"
-              class="text-ink-800 hover:text-ink-900 font-medium flex items-center gap-2">
+              class="text-ink-800 dark:text-paper-100 hover:text-ink-900 dark:hover:text-paper-50 font-medium flex items-center gap-2">
               <span>Admin</span>
               <IconChevronDown class="w-4 h-4 transition-transform duration-200 ease-in-out"
                 :class="{ 'rotate-180': showDropdown }" />
             </button>
-            <NuxtLink v-else to="/admin/login" class="text-ink-800 hover:text-ink-900">
+            <NuxtLink v-else to="/admin/login" class="text-ink-800 dark:text-paper-100 hover:text-ink-900 dark:hover:text-paper-50">
               <IconUser class="w-6 h-6" />
             </NuxtLink>
             <Transition enter-active-class="transition ease-out duration-200"
@@ -39,17 +40,17 @@
               leave-active-class="transition ease-in duration-150"
               leave-from-class="opacity-100 scale-100 translate-y-0" leave-to-class="opacity-0 scale-95 -translate-y-1">
               <div v-if="showDropdown && isLoggedIn"
-                class="absolute right-0 mt-2 w-48 bg-paper-50 rounded-md shadow-lg border border-paper-300 py-1 z-50">
-                <NuxtLink to="/admin/recipes/new" class="block px-4 py-2 text-sm text-ink-800 hover:bg-paper-100"
+                class="absolute right-0 mt-2 w-48 bg-paper-50 dark:bg-paper-900 rounded-md shadow-lg border border-paper-300 dark:border-paper-800 py-1 z-50">
+                <NuxtLink to="/admin/recipes/new" class="block px-4 py-2 text-sm text-ink-800 dark:text-paper-100 hover:bg-paper-100 dark:hover:bg-paper-800"
                   @click="showDropdown = false">
                   Add Recipe
                 </NuxtLink>
-                <NuxtLink to="/admin/recipes" class="block px-4 py-2 text-sm text-ink-800 hover:bg-paper-100"
+                <NuxtLink to="/admin/recipes" class="block px-4 py-2 text-sm text-ink-800 dark:text-paper-100 hover:bg-paper-100 dark:hover:bg-paper-800"
                   @click="showDropdown = false">
                   Recipe List
                 </NuxtLink>
                 <button @click="handleLogout"
-                  class="block w-full text-left px-4 py-2 text-sm text-ink-800 hover:bg-paper-100">
+                  class="block w-full text-left px-4 py-2 text-sm text-ink-800 dark:text-paper-100 hover:bg-paper-100 dark:hover:bg-paper-800">
                   Logout
                 </button>
               </div>
@@ -74,7 +75,7 @@
 
         <!-- Mobile hamburger (only when not on recipe edit page) -->
         <button v-if="!isRecipeEditPage" @click="showMobileMenu = true"
-          class="md:hidden w-10 h-10 flex items-center justify-center text-ink-800 hover:text-ink-900 hover:bg-paper-100 rounded-full transition-colors"
+          class="md:hidden w-10 h-10 flex items-center justify-center text-ink-800 dark:text-paper-100 hover:text-ink-900 dark:hover:text-paper-50 hover:bg-paper-100 dark:hover:bg-paper-800 rounded-full transition-colors"
           aria-label="Open menu">
           <IconMenu class="w-6 h-6" />
         </button>

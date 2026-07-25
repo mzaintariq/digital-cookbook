@@ -15,18 +15,18 @@
           <!-- Category Tag -->
           <div v-if="recipe.tags.length > 0" class="mb-4">
             <span
-              class="inline-block px-4 py-1.5 bg-brand-primary-100 text-brand-primary-800 text-sm font-medium rounded-full">
+              class="inline-block px-4 py-1.5 bg-brand-primary-100 dark:bg-brand-primary-900 text-brand-primary-800 text-sm font-medium rounded-full">
               {{ recipe.tags[0]?.toUpperCase() }}
             </span>
           </div>
 
           <!-- Title and Edit Icon -->
           <div class="flex items-center gap-3 mb-3 flex-row md:flex-wrap justify-between w-full">
-            <h1 class="text-4xl md:text4xl lg:text-5xl font-bold text-ink-800 leading-tight">{{ recipe.title }}</h1>
+            <h1 class="text-4xl md:text4xl lg:text-5xl font-bold text-ink-800 dark:text-paper-100 leading-tight">{{ recipe.title }}</h1>
 
             <!-- Edit Icon (only when logged in) -->
             <NuxtLink v-if="isLoggedIn" :to="`/admin/recipes/${recipe.id}`"
-              class="text-ink-800 hover:text-brand-primary transition-colors flex-shrink-0" title="Edit Recipe">
+              class="text-ink-800 dark:text-paper-100 hover:text-brand-primary transition-colors flex-shrink-0" title="Edit Recipe">
               <IconEdit class="w-5 h-5 lg:w-6 lg:h-6" />
             </NuxtLink>
           </div>
@@ -36,32 +36,32 @@
             {{ recipe.description }}
           </p>
 
-          <div class="bg-paper-50 p-4 rounded-lg border border-brand-primary shadow-md pl-4 lg:pl-8 mr-auto w-full lg:w-fit">
+          <div class="bg-paper-50 dark:bg-paper-900 p-4 rounded-lg border border-brand-primary shadow-md pl-4 lg:pl-8 mr-auto w-full lg:w-fit">
             <div class="flex flex-nowrap md:flex-wrap items-start md:items-center justify-between md:justify-start gap-3 md:gap-4 lg:gap-6">
               <!-- Prep Time -->
               <div class="flex items-start gap-1.5 md:gap-2 flex-shrink-0">
-                <IconClock class="w-5 h-5 md:w-5 md:h-5 text-ink-500 flex-shrink-0 mt-0.5 md:mt-0" />
+                <IconClock class="w-5 h-5 md:w-5 md:h-5 text-ink-500 dark:text-paper-400 flex-shrink-0 mt-0.5 md:mt-0" />
                 <div class="flex flex-col md:flex-row md:items-center md:gap-2 min-w-0">
                   <span class="text-brand-primary text-xs font-medium uppercase tracking-wide">Prep</span>
-                  <span class="text-ink-800 text-md md:text-sm">{{ recipe.prepTimeMinutes != null ? `${recipe.prepTimeMinutes} min` : 'N/A' }}</span>
+                  <span class="text-ink-800 dark:text-paper-100 text-md md:text-sm">{{ recipe.prepTimeMinutes != null ? `${recipe.prepTimeMinutes} min` : 'N/A' }}</span>
                 </div>
               </div>
 
               <!-- Cook Time -->
               <div class="flex items-start gap-1.5 md:gap-2 flex-shrink-0">
-                <IconClock class="w-5 h-5 md:w-5 md:h-5 text-ink-500 flex-shrink-0 mt-0.5 md:mt-0" />
+                <IconClock class="w-5 h-5 md:w-5 md:h-5 text-ink-500 dark:text-paper-400 flex-shrink-0 mt-0.5 md:mt-0" />
                 <div class="flex flex-col md:flex-row md:items-center md:gap-2 min-w-0">
                   <span class="text-brand-primary text-xs font-medium uppercase tracking-wide">Cook</span>
-                  <span class="text-ink-800 text-md md:text-sm">{{ recipe.cookTimeMinutes }} min</span>
+                  <span class="text-ink-800 dark:text-paper-100 text-md md:text-sm">{{ recipe.cookTimeMinutes }} min</span>
                 </div>
               </div>
 
               <!-- Serves -->
               <div class="flex items-start gap-1.5 md:gap-2 flex-shrink-0">
-                <IconServings class="w-5 h-5 md:w-5 md:h-5 text-ink-500 flex-shrink-0 mt-0.5 md:mt-0" />
+                <IconServings class="w-5 h-5 md:w-5 md:h-5 text-ink-500 dark:text-paper-400 flex-shrink-0 mt-0.5 md:mt-0" />
                 <div class="flex flex-col md:flex-row md:items-center md:gap-2 min-w-0">
                   <span class="text-brand-primary text-xs font-medium uppercase tracking-wide">Serves</span>
-                  <span class="text-ink-800 text-md md:text-sm">{{ servingsLabel }}</span>
+                  <span class="text-ink-800 dark:text-paper-100 text-md md:text-sm">{{ servingsLabel }}</span>
                 </div>
               </div>
             </div>
@@ -73,12 +73,12 @@
         <!-- Desktop: Ingredients and steps side by side with flexbox -->
         <div class="flex flex-col lg:flex-row gap-6">
           <!-- Ingredients Card -->
-          <div class="order-1 lg:flex-shrink-0 lg:w-80 bg-paper-50 rounded-lg border border-brand-primary shadow-md p-6">
-            <h2 class="text-2xl font-semibold text-ink-900 mb-4">Ingredients</h2>
+          <div class="order-1 lg:flex-shrink-0 lg:w-80 bg-paper-50 dark:bg-paper-900 rounded-lg border border-brand-primary shadow-md p-6">
+            <h2 class="text-2xl font-semibold text-ink-900 dark:text-paper-50 mb-4">Ingredients</h2>
 
             <!-- Serving size adjuster: scale ingredient quantities -->
             <div class="mb-4">
-              <div class="w-full inline-flex overflow-hidden rounded-lg border border-paper-300 bg-paper-50">
+              <div class="w-full inline-flex overflow-hidden rounded-lg border border-paper-300 dark:border-paper-800 bg-paper-50 dark:bg-paper-900">
                 <div
                   v-for="(opt, i) in scaleOptions"
                   :key="opt.value"
@@ -96,10 +96,10 @@
                   <label
                     :for="`serving-size-${opt.value}-${recipe?.id ?? 'recipe'}`"
                     class="flex w-full items-center justify-center py-2 text-sm font-medium cursor-pointer transition-colors select-none
-                          border-r border-paper-300 last:border-r-0"
+                          border-r border-paper-300 dark:border-paper-800 last:border-r-0"
                     :class="scaleFactor === opt.value
-                      ? 'bg-brand-primary-50 text-brand-primary-700'
-                      : 'bg-transparent text-ink-600 hover:bg-paper-100'"
+                      ? 'bg-brand-primary-50 dark:bg-brand-primary-950 text-brand-primary-700'
+                      : 'bg-transparent text-ink-600 dark:text-paper-300 hover:bg-paper-100 dark:hover:bg-paper-800'"
                   >
                     <span>{{ opt.label }}</span>
                     <IconClose class="w-4 h-4" />
@@ -148,7 +148,7 @@
             </div>
 
             <!-- Fallback: No categories (backward compatibility) -->
-            <ul v-else class="list-disc list-outside space-y-2 text-ink-800 pl-4">
+            <ul v-else class="list-disc list-outside space-y-2 text-ink-800 dark:text-paper-100 pl-4">
               <li v-for="(ingredient, idx) in formattedIngredients" :key="idx" class="whitespace-pre-line">
                 {{ ingredient }}
               </li>
@@ -159,7 +159,7 @@
           <div class="order-2 lg:flex-1 space-y-6">
             <!-- Directions -->
             <div>
-              <h2 class="text-2xl font-semibold text-ink-900 mb-4">Directions</h2>
+              <h2 class="text-2xl font-semibold text-ink-900 dark:text-paper-50 mb-4">Directions</h2>
 
               <!-- Grouped by Category -->
               <div v-if="groupedSteps.categories.length > 0 || groupedSteps.uncategorized.length > 0" class="space-y-6">
@@ -208,7 +208,7 @@
               </div>
 
               <!-- Fallback: No categories (backward compatibility) -->
-              <ol v-else class="list-decimal list-outside space-y-3 text-ink-800 pl-4">
+              <ol v-else class="list-decimal list-outside space-y-3 text-ink-800 dark:text-paper-100 pl-4">
                 <li v-for="(step, idx) in recipe.steps" :key="idx" class="pl-2">
                   {{ step.description }}
                 </li>
@@ -216,13 +216,13 @@
             </div>
 
             <!-- Notes -->
-            <div v-if="recipe.notes" class=" bg-paper-50 rounded-lg">
+            <div v-if="recipe.notes" class=" bg-paper-50 dark:bg-paper-900 rounded-lg">
               <h3 class="text-sm font-bold text-brand-primary-600 uppercase tracking-wide mb-2">*Notes:</h3>
               <p class="text-brand-primary-600 whitespace-pre-line pl-4">{{ recipe.notes }}</p>
             </div>
 
             <!-- Video URL -->
-            <div v-if="recipe.videoUrl" class="flex items-center gap-2 bg-paper-50 rounded-lg">
+            <div v-if="recipe.videoUrl" class="flex items-center gap-2 bg-paper-50 dark:bg-paper-900 rounded-lg">
               <a :href="recipe.videoUrl" target="_blank" rel="noopener noreferrer"
                 class="text-sm font-semibold text-brand-primary hover:text-brand-primary-800 underline">
                 Watch Video
@@ -232,7 +232,7 @@
         </div>
 
         <!-- Footer -->
-        <!-- <div class="mt-6 pt-6 border-t border-paper-300 text-sm text-ink-600 flex gap-6">
+        <!-- <div class="mt-6 pt-6 border-t border-paper-300 dark:border-paper-800 text-sm text-ink-600 dark:text-paper-300 flex gap-6">
           <p>
             Published by {{ recipe.approvedBy }}
           </p>

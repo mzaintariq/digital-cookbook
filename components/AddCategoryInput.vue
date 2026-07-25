@@ -6,7 +6,7 @@
     <div v-else class="flex gap-2">
       <input v-model="localValue" type="text" :placeholder="placeholder" @keyup.enter="handleAdd"
         @keyup.esc="handleCancel"
-        class="px-2 py-1.5 text-sm border border-paper-400 rounded focus:outline-none focus:ring-1 focus:ring-brand-primary"
+        class="px-2 py-1.5 text-sm border border-paper-400 dark:border-paper-700 rounded focus:outline-none focus:ring-1 focus:ring-brand-primary"
         autofocus />
       <Button type="button" @click="handleAdd" variant="primary" size="xs">
         Add

@@ -2,7 +2,32 @@
   --color-paper-50: #FAFAF7;
 }
 
+.dark {
+  --color-paper-50: #111312;
+}
+
 html, body {
   background: var(--color-paper-50);
 }
 
+body {
+  transition: background-color 150ms ease, color 150ms ease;
+}
+
+.dark input,
+.dark textarea,
+.dark select {
+  background-color: #1F201E;
+  color: #F4F4EF;
+}
+
+.dark input::placeholder,
+.dark textarea::placeholder {
+  color: #8D8D84;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body {
+    transition: none;
+  }
+}
