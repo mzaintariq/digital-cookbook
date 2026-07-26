@@ -21,9 +21,9 @@
 
         <!-- Desktop Navigation (hidden on mobile when not edit page) -->
         <nav v-if="!isRecipeEditPage" class="hidden md:flex items-center gap-4 shrink-0">
-          <NuxtLink to="/recipes" class="text-ink-800 dark:text-paper-100 hover:text-ink-900 dark:hover:text-paper-50 font-medium">
+          <!-- <NuxtLink to="/" class="text-ink-800 dark:text-paper-100 hover:text-ink-900 dark:hover:text-paper-50 font-medium">
             Recipes
-          </NuxtLink>
+          </NuxtLink> -->
           <ThemeToggle />
           <div class="relative" ref="adminMenuRef">
             <button v-if="isLoggedIn" @click="showDropdown = !showDropdown"

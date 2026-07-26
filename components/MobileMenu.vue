@@ -16,10 +16,10 @@
           </div>
           <nav class="flex flex-col py-4">
             <ThemeToggle show-label class="mx-2 mb-2 !w-auto" />
-            <NuxtLink to="/recipes" class="px-4 py-3 text-ink-800 dark:text-paper-100 hover:bg-paper-50 dark:hover:bg-paper-800 font-medium"
+            <!-- <NuxtLink to="/" class="px-4 py-3 text-ink-800 dark:text-paper-100 hover:bg-paper-50 dark:hover:bg-paper-800 font-medium"
               @click="$emit('update:modelValue', false)">
               Recipes
-            </NuxtLink>
+            </NuxtLink> -->
             <template v-if="isLoggedIn">
               <NuxtLink to="/admin/recipes/new" class="px-4 py-3 text-ink-800 dark:text-paper-100 hover:bg-paper-50 dark:hover:bg-paper-800"
                 @click="$emit('update:modelValue', false)">
