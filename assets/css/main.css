@@ -31,3 +31,28 @@ body {
     transition: none;
   }
 }
+
+@media (display-mode: standalone) {
+  .pwa-safe-viewport {
+    min-height: 100dvh;
+  }
+
+  .pwa-safe-viewport.h-screen {
+    height: 100dvh;
+  }
+
+  .pwa-safe-header {
+    height: calc(4rem + env(safe-area-inset-top));
+    min-height: calc(4rem + env(safe-area-inset-top));
+    padding-top: env(safe-area-inset-top);
+  }
+
+  .pwa-safe-footer {
+    padding-bottom: max(1rem, env(safe-area-inset-bottom));
+  }
+
+  .pwa-safe-mobile-menu {
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}

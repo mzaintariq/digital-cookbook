@@ -1,5 +1,5 @@
 <template>
-  <header class="bg-paper-50 dark:bg-paper-950 border-b border-paper-300 dark:border-paper-800 h-16 min-h-16 shrink-0">
+  <header class="pwa-safe-header bg-paper-50 dark:bg-paper-950 border-b border-paper-300 dark:border-paper-800 h-16 min-h-16 shrink-0">
     <div class="container mx-auto px-4 h-full">
       <div class="flex items-center justify-between h-full">
         <!-- Logo or Recipe Title -->
