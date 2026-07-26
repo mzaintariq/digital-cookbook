@@ -14,6 +14,31 @@
           <input v-model="searchTerm" type="text" placeholder="Search recipes"
             class="block w-full pl-10 pr-3 py-2 border border-paper-400 dark:border-paper-700 rounded-lg leading-5 bg-paper-50 dark:bg-paper-900 placeholder-ink-600 dark:placeholder-paper-400 focus:outline-none focus:placeholder-ink-500 dark:focus:placeholder-paper-400 focus:ring-1 focus:ring-brand-primary focus:border-brand-primary sm:text-sm" />
         </div>
+
+        <div v-if="categoryOptions.length > 0" class="mt-4 max-w-full overflow-x-auto pb-2 -mb-2">
+          <div class="flex w-max min-w-full gap-2" role="group" aria-label="Filter recipes by category">
+            <button
+              type="button"
+              :aria-pressed="selectedCategory === null"
+              :class="categoryButtonClasses(selectedCategory === null)"
+              @click="selectCategory(null)"
+            >
+              <span v-if="selectedCategory === null" aria-hidden="true">✓</span>
+              All
+            </button>
+            <button
+              v-for="category in categoryOptions"
+              :key="category.key"
+              type="button"
+              :aria-pressed="selectedCategory === category.key"
+              :class="categoryButtonClasses(selectedCategory === category.key)"
+              @click="selectCategory(category.key)"
+            >
+              <span v-if="selectedCategory === category.key" aria-hidden="true">✓</span>
+              {{ category.label }}
+            </button>
+          </div>
+        </div>
       </div>
 
       <div v-if="loading" class="text-center py-12">
@@ -29,7 +54,14 @@
       </div>
 
       <div v-else-if="filteredRecipes.length === 0" class="text-center py-12">
-        <p class="text-ink-700 dark:text-paper-200">No recipes match your search.</p>
+        <p class="text-ink-700 dark:text-paper-200 mb-4">No recipes match your current search and category filters.</p>
+        <button
+          type="button"
+          class="min-h-11 px-4 py-2 rounded-md border border-paper-400 dark:border-paper-700 text-ink-800 dark:text-paper-100 hover:bg-paper-100 dark:hover:bg-paper-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2 focus-visible:ring-offset-paper-50 dark:focus-visible:ring-offset-paper-950"
+          @click="resetFilters"
+        >
+          Clear filters
+        </button>
       </div>
 
       <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -93,11 +125,100 @@ import IconClock from '~/components/icons/IconClock.vue'
 import IconPlus from '~/components/icons/IconPlus.vue'
 import IconServings from '~/components/icons/IconServings.vue'
 
+interface CategoryOption {
+  key: string
+  label: string
+}
+
+const route = useRoute()
+const router = useRouter()
 const recipes = ref<Recipe[]>([])
 const loading = ref(true)
 const error = ref<string | null>(null)
 const isLoggedIn = ref(false)
 const searchTerm = ref('')
+const selectedCategory = ref<string | null>(null)
+
+function normalizeTag(tag: string): string {
+  return tag.trim().toLocaleLowerCase()
+}
+
+const categoryOptions = computed<CategoryOption[]>(() => {
+  const categories = new Map<string, string>()
+
+  recipes.value.forEach((recipe) => {
+    recipe.tags.forEach((tag) => {
+      const label = tag.trim()
+      const key = normalizeTag(tag)
+
+      if (key && !categories.has(key)) {
+        categories.set(key, label)
+      }
+    })
+  })
+
+  return [...categories.entries()]
+    .map(([key, label]) => ({ key, label }))
+    .sort((a, b) => a.label.localeCompare(b.label, undefined, { sensitivity: 'base' }))
+})
+
+function categoryButtonClasses(isSelected: boolean): string[] {
+  return [
+    'min-h-11 shrink-0 inline-flex items-center gap-1.5 rounded-full border px-4 py-2 text-sm font-medium',
+    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2',
+    'focus-visible:ring-offset-paper-50 dark:focus-visible:ring-offset-paper-950',
+    isSelected
+      ? 'border-brand-primary bg-brand-primary text-paper-50'
+      : 'border-paper-400 dark:border-paper-700 bg-paper-50 dark:bg-paper-900 text-ink-800 dark:text-paper-100 hover:bg-paper-100 dark:hover:bg-paper-800',
+  ]
+}
+
+async function updateCategoryQuery(category: string | null, replace = false) {
+  const query = { ...route.query }
+
+  if (category) {
+    query.category = category
+  } else {
+    delete query.category
+  }
+
+  const navigation = { query }
+  await (replace ? router.replace(navigation) : router.push(navigation))
+}
+
+function selectCategory(category: string | null) {
+  if (selectedCategory.value === category) return
+
+  selectedCategory.value = category
+  void updateCategoryQuery(category)
+}
+
+function resetFilters() {
+  searchTerm.value = ''
+  selectCategory(null)
+}
+
+watch(
+  [() => route.query.category, categoryOptions, loading],
+  ([queryCategory, categories, isLoading]) => {
+    if (isLoading) return
+
+    const rawCategory = Array.isArray(queryCategory) ? queryCategory[0] : queryCategory
+    if (typeof rawCategory !== 'string' || !rawCategory.trim()) {
+      selectedCategory.value = null
+      return
+    }
+
+    const normalizedCategory = normalizeTag(rawCategory)
+    const isAvailable = categories.some((category) => category.key === normalizedCategory)
+
+    selectedCategory.value = isAvailable ? normalizedCategory : null
+    if (!isAvailable) {
+      void updateCategoryQuery(null, true)
+    }
+  },
+  { immediate: true }
+)
 
 function totalTime(recipe: Recipe): string {
   const prep = recipe.prepTimeMinutes ?? 0
@@ -117,14 +238,16 @@ function totalTime(recipe: Recipe): string {
   return `${hours}hr ${minutes}min`
 }
 
-// Filter recipes based on search term
+// Apply the selected category and the existing text search together.
 const filteredRecipes = computed(() => {
-  if (!searchTerm.value.trim()) {
-    return recipes.value
-  }
-
   const term = searchTerm.value.toLowerCase().trim()
   return recipes.value.filter((recipe) => {
+    const categoryMatch = selectedCategory.value === null
+      || recipe.tags.some((tag) => normalizeTag(tag) === selectedCategory.value)
+
+    if (!categoryMatch) return false
+    if (!term) return true
+
     const titleMatch = recipe.title.toLowerCase().includes(term)
     const descriptionMatch = recipe.description?.toLowerCase().includes(term) ?? false
     const tagsMatch = recipe.tags.some(tag => tag.toLowerCase().includes(term))
