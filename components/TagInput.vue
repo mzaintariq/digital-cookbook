@@ -11,10 +11,10 @@
     ]" @click="focusInput">
       <!-- Tag chips -->
       <div v-for="(tag, index) in tagList" :key="index"
-        class="flex items-center gap-1 px-2 py-1 bg-brand-primary-100 dark:bg-brand-primary-900 text-brand-primary-800 rounded text-sm">
+        class="flex items-center gap-1 px-2 py-1 bg-brand-primary-100 dark:bg-brand-primary-900 text-brand-primary-800 dark:text-paper-300 rounded text-sm">
         <span>{{ tag }}</span>
         <button type="button" @click.stop="removeTag(index)"
-          class="ml-1 text-brand-primary-800 hover:text-brand-primary-900 focus:outline-none">
+          class="ml-1 text-brand-primary-800 dark:text-paper-300 hover:text-brand-primary-900 focus:outline-none">
           <IconClose class="w-3 h-3" />
         </button>
       </div>

@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="container mx-auto px-4 py-8">
-      <h1 class="text-4xl font-bold text-ink-900 dark:text-paper-50 mb-2 md:mb-8">Recipes</h1>
+      <!-- <h1 class="text-4xl font-bold text-ink-900 dark:text-paper-50 mb-2 md:mb-8">Recipes</h1> -->
       <!-- badeen-display-regular -->
       <!-- zaika | ذائقہ -->
 

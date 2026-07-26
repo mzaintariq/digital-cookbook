@@ -13,12 +13,12 @@
         <!-- Header Section -->
         <div class="mb-4 md:mb-8">
           <!-- Category Tag -->
-          <div v-if="recipe.tags.length > 0" class="mb-4">
+          <!-- <div v-if="recipe.tags.length > 0" class="mb-4">
             <span
-              class="inline-block px-4 py-1.5 bg-brand-primary-100 dark:bg-brand-primary-900 text-brand-primary-800 text-sm font-medium rounded-full">
+              class="inline-block px-4 py-1.5 bg-brand-primary-100 dark:bg-brand-primary-900 text-brand-primary-800 dark:text-paper-500 text-sm font-medium rounded-full">
               {{ recipe.tags[0]?.toUpperCase() }}
             </span>
-          </div>
+          </div> -->
 
           <!-- Title and Edit Icon -->
           <div class="flex items-center gap-3 mb-3 flex-row md:flex-wrap justify-between w-full">
@@ -74,7 +74,7 @@
         <div class="flex flex-col lg:flex-row gap-6">
           <!-- Ingredients Card -->
           <div class="order-1 lg:flex-shrink-0 lg:w-80 bg-paper-50 dark:bg-paper-900 rounded-lg border border-brand-primary shadow-md p-6">
-            <h2 class="text-2xl font-semibold text-ink-900 dark:text-paper-50 mb-4">Ingredients</h2>
+            <h2 class="text-2xl font-semibold text-ink-900 dark:text-paper-100 mb-4">Ingredients</h2>
 
             <!-- Serving size adjuster: scale ingredient quantities -->
             <div class="mb-4">
@@ -98,7 +98,7 @@
                     class="flex w-full items-center justify-center py-2 text-sm font-medium cursor-pointer transition-colors select-none
                           border-r border-paper-300 dark:border-paper-800 last:border-r-0"
                     :class="scaleFactor === opt.value
-                      ? 'bg-brand-primary-50 dark:bg-brand-primary-950 text-brand-primary-700'
+                      ? 'bg-brand-primary-50 dark:bg-brand-primary-900 text-brand-primary-700 dark:text-paper-300'
                       : 'bg-transparent text-ink-600 dark:text-paper-300 hover:bg-paper-100 dark:hover:bg-paper-800'"
                   >
                     <span>{{ opt.label }}</span>
@@ -113,14 +113,14 @@
               class="space-y-6">
               <!-- Each Category -->
               <div v-for="category in groupedIngredients.categories" :key="category.name" class="space-y-2">
-                <h3 class="text-sm font-bold text-brand-primary-600 uppercase tracking-wide pb-1">
+                <h3 class="text-sm font-bold text-brand-primary-600 dark:text-paper-400 uppercase tracking-wide pb-1">
                   {{ category.name }}:
                 </h3>
                 <ul class="space-y-2">
                   <li
                     v-for="(ingredient, idx) in category.ingredients"
                     :key="idx"
-                    class="flex items-center gap-3 text-brand-primary-600"
+                    class="flex items-center gap-3 text-brand-primary-600 dark:text-paper-500"
                   >
                     <span class="h-2.5 w-2.5 rounded-full bg-brand-primary shrink-0"></span>
                     <span class="whitespace-pre-line leading-relaxed">{{ ingredient }}</span>
@@ -131,14 +131,14 @@
               <!-- Uncategorized -->
               <div v-if="groupedIngredients.uncategorized.length > 0" class="space-y-2">
                 <h3 v-if="groupedIngredients.categories.length > 0"
-                  class="text-sm font-bold text-brand-primary-600 uppercase tracking-wide pb-1">
+                  class="text-sm font-bold text-brand-primary-600 dark:text-paper-400 uppercase tracking-wide pb-1">
                   Other Ingredients:
                 </h3>
                 <ul class="space-y-2">
                   <li
                     v-for="(ingredient, idx) in groupedIngredients.uncategorized"
                     :key="idx"
-                    class="flex items-center gap-3 text-brand-primary-600"
+                    class="flex items-center gap-3 text-brand-primary-600 dark:text-paper-500"
                   >
                     <span class="h-2.5 w-2.5 rounded-full bg-brand-primary shrink-0"></span>
                     <span class="whitespace-pre-line leading-relaxed">{{ ingredient }}</span>
@@ -159,16 +159,16 @@
           <div class="order-2 lg:flex-1 space-y-6">
             <!-- Directions -->
             <div>
-              <h2 class="text-2xl font-semibold text-ink-900 dark:text-paper-50 mb-4">Directions</h2>
+              <h2 class="text-2xl font-semibold text-ink-900 dark:text-paper-100 dark:text-paper-50 mb-4">Directions</h2>
 
               <!-- Grouped by Category -->
               <div v-if="groupedSteps.categories.length > 0 || groupedSteps.uncategorized.length > 0" class="space-y-6">
                 <!-- Each Category -->
                 <div v-for="category in groupedSteps.categories" :key="category.name" class="space-y-3">
-                  <h3 class="text-sm font-bold text-brand-primary-600 uppercase tracking-wide pb-1">
+                  <h3 class="text-sm font-bold text-brand-primary-600 dark:text-paper-400 uppercase tracking-wide pb-1">
                     {{ category.name }}:
                   </h3>
-                  <ol class="list-decimal list-outside space-y-3 text-brand-primary-600 pl-8 [&_li::marker]:text-brand-primary">
+                  <ol class="list-decimal list-outside space-y-3 text-brand-primary-600 dark:text-paper-500 pl-8 [&_li::marker]:text-brand-primary dark:[&_li::marker]:text-paper-100">
                     <li v-for="(step, idx) in category.steps" :key="idx" class="pl-2">
                       <div class="space-y-2">
                         <div>{{ step.description }}</div>
@@ -187,10 +187,10 @@
                 <!-- Uncategorized -->
                 <div v-if="groupedSteps.uncategorized.length > 0" class="space-y-3">
                   <h3 v-if="groupedSteps.categories.length > 0"
-                    class="text-sm font-bold text-brand-primary-600 uppercase tracking-wide pb-1">
+                    class="text-sm font-bold text-brand-primary-600 dark:text-paper-400 uppercase tracking-wide pb-1">
                     Additional Steps:
                   </h3>
-                  <ol class="list-decimal list-outside space-y-3 text-brand-primary-600 pl-8 [&_li::marker]:text-brand-primary">
+                  <ol class="list-decimal list-outside space-y-3 text-brand-primary-600 dark:text-paper-500 pl-8 [&_li::marker]:text-brand-primary dark:[&_li::marker]:text-paper-100">
                     <li v-for="(step, idx) in groupedSteps.uncategorized" :key="idx" class="pl-2">
                       <div class="space-y-2">
                         <div>{{ step.description }}</div>
