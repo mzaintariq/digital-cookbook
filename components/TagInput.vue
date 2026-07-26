@@ -1,20 +1,20 @@
 <template>
   <div>
-    <label v-if="label" :for="inputId" class="block text-sm font-medium text-ink-800 mb-1">
+    <label v-if="label" :for="inputId" class="block text-sm font-medium text-ink-800 dark:text-paper-100 mb-1">
       {{ label }}
     </label>
     <div :class="[
       'flex flex-wrap items-center gap-2 min-h-[2.5rem] px-3 py-2 border rounded-md focus-within:outline-none focus-within:ring-2 transition-colors',
       hasError
-        ? 'border-error-600 focus-within:ring-error-600 focus-within:border-error-600 bg-error-50'
-        : 'border-paper-400 focus-within:ring-brand-primary'
+        ? 'border-error-600 focus-within:ring-error-600 focus-within:border-error-600 bg-error-50 dark:bg-error-950'
+        : 'border-paper-400 dark:border-paper-700 focus-within:ring-brand-primary'
     ]" @click="focusInput">
       <!-- Tag chips -->
       <div v-for="(tag, index) in tagList" :key="index"
-        class="flex items-center gap-1 px-2 py-1 bg-brand-primary-100 text-brand-primary-800 rounded text-sm">
+        class="flex items-center gap-1 px-2 py-1 bg-brand-primary-100 dark:bg-brand-primary-900 text-brand-primary-800 dark:text-paper-300 rounded text-sm">
         <span>{{ tag }}</span>
         <button type="button" @click.stop="removeTag(index)"
-          class="ml-1 text-brand-primary-800 hover:text-brand-primary-900 focus:outline-none">
+          class="ml-1 text-brand-primary-800 dark:text-paper-300 hover:text-brand-primary-900 focus:outline-none">
           <IconClose class="w-3 h-3" />
         </button>
       </div>
