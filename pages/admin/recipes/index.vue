@@ -1,8 +1,8 @@
 <template>
   <div class="min-h-screen bg-paper-50 dark:bg-paper-900">
     <div class="container mx-auto px-4 py-8">
-      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-        <h1 class="text-2xl sm:text-3xl font-bold text-ink-900 dark:text-paper-50">Recipe Management</h1>
+      <div class="flex sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+        <h1 class="text-2xl sm:text-3xl font-bold text-ink-900 dark:text-paper-50">Manage Recipes</h1>
         <div class="flex gap-4">
           <NuxtLink to="/admin/recipes/new"
             class="bg-brand-primary text-paper-50 px-3 py-2 sm:px-4 rounded-md hover:bg-brand-primary-600 text-sm sm:text-base whitespace-nowrap">
@@ -222,7 +222,7 @@
                 </template>
                 <template v-else-if="cell.column.id === 'title'">
                   <NuxtLink :to="`/admin/recipes/${row.original.id}`"
-                    class="block w-full h-full text-brand-primary hover:text-brand-primary-900 hover:underline font-medium break-words">
+                    class="block w-full h-full text-brand-primary dark:text-paper-200 hover:text-brand-primary-900 hover:underline font-medium break-words">
                     {{ row.original.title }}
                   </NuxtLink>
                 </template>

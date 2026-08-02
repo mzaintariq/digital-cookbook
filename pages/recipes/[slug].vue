@@ -174,7 +174,7 @@
                         <div>{{ step.description }}</div>
                         <!-- Sub-steps -->
                         <ol v-if="step.subSteps && step.subSteps.length > 0"
-                          class="list-[lower-alpha] list-outside space-y-1 text-brand-primary ml-4 mt-1">
+                          class="list-[lower-alpha] list-outside space-y-1 text-brand-primary dark:text-paper-500 ml-4 mt-1">
                           <li v-for="(subStep, subIdx) in step.subSteps" :key="subIdx" class="pl-2">
                             {{ subStep.description }}
                           </li>
@@ -216,15 +216,15 @@
             </div>
 
             <!-- Notes -->
-            <div v-if="recipe.notes" class=" bg-paper-50 dark:bg-paper-900 rounded-lg">
-              <h3 class="text-sm font-bold text-brand-primary-600 uppercase tracking-wide mb-2">*Notes:</h3>
-              <p class="text-brand-primary-600 whitespace-pre-line pl-4">{{ recipe.notes }}</p>
+            <div v-if="recipe.notes" class=" bg-paper-100 p-4 dark:bg-paper-900 rounded-lg">
+              <h3 class="text-sm font-bold text-brand-primary-600 dark:text-paper-400 uppercase tracking-wide mb-2">*Notes:</h3>
+              <p class="text-brand-primary-600 dark:text-paper-500 whitespace-pre-line pl-4">{{ recipe.notes }}</p>
             </div>
 
             <!-- Video URL -->
-            <div v-if="recipe.videoUrl" class="flex items-center gap-2 bg-paper-50 dark:bg-paper-900 rounded-lg">
+            <div v-if="recipe.videoUrl" class="flex items-center gap-2 bg-paper-100 p-4 dark:bg-paper-900 rounded-lg">
               <a :href="recipe.videoUrl" target="_blank" rel="noopener noreferrer"
-                class="text-sm font-semibold text-brand-primary hover:text-brand-primary-800 underline">
+                class="text-sm font-semibold text-brand-primary dark:text-paper-200 hover:text-brand-primary-800 dark:hover:text-paper-300  underline">
                 Watch Video
               </a>
             </div>
