@@ -7,7 +7,7 @@
         <div class="absolute inset-0 bg-black/50 dark:bg-black/70" aria-hidden="true" />
         <div class="pwa-safe-mobile-menu absolute top-0 right-0 bottom-0 w-full max-w-xs bg-paper-50 dark:bg-paper-950 shadow-xl flex flex-col" @click.stop>
           <div class="flex items-center justify-between h-16 px-4 border-b border-paper-300 dark:border-paper-800">
-            <span class="text-sm font-medium text-ink-600 dark:text-paper-300">Menu</span>
+            <span class="text-sm font-medium text-ink-600 dark:text-paper-300">Admin Menu</span>
             <button @click="$emit('update:modelValue', false)"
               class="w-10 h-10 flex items-center justify-center text-ink-600 dark:text-paper-300 hover:text-ink-800 dark:hover:text-paper-100 hover:bg-paper-100 dark:hover:bg-paper-800 rounded-full"
               aria-label="Close menu">
@@ -26,7 +26,7 @@
               </NuxtLink>
               <NuxtLink to="/admin/recipes" class="px-4 py-3 text-ink-800 dark:text-paper-100 hover:bg-paper-50 dark:hover:bg-paper-800"
                 @click="$emit('update:modelValue', false)">
-                Recipe List
+                Manage Recipes
               </NuxtLink>
               <button @click="$emit('logout')" class="px-4 py-3 text-left text-ink-800 dark:text-paper-100 hover:bg-paper-50 dark:hover:bg-paper-800 w-full">
                 Logout
