@@ -76,11 +76,16 @@
         <!-- Mobile navigation controls (only when not on recipe edit page) -->
         <div v-if="!isRecipeEditPage" class="flex items-center gap-1 md:hidden">
           <ThemeToggle />
-          <button @click="showMobileMenu = true"
+          <button v-if="isLoggedIn" @click="showMobileMenu = true"
             class="w-10 h-10 flex items-center justify-center text-ink-800 dark:text-paper-100 hover:text-ink-900 dark:hover:text-paper-50 hover:bg-paper-100 dark:hover:bg-paper-800 rounded-full transition-colors"
             aria-label="Open menu">
             <IconMenu class="w-6 h-6" />
           </button>
+          <NuxtLink v-else to="/admin/login"
+            class="w-10 h-10 flex items-center justify-center text-ink-800 dark:text-paper-100 hover:text-ink-900 dark:hover:text-paper-50 hover:bg-paper-100 dark:hover:bg-paper-800 rounded-full transition-colors"
+            aria-label="Admin login">
+            <IconUser class="w-6 h-6" />
+          </NuxtLink>
         </div>
       </div>
     </div>
