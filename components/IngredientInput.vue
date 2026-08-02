@@ -3,9 +3,9 @@
     <!-- Quantity with unit inside -->
     <div v-if="!ingredient.toTaste" class="md:col-span-2 relative">
       <input v-model.number="ingredient.quantity" type="number" min="0" step="any" placeholder="4"
-        class="w-full px-2 py-1.5 pr-20 md:pr-18 text-sm border border-paper-400 dark:border-paper-700 rounded focus:outline-none focus:ring-1 focus:ring-brand-primary" />
+        class="w-full px-2 py-1.5 pr-20 md:pr-18 text-sm border border-paper-400 dark:border-paper-700 dark:bg-paper-950 rounded focus:outline-none focus:ring-1 focus:ring-brand-primary" />
       <div
-        class="absolute inset-y-0 right-0 w-16 md:w-16 flex items-center justify-end border-l border-paper-400 dark:border-paper-700 pl-2 pr-2 pointer-events-none bg-paper-50 dark:bg-paper-900 rounded-r border-r border-t border-b border-paper-400 dark:border-paper-700">
+        class="absolute inset-y-0 right-0 w-16 md:w-16 flex items-center justify-end border-l border-paper-400 dark:border-paper-700 dark:bg-paper-950 pl-2 pr-2 pointer-events-none bg-paper-50 dark:bg-paper-950 rounded-r border-r border-t border-b border-paper-400 dark:border-paper-700 dark:bg-paper-950">
         <span class="text-xs md:text-sm text-ink-800 dark:text-paper-100 mr-1">{{ ingredient.unit }}</span>
         <IconChevronDown class="w-3 h-3 md:w-4 md:h-4 text-ink-500 dark:text-paper-400" />
       </div>
@@ -31,9 +31,9 @@
     <!-- Alternate size with unit inside -->
     <div v-if="ingredient.detailedSize && !ingredient.toTaste" class="md:col-span-2 relative">
       <input v-model.number="ingredient.detailedSize.amount" type="number" min="0" step="any" placeholder="15"
-        class="w-full px-2 py-1.5 pr-20 md:pr-18 text-sm border border-paper-400 dark:border-paper-700 rounded focus:outline-none focus:ring-1 focus:ring-brand-primary" />
+        class="w-full px-2 py-1.5 pr-20 md:pr-18 text-sm border border-paper-400 dark:border-paper-700 dark:bg-paper-950 rounded focus:outline-none focus:ring-1 focus:ring-brand-primary" />
       <div
-        class="absolute inset-y-0 right-0 w-16 md:w-16 flex items-center justify-end border-l border-paper-400 dark:border-paper-700 pl-2 pr-2 pointer-events-none bg-paper-50 dark:bg-paper-900 rounded-r border-r border-t border-b border-paper-400 dark:border-paper-700">
+        class="absolute inset-y-0 right-0 w-16 md:w-16 flex items-center justify-end border-l border-paper-400 dark:border-paper-700 dark:bg-paper-950 pl-2 pr-2 pointer-events-none bg-paper-50 dark:bg-paper-950 rounded-r border-r border-t border-b border-paper-400 dark:border-paper-700 dark:bg-paper-950">
         <span class="text-xs md:text-sm text-ink-800 dark:text-paper-100 mr-1">{{ ingredient.detailedSize.unit }}</span>
         <IconChevronDown class="w-3 h-3 md:w-4 md:h-4 text-ink-500 dark:text-paper-400" />
       </div>
@@ -47,7 +47,7 @@
       </select>
     </div>
     <input v-model="ingredient.name" type="text" placeholder="eg: Large bell peppers (any color)" :class="[
-      'px-2 py-1.5 text-sm border border-paper-400 dark:border-paper-700 rounded focus:outline-none focus:ring-1 focus:ring-brand-primary',
+      'px-2 py-1.5 text-sm border border-paper-400 dark:border-paper-700 dark:bg-paper-950 rounded focus:outline-none focus:ring-1 focus:ring-brand-primary',
       ingredient.detailedSize
         ? (ingredient.toTaste ? 'md:col-span-11' : 'md:col-span-8')
         : (ingredient.toTaste ? 'md:col-span-11' : 'md:col-span-10')
@@ -60,7 +60,7 @@
           ingredient.toTaste ? 'bg-brand-primary' : 'bg-paper-300 dark:bg-paper-700'
         ]">
           <span :class="[
-            'inline-block h-3 w-3 transform rounded-full bg-paper-50 dark:bg-paper-900 transition-transform',
+            'inline-block h-3 w-3 transform rounded-full bg-paper-50 dark:bg-paper-950 transition-transform',
             ingredient.toTaste ? 'translate-x-3.5' : 'translate-x-0.5'
           ]" />
         </button>
@@ -72,7 +72,7 @@
           ingredient.detailedSize ? 'bg-brand-primary' : 'bg-paper-300 dark:bg-paper-700'
         ]">
           <span :class="[
-            'inline-block h-3 w-3 transform rounded-full bg-paper-50 dark:bg-paper-900 transition-transform',
+            'inline-block h-3 w-3 transform rounded-full bg-paper-50 dark:bg-paper-950 transition-transform',
             ingredient.detailedSize ? 'translate-x-3.5' : 'translate-x-0.5'
           ]" />
         </button>
@@ -84,7 +84,7 @@
           (ingredient.alternateIngredient !== null && ingredient.alternateIngredient !== undefined) ? 'bg-brand-primary' : 'bg-paper-300 dark:bg-paper-700'
         ]">
           <span :class="[
-            'inline-block h-3 w-3 transform rounded-full bg-paper-50 dark:bg-paper-900 transition-transform',
+            'inline-block h-3 w-3 transform rounded-full bg-paper-50 dark:bg-paper-950 transition-transform',
             (ingredient.alternateIngredient !== null && ingredient.alternateIngredient !== undefined) ? 'translate-x-3.5' : 'translate-x-0.5'
           ]" />
         </button>
@@ -94,7 +94,7 @@
     <div v-if="ingredient.alternateIngredient !== null && ingredient.alternateIngredient !== undefined"
       class="md:col-span-12 mt-2">
       <input v-model="ingredient.alternateIngredient" type="text" placeholder="eg: or use butter instead"
-        class="w-full px-2 py-1.5 text-sm border border-paper-400 dark:border-paper-700 rounded focus:outline-none focus:ring-1 focus:ring-brand-primary" />
+        class="w-full px-2 py-1.5 text-sm border border-paper-400 dark:border-paper-700 dark:bg-paper-950 rounded focus:outline-none focus:ring-1 focus:ring-brand-primary" />
     </div>
   </div>
 </template>

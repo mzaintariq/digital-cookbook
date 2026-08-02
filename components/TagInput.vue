@@ -7,7 +7,7 @@
       'flex flex-wrap items-center gap-2 min-h-[2.5rem] px-3 py-2 border rounded-md focus-within:outline-none focus-within:ring-2 transition-colors',
       hasError
         ? 'border-error-600 focus-within:ring-error-600 focus-within:border-error-600 bg-error-50 dark:bg-error-950'
-        : 'border-paper-400 dark:border-paper-700 focus-within:ring-brand-primary'
+        : 'border-paper-400 dark:border-paper-700 dark:bg-paper-950 focus-within:ring-brand-primary'
     ]" @click="focusInput">
       <!-- Tag chips -->
       <div v-for="(tag, index) in tagList" :key="index"
@@ -21,7 +21,7 @@
       <!-- Input field -->
       <input :id="inputId" ref="inputRef" v-model="inputValue" type="text"
         :placeholder="tagList.length === 0 ? placeholder : ''"
-        class="flex-1 min-w-[120px] outline-none bg-transparent text-sm" @keydown="handleKeydown"
+        class="flex-1 min-w-[120px] outline-none bg-transparent dark:bg-paper-950 text-sm" @keydown="handleKeydown"
         @input="handleInput" />
     </div>
     <p v-if="errorMessage" class="mt-1 text-sm text-error-600">{{ errorMessage }}</p>

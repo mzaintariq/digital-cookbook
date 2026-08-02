@@ -12,7 +12,7 @@
             <IconSearch class="w-5 h-5 text-ink-500 dark:text-paper-400" />
           </div>
           <input v-model="searchTerm" type="text" placeholder="Search recipes"
-            class="block w-full pl-10 pr-3 py-2 border border-paper-400 dark:border-paper-700 rounded-lg leading-5 bg-paper-50 dark:bg-paper-900 placeholder-ink-600 dark:placeholder-paper-400 focus:outline-none focus:placeholder-ink-500 dark:focus:placeholder-paper-400 focus:ring-1 focus:ring-brand-primary focus:border-brand-primary sm:text-sm" />
+            class="block w-full pl-10 pr-3 py-2 border border-paper-400 dark:border-paper-700 rounded-lg leading-5 bg-paper-50 dark:bg-paper-950 placeholder-ink-600 dark:placeholder-paper-400 focus:outline-none focus:placeholder-ink-500 dark:focus:placeholder-paper-400 focus:ring-1 focus:ring-brand-primary focus:border-brand-primary sm:text-sm" />
         </div>
 
         <div v-if="categoryOptions.length > 0" class="mt-4 max-w-full overflow-x-auto pb-2 -mb-2">
@@ -57,7 +57,7 @@
         <p class="text-ink-700 dark:text-paper-200 mb-4">No recipes match your current search and category filters.</p>
         <button
           type="button"
-          class="min-h-11 px-4 py-2 rounded-md border border-paper-400 dark:border-paper-700 text-ink-800 dark:text-paper-100 hover:bg-paper-100 dark:hover:bg-paper-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2 focus-visible:ring-offset-paper-50 dark:focus-visible:ring-offset-paper-950"
+          class="min-h-11 px-4 py-2 rounded-md border border-paper-400 dark:border-paper-700 dark:bg-paper-950 text-ink-800 dark:text-paper-100 hover:bg-paper-100 dark:hover:bg-paper-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2 focus-visible:ring-offset-paper-50 dark:focus-visible:ring-offset-paper-950"
           @click="resetFilters"
         >
           Clear filters
@@ -169,7 +169,7 @@ function categoryButtonClasses(isSelected: boolean): string[] {
     'focus-visible:ring-offset-paper-50 dark:focus-visible:ring-offset-paper-950',
     isSelected
       ? 'border-brand-primary bg-brand-primary text-paper-50'
-      : 'border-paper-400 dark:border-paper-700 bg-paper-50 dark:bg-paper-900 text-ink-800 dark:text-paper-100 hover:bg-paper-100 dark:hover:bg-paper-800',
+      : 'border-paper-400 dark:border-paper-700 bg-paper-50 dark:bg-paper-950 text-ink-800 dark:text-paper-100 hover:bg-paper-100 dark:hover:bg-paper-800',
   ]
 }
 

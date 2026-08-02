@@ -38,7 +38,7 @@
           <div v-else key="search" class="h-full flex items-center">
             <div class="relative max-w-md w-full">
               <input v-model="searchTerm" type="text" placeholder="Search recipes..."
-                class="w-full pl-10 pr-4 py-2 border border-paper-400 dark:border-paper-700 rounded-md focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-transparent" />
+                class="w-full pl-10 pr-4 py-2 border border-paper-400 dark:border-paper-700 dark:bg-paper-950 rounded-md focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-transparent" />
               <IconSearch class="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-ink-500 dark:text-paper-400" />
             </div>
           </div>

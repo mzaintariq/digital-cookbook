@@ -18,7 +18,7 @@
       </button>
     </div>
     <div class="flex items-center gap-2">
-      <button type="button" @click="$emit('delete')" class="text-error-500 hover:text-error-700">
+      <button type="button" @click="$emit('delete')" class="text-error-500 hover:text-error-700 dark:text-error-700 dark:hover:text-error-500 flex-shrink-0">
         <IconClose class="w-4 h-4" />
       </button>
     </div>

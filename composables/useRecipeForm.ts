@@ -76,7 +76,7 @@ export function useRecipeForm(recipeIdSource: MaybeRefOrGetter<string>) {
     if (hasError) {
       return `${baseClasses} border-error-600 focus:ring-error-600 focus:border-error-600 bg-error-50`
     }
-    return `${baseClasses} border-paper-400 dark:border-paper-700 focus:ring-brand-primary`
+    return `${baseClasses} border-paper-400 dark:border-paper-700 dark:bg-paper-950 focus:ring-brand-primary`
   }
 
   function getTextareaClasses(fieldName: string): string {
