@@ -1,12 +1,12 @@
 <template>
-  <div class="min-h-screen bg-paper-50 dark:bg-paper-900">
+  <div class="min-h-screen bg-paper-50 dark:bg-paper-950">
     <div class="container mx-auto px-4 py-8">
-      <div class="flex sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+      <div class="flex justify-between items-start sm:items-center gap-4 mb-6">
         <h1 class="text-2xl sm:text-3xl font-bold text-ink-900 dark:text-paper-50">Manage Recipes</h1>
         <div class="flex gap-4">
           <NuxtLink to="/admin/recipes/new"
             class="bg-brand-primary text-paper-50 px-3 py-2 sm:px-4 rounded-md hover:bg-brand-primary-600 text-sm sm:text-base whitespace-nowrap">
-            + New Recipe
+            + Add Recipe
           </NuxtLink>
         </div>
       </div>
@@ -18,7 +18,7 @@
           leave-from-class="opacity-100 translate-x-0" leave-to-class="opacity-0 translate-x-2" mode="out-in">
           <div v-if="selectedRows.length > 0" key="bulk-actions" class="h-full flex items-center">
             <div
-              class="bg-paper-50 dark:bg-paper-900 border border-paper-300 dark:border-paper-800 rounded-md px-4 py-3 flex items-center justify-between w-full">
+              class="bg-paper-50 dark:bg-paper-950 border border-paper-300 dark:border-paper-800 rounded-md px-4 py-3 flex items-center justify-between w-full">
               <span class="text-sm text-ink-800 dark:text-paper-100">{{ selectedRows.length }} recipe{{
                 selectedRows.length > 1 ? "s" : ""
               }}
@@ -53,10 +53,14 @@
         <p class="text-error-600">{{ error }}</p>
       </div>
 
-      <div v-else class="bg-paper-50 dark:bg-paper-900 rounded-lg shadow-md relative">
+      <div
+        v-else
+        class="relative overflow-hidden rounded-lg border border-paper-300 bg-paper-50 shadow-md dark:border-paper-800 dark:bg-paper-950"
+      >
+      <!-- <div v-else class="bg-paper-50 dark:bg-paper-950 rounded-lg shadow-md relative"> -->
         <!-- <div class="overflow-x-auto"> -->
         <table class="min-w-full divide-y divide-paper-300 dark:divide-paper-800">
-          <thead class="bg-paper-50 dark:bg-paper-900">
+          <thead class="bg-paper-50 dark:bg-paper-950">
             <tr v-for="headerGroup in table.getHeaderGroups()" :key="headerGroup.id">
               <th v-for="(header, index) in headerGroup.headers" :key="header.id" :class="[
                 'pl-4 pr-2 py-2 text-left text-xs font-medium text-ink-600 dark:text-paper-300 uppercase tracking-wider',
@@ -99,7 +103,7 @@
                       leave-from-class="opacity-100 scale-100 translate-y-0"
                       leave-to-class="opacity-0 scale-95 -translate-y-1">
                       <div v-if="showColumnVisibilityDropdown"
-                        class="absolute right-0 top-full mt-1 w-56 bg-paper-50 dark:bg-paper-900 rounded-md shadow-lg border border-paper-300 dark:border-paper-800 py-2 z-[1002]"
+                        class="absolute right-0 top-full mt-1 w-56 bg-paper-50 dark:bg-paper-950 rounded-md shadow-lg border border-paper-300 dark:border-paper-800 py-2 z-[1002]"
                         @click.stop>
                         <label v-for="column in table
                           .getAllColumns()
@@ -117,7 +121,7 @@
                               : 'bg-paper-300 dark:bg-paper-700',
                           ]" role="switch" :aria-checked="column.getIsVisible()">
                             <span :class="[
-                              'pointer-events-none inline-block h-4 w-4 transform rounded-full bg-paper-50 dark:bg-paper-900 shadow ring-0 transition duration-200 ease-in-out',
+                              'pointer-events-none inline-block h-4 w-4 transform rounded-full bg-paper-50 dark:bg-paper-950 shadow ring-0 transition duration-200 ease-in-out',
                               column.getIsVisible()
                                 ? 'translate-x-4'
                                 : 'translate-x-0',
@@ -156,7 +160,7 @@
               </th>
             </tr>
           </thead>
-          <tbody class="bg-paper-50 dark:bg-paper-900 divide-y divide-paper-300 dark:divide-paper-800">
+          <tbody class="bg-paper-50 dark:bg-paper-950 divide-y divide-paper-300 dark:divide-paper-800">
             <tr v-for="row in table.getRowModel().rows" :key="row.id" :data-selected="row.getIsSelected()" :class="{
               'bg-brand-primary-50 dark:bg-brand-primary-950': row.getIsSelected(),
               'hover:bg-paper-50 dark:hover:bg-paper-800 transition-colors': true,
@@ -204,7 +208,7 @@
                         leave-from-class="opacity-100 scale-100 translate-y-0"
                         leave-to-class="opacity-0 scale-95 -translate-y-1">
                         <div v-if="openDropdownId === row.original.id" data-dropdown
-                          class="absolute right-0 top-full mt-1 w-32 bg-paper-50 dark:bg-paper-900 rounded-md shadow-lg border border-paper-300 dark:border-paper-800 py-1 z-[1002]">
+                          class="absolute right-0 top-full mt-1 w-32 bg-paper-50 dark:bg-paper-950 rounded-md shadow-lg border border-paper-300 dark:border-paper-800 py-1 z-[1002]">
                           <NuxtLink :to="`/admin/recipes/${row.original.id}`"
                             class="block px-4 py-2 text-sm text-ink-800 dark:text-paper-100 hover:bg-paper-100 dark:hover:bg-paper-800" @click="closeDropdown">
                             Edit
