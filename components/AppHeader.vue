@@ -47,7 +47,7 @@
                 </NuxtLink>
                 <NuxtLink to="/admin/recipes" class="block px-4 py-2 text-sm text-ink-800 dark:text-paper-100 hover:bg-paper-100 dark:hover:bg-paper-800"
                   @click="showDropdown = false">
-                  Recipe List
+                  Manage Recipes
                 </NuxtLink>
                 <button @click="handleLogout"
                   class="block w-full text-left px-4 py-2 text-sm text-ink-800 dark:text-paper-100 hover:bg-paper-100 dark:hover:bg-paper-800">
