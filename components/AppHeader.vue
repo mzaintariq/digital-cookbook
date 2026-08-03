@@ -1,6 +1,6 @@
 <template>
-  <header class="pwa-safe-header bg-paper-50 dark:bg-paper-950 border-b border-paper-300 dark:border-paper-800 h-16 min-h-16 shrink-0">
-    <div class="container mx-auto px-4 h-full">
+  <header class="pwa-safe-header bg-paper-50 dark:bg-paper-950 border-b border-paper-300 dark:border-paper-800 min-h-16 shrink-0">
+    <div class="container mx-auto px-4 h-16">
       <div class="flex items-center justify-between h-full">
         <!-- Logo or Recipe Title -->
         <NuxtLink v-if="!isRecipeEditPage" to="/"
@@ -76,11 +76,18 @@
         <!-- Mobile navigation controls (only when not on recipe edit page) -->
         <div v-if="!isRecipeEditPage" class="flex items-center gap-1 md:hidden">
           <ThemeToggle />
-          <button v-if="isLoggedIn" @click="showMobileMenu = true"
-            class="w-10 h-10 flex items-center justify-center text-ink-800 dark:text-paper-100 hover:text-ink-900 dark:hover:text-paper-50 hover:bg-paper-100 dark:hover:bg-paper-800 rounded-full transition-colors"
-            aria-label="Open menu">
-            <IconMenu class="w-6 h-6" />
-          </button>
+          <div v-if="isLoggedIn" ref="mobileMenuRef">
+            <button @click="showMobileMenu = !showMobileMenu"
+              class="w-10 h-10 flex items-center justify-center text-ink-800 dark:text-paper-100 hover:text-ink-900 dark:hover:text-paper-50 hover:bg-paper-100 dark:hover:bg-paper-800 rounded-full transition-colors"
+              :aria-label="showMobileMenu ? 'Close admin menu' : 'Open admin menu'" :aria-expanded="showMobileMenu">
+              <Transition enter-active-class="transition-opacity duration-150" enter-from-class="opacity-0"
+                enter-to-class="opacity-100" leave-active-class="transition-opacity duration-100"
+                leave-from-class="opacity-100" leave-to-class="opacity-0" mode="out-in">
+                <IconClose v-if="showMobileMenu" key="close" class="w-6 h-6" />
+                <IconMenu v-else key="menu" class="w-6 h-6" />
+              </Transition>
+            </button>
+          </div>
           <NuxtLink v-else to="/admin/login"
             class="w-10 h-10 flex items-center justify-center text-ink-800 dark:text-paper-100 hover:text-ink-900 dark:hover:text-paper-50 hover:bg-paper-100 dark:hover:bg-paper-800 rounded-full transition-colors"
             aria-label="Admin login">
@@ -90,8 +97,29 @@
       </div>
     </div>
 
-    <!-- Mobile menu overlay and panel -->
-    <MobileMenu v-model="showMobileMenu" :is-logged-in="isLoggedIn" @logout="closeMobileMenuAndLogout" />
+    <Transition enter-active-class="transition-all duration-200 ease-out overflow-hidden"
+      enter-from-class="max-h-0 opacity-0" enter-to-class="max-h-40 opacity-100"
+      leave-active-class="transition-all duration-150 ease-in overflow-hidden"
+      leave-from-class="max-h-40 opacity-100" leave-to-class="max-h-0 opacity-0">
+      <nav v-if="showMobileMenu && isLoggedIn && !isRecipeEditPage"
+        class="w-full border-t border-paper-300 bg-paper-50 py-1 dark:border-paper-800 dark:bg-paper-900 md:hidden"
+        aria-label="Mobile admin menu" @click.stop>
+        <NuxtLink to="/admin/recipes/new"
+          class="block px-4 py-3 text-sm text-ink-800 hover:bg-paper-100 dark:text-paper-100 dark:hover:bg-paper-800"
+          @click="showMobileMenu = false">
+          Add Recipe
+        </NuxtLink>
+        <NuxtLink to="/admin/recipes"
+          class="block px-4 py-3 text-sm text-ink-800 hover:bg-paper-100 dark:text-paper-100 dark:hover:bg-paper-800"
+          @click="showMobileMenu = false">
+          Manage Recipes
+        </NuxtLink>
+        <button @click="closeMobileMenuAndLogout"
+          class="block w-full px-4 py-3 text-left text-sm text-ink-800 hover:bg-paper-100 dark:text-paper-100 dark:hover:bg-paper-800">
+          Logout
+        </button>
+      </nav>
+    </Transition>
   </header>
 </template>
 
@@ -110,6 +138,7 @@ const isLoggedIn = ref(false)
 const showDropdown = ref(false)
 const showMobileMenu = ref(false)
 const adminMenuRef = ref<HTMLElement | null>(null)
+const mobileMenuRef = ref<HTMLElement | null>(null)
 let loginCheckIntervalId: ReturnType<typeof setInterval>
 
 // Recipe title from page
@@ -201,6 +230,9 @@ async function closeMobileMenuAndLogout() {
 function handleClickOutside(event: MouseEvent) {
   if (adminMenuRef.value && !adminMenuRef.value.contains(event.target as Node)) {
     showDropdown.value = false
+  }
+  if (mobileMenuRef.value && !mobileMenuRef.value.contains(event.target as Node)) {
+    showMobileMenu.value = false
   }
 }
 

@@ -59,12 +59,80 @@
               <!-- Serves -->
               <div class="flex items-start gap-1.5 md:gap-2 flex-shrink-0">
                 <IconServings class="w-5 h-5 md:w-5 md:h-5 text-ink-500 dark:text-paper-400 flex-shrink-0 mt-0.5 md:mt-0" />
-                <div class="flex flex-col md:flex-row md:items-center md:gap-2 min-w-0">
+                <div class="flex flex-col md:flex-row md:items-center md:gap-2 min-w-0 min-w-[72px]">
                   <span class="text-brand-primary text-xs font-medium uppercase tracking-wide">Serves</span>
                   <span class="text-ink-800 dark:text-paper-100 text-md md:text-sm">{{ servingsLabel }}</span>
                 </div>
               </div>
             </div>
+          </div>
+
+          <!-- Share Recipe -->
+          <div class="mt-4 flex flex-wrap items-center w-full justify-between md:gap-2 md:justify-start print:hidden">
+            <!-- <span class="mr-1 text-sm font-medium text-ink-600 dark:text-paper-300">Share:</span> -->
+            <button type="button" @click="copyRecipeLink"
+              class="inline-flex min-h-10 items-center gap-2 rounded-full border border-paper-300 px-3 py-2 text-sm text-ink-800 transition-colors hover:bg-paper-100 dark:border-paper-800 dark:text-paper-100 dark:hover:bg-paper-800"
+              :aria-label="linkCopied ? 'Recipe link copied' : 'Copy recipe link'">
+              <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
+                <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
+              </svg>
+              {{ linkCopied ? 'Copied!' : 'Copy link' }}
+            </button>
+
+
+            <a :href="whatsAppShareUrl" target="_blank" rel="noopener noreferrer"
+              class="inline-flex min-h-10 items-center gap-2 rounded-full border border-paper-300 px-3 py-2 text-sm text-ink-800 transition-colors hover:bg-paper-100 dark:border-paper-800 dark:text-paper-100 dark:hover:bg-paper-800"
+              aria-label="Share recipe on WhatsApp">
+              <svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M12.04 2a9.84 9.84 0 0 0-8.43 14.91L2 22l5.21-1.57A9.99 9.99 0 1 0 12.04 2Zm0 17.98a8.06 8.06 0 0 1-4.11-1.13l-.3-.18-3.09.93.95-3-.2-.31a7.84 7.84 0 1 1 6.75 3.69Zm4.42-5.87c-.24-.12-1.43-.7-1.65-.78-.22-.08-.38-.12-.54.12-.16.24-.62.78-.76.94-.14.16-.28.18-.52.06-.24-.12-1.02-.37-1.94-1.19a7.31 7.31 0 0 1-1.34-1.66c-.14-.24-.02-.37.1-.49.11-.11.24-.28.36-.42.12-.14.16-.24.24-.4.08-.16.04-.3-.02-.42-.06-.12-.54-1.3-.74-1.78-.2-.47-.4-.4-.54-.41h-.46c-.16 0-.42.06-.64.3-.22.24-.84.82-.84 2s.86 2.32.98 2.48c.12.16 1.69 2.58 4.1 3.62.57.25 1.02.4 1.37.51.58.18 1.1.16 1.51.1.46-.07 1.43-.59 1.63-1.15.2-.56.2-1.04.14-1.15-.06-.1-.22-.16-.46-.28Z" />
+              </svg>
+              <!-- WhatsApp -->
+            </a>
+            <a :href="facebookShareUrl" target="_blank" rel="noopener noreferrer"
+              class="inline-flex min-h-10 items-center gap-2 rounded-full border border-paper-300 px-3 py-2 text-sm text-ink-800 transition-colors hover:bg-paper-100 dark:border-paper-800 dark:text-paper-100 dark:hover:bg-paper-800"
+              aria-label="Share recipe on Facebook">
+              <svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M13.5 22v-9h3l.45-3.5H13.5V7.27c0-1.01.28-1.7 1.73-1.7h1.85V2.45a24.8 24.8 0 0 0-2.7-.14c-2.67 0-4.5 1.63-4.5 4.62V9.5h-3V13h3v9h3.62Z" />
+              </svg>
+              <!-- Facebook -->
+            </a>
+            <a :href="textMessageShareUrl"
+              class="inline-flex min-h-10 items-center gap-2 rounded-full border border-paper-300 px-3 py-2 text-sm text-ink-800 transition-colors hover:bg-paper-100 dark:border-paper-800 dark:text-paper-100 dark:hover:bg-paper-800"
+              aria-label="Share recipe by text message">
+              <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <path d="M21 15a4 4 0 0 1-4 4H8l-5 3V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4Z" />
+                <path d="M8 10h.01M12 10h.01M16 10h.01" />
+              </svg>
+              <!-- Text message -->
+            </a>
+            <a :href="twitterShareUrl" target="_blank" rel="noopener noreferrer"
+              class="inline-flex min-h-10 items-center gap-2 rounded-full border border-paper-300 px-3 py-2 text-sm text-ink-800 transition-colors hover:bg-paper-100 dark:border-paper-800 dark:text-paper-100 dark:hover:bg-paper-800"
+              aria-label="Share recipe on X">
+              <svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M18.24 2H21l-6.03 6.9L22.06 22H16.5l-4.35-5.69L7.17 22H4.4l6.46-7.38L4.06 2h5.7l3.93 5.2L18.24 2Zm-.97 17.7h1.53L8.93 4.18H7.29L17.27 19.7Z" />
+              </svg>
+              <!-- X / Twitter -->
+            </a>
+            <!-- <a :href="emailShareUrl"
+              class="inline-flex min-h-10 items-center gap-2 rounded-full border border-paper-300 px-3 py-2 text-sm text-ink-800 transition-colors hover:bg-paper-100 dark:border-paper-800 dark:text-paper-100 dark:hover:bg-paper-800"
+              aria-label="Share recipe by email">
+              <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <rect x="3" y="5" width="18" height="14" rx="2" />
+                <path d="m3 7 9 6 9-6" />
+              </svg>
+              Email
+            </a> -->
+            <button type="button" @click="printRecipe"
+              class="inline-flex min-h-10 items-center gap-2 rounded-full border border-paper-300 px-3 py-2 text-sm text-ink-800 transition-colors hover:bg-paper-100 dark:border-paper-800 dark:text-paper-100 dark:hover:bg-paper-800"
+              aria-label="Print recipe">
+              <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <path d="M6 9V2h12v7" />
+                <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" />
+                <rect x="6" y="14" width="12" height="8" />
+              </svg>
+              <!-- Print -->
+            </button>
           </div>
         </div>
 
@@ -78,11 +146,12 @@
 
             <!-- Serving size adjuster: scale ingredient quantities -->
             <div class="mb-4">
-              <div class="w-full inline-flex overflow-hidden rounded-lg border border-paper-300 dark:border-paper-800 bg-paper-50 dark:bg-paper-900">
+              <div class="w-full inline-flex overflow-hidden rounded-lg border border-paper-300 dark:border-paper-800 bg-paper-50 dark:bg-paper-900 print:w-auto">
                 <div
                   v-for="(opt, i) in scaleOptions"
                   :key="opt.value"
                   class="flex-1"
+                  :class="scaleFactor !== opt.value ? 'print:hidden' : ''"
                 >
                   <input
                     :id="`serving-size-${opt.value}-${recipe?.id ?? 'recipe'}`"
@@ -96,7 +165,7 @@
                   <label
                     :for="`serving-size-${opt.value}-${recipe?.id ?? 'recipe'}`"
                     class="flex w-full items-center justify-center py-2 text-sm font-medium cursor-pointer transition-colors select-none
-                          border-r border-paper-300 dark:border-paper-800 last:border-r-0"
+                          border-r border-paper-300 dark:border-paper-800 last:border-r-0 print:border-r-0 print:px-4"
                     :class="scaleFactor === opt.value
                       ? 'bg-brand-primary-50 dark:bg-brand-primary-900 text-brand-primary-700 dark:text-paper-300'
                       : 'bg-transparent text-ink-600 dark:text-paper-300 hover:bg-paper-100 dark:hover:bg-paper-800'"
@@ -222,9 +291,9 @@
             </div>
 
             <!-- Video URL -->
-            <div v-if="recipe.videoUrl" class="flex items-center gap-2 bg-paper-100 p-4 dark:bg-paper-900 rounded-lg">
+            <div v-if="recipe.videoUrl" class="flex items-center gap-2 bg-paper-100 p-4 dark:bg-paper-900 rounded-lg print:hidden">
               <a :href="recipe.videoUrl" target="_blank" rel="noopener noreferrer"
-                class="text-sm font-semibold text-brand-primary dark:text-paper-200 hover:text-brand-primary-800 dark:hover:text-paper-300  underline">
+                class="text-sm font-semibold text-brand-primary dark:text-paper-200 hover:text-brand-primary-800 dark:hover:text-paper-400  underline">
                 Watch Video
               </a>
             </div>
@@ -259,7 +328,49 @@ const loading = ref(true)
 const error = ref<string | null>(null)
 const isLoggedIn = ref(false)
 const scaleFactor = ref(1)
+const linkCopied = ref(false)
 let loginCheckIntervalId: ReturnType<typeof setInterval>
+let copyFeedbackTimeoutId: ReturnType<typeof setTimeout> | undefined
+
+const recipePath = computed(() => `/recipes/${encodeURIComponent(String(route.params.slug))}`)
+const recipeShareUrl = computed(() => process.client
+  ? `${window.location.origin}${recipePath.value}`
+  : recipePath.value
+)
+const shareMessage = computed(() => `Check out ${recipe.value?.title || 'this recipe'}: ${recipeShareUrl.value}`)
+const whatsAppShareUrl = computed(() => `https://wa.me/?text=${encodeURIComponent(shareMessage.value)}`)
+const facebookShareUrl = computed(() => `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(recipeShareUrl.value)}`)
+const textMessageShareUrl = computed(() => `sms:?body=${encodeURIComponent(shareMessage.value)}`)
+const twitterShareUrl = computed(() => `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareMessage.value)}`)
+const emailShareUrl = computed(() => {
+  const subject = `Recipe: ${recipe.value?.title || 'Digital Cookbook'}`
+  return `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(shareMessage.value)}`
+})
+
+function printRecipe() {
+  window.print()
+}
+
+async function copyRecipeLink() {
+  try {
+    await navigator.clipboard.writeText(recipeShareUrl.value)
+  } catch {
+    const textArea = document.createElement('textarea')
+    textArea.value = recipeShareUrl.value
+    textArea.style.position = 'fixed'
+    textArea.style.opacity = '0'
+    document.body.appendChild(textArea)
+    textArea.select()
+    document.execCommand('copy')
+    textArea.remove()
+  }
+
+  linkCopied.value = true
+  clearTimeout(copyFeedbackTimeoutId)
+  copyFeedbackTimeoutId = setTimeout(() => {
+    linkCopied.value = false
+  }, 2000)
+}
 
 // Check login status
 async function checkLoginStatus() {
@@ -497,5 +608,6 @@ onMounted(async () => {
 
 onUnmounted(() => {
   clearInterval(loginCheckIntervalId)
+  clearTimeout(copyFeedbackTimeoutId)
 })
 </script>
