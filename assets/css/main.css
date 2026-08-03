@@ -42,7 +42,7 @@ body {
   }
 
   .pwa-safe-header {
-    height: calc(4rem + env(safe-area-inset-top));
+    height: auto;
     min-height: calc(4rem + env(safe-area-inset-top));
     padding-top: env(safe-area-inset-top);
   }
